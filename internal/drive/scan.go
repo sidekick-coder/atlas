@@ -13,8 +13,10 @@ func Scan(root string) ([]Entry, error) {
 			return err
 		}
 
+		RelativePath, err := filepath.Rel(root, path)
+
 		entries = append(entries, Entry{
-			Path:  path,
+			Path:  RelativePath,
 			Name:  d.Name(),
 			IsDir: d.IsDir(),
 		})
