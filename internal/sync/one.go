@@ -5,19 +5,24 @@ import (
 	"path/filepath"
 	"fmt"
 
-	"github.com/sidekick-coder/atlas/internal/db"
+	"github.com/sidekick-coder/atlas/internal/models"
 	"github.com/sidekick-coder/atlas/internal/drive"
 	"github.com/sidekick-coder/atlas/internal/extract"
+	"github.com/sidekick-coder/atlas/internal/store"
 )
 
 
 func One(conn *sql.DB, root string, path string, is_dir bool) error {
-	err := db.UpsertEntry(conn, path, is_dir)
-	meta := map[string]any{}
+	store := store.New(conn)
+
+	entry, err := store.UpsertEntry(path, is_dir)
+
 
 	if err != nil {
 		return err
 	}
+
+	meta := map[string]any{}
 
 	isMakdown, err := filepath.Match("*.md", filepath.Base(path))
 
@@ -35,12 +40,15 @@ func One(conn *sql.DB, root string, path string, is_dir bool) error {
 		extract.Markdown(content, &meta)
 	}
 
-	fmt.Printf("path: %s, is_dir: %v\n", path, is_dir)
 	for k, v := range meta {
-		fmt.Printf("--%s = %v\n", k, v)
+		model := models.EntryMeta{
+			Name:  k,
+			EntryID: entry.ID,
+			Value: fmt.Sprintf("%v", v),
+		}
+
+		store.UpsertEntryMeta(&model)
 	}
-
-
 
 	return nil
 }
