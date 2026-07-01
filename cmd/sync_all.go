@@ -10,7 +10,7 @@ import (
 
 // syncAllCmd represents the syncAll command
 var syncAllCmd = &cobra.Command{
-	Use:   "sync-all",
+	Use:   "sync:all",
 	Short: "Sync all files and directories in the workspace",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ws, err := workspace.Get()
