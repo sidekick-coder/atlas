@@ -1,5 +1,4 @@
 - [ ] entry fields 
-- [ ] fix . folders files and .atlas folder in scan
 - [ ] search entries
 - [ ] plan how extract metadata from entries (markdown frontmatter)
 - [ ] plan how to handle custom actions (create-task, create-project, etc.)

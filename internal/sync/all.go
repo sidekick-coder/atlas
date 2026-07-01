@@ -29,7 +29,7 @@ func Files(conn *sql.DB, root string) (map[string]struct{}, error) {
 	err := drive.ScanStream(root, func(e drive.Entry) error {
 		seen[e.Path] = struct{}{}
 
-		return db.UpsertEntry(conn, e.Path, e.IsDir)
+		return One(conn, root, e.Path, e.IsDir)
 	})
 
 	return seen, err
