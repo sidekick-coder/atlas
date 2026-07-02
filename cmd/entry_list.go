@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/spf13/cobra"
 	"charm.land/lipgloss/v2"
+	"github.com/sidekick-coder/atlas/internal/app"
+	"github.com/sidekick-coder/atlas/internal/utils"
 )
 
 // listCmd represents the list command
@@ -29,22 +30,22 @@ var listCmd = &cobra.Command{
 			return nil
 		}
 
-		s := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("12"))
-
+		s := lipgloss.
+			NewStyle().
+			Bold(true).
+			Foreground(lipgloss.Red)
 
 		for _, entry := range entries {
-			fmt.Printf("%s\n", entry.Path)
+			fmt.Printf("%s\n", s.Render(entry.Path))
 
-			meta, err := entryMetaRepo.ListByEntryID(entry.ID)
+			metas, err := entryMetaRepo.ListByEntryID(entry.ID)
 
 			if err != nil {
 				fmt.Println("Error fetching metadata for entry:", err)
 				continue
 			}
 
-			for _, m := range meta {
-				fmt.Printf("  %s: %s\n", s.Render(m.Name), m.Value)
-			}
+			utils.PrintMetas(metas)
 		}
 
 		return nil

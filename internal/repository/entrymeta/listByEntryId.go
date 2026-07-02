@@ -9,7 +9,7 @@ func (r * Repository) ListByEntryID(entryId int64) ([]models.EntryMeta, error) {
 	smtmt := `
 	SELECT id, entry_id, name, value
 	FROM entry_metas
-	WHERE id = $1;
+	WHERE entry_id = $1;
 	`
 
     rows, err := r.Database.Query(smtmt, entryId)
