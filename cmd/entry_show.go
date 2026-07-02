@@ -8,77 +8,59 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/sidekick-coder/atlas/internal/workspace"
-	"github.com/sidekick-coder/atlas/internal/db"
-	"github.com/sidekick-coder/atlas/internal/store"
+	"github.com/sidekick-coder/atlas/internal/config"
+	"github.com/sidekick-coder/atlas/internal/database"
+	"github.com/sidekick-coder/atlas/internal/repository/entry"
+	"github.com/sidekick-coder/atlas/internal/repository/entrymeta"
+	"charm.land/lipgloss/v2"
 
 )
 
 // entryShowCmd represents the entryShow command
 var entryShowCmd = &cobra.Command{
 	Use:   "entry:show",
-	Short: "A brief description of your command",
+	Short: "Show an entry in the workspace",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		ws, err := workspace.Get()
-		target := args[0]
+		config, err := config.Create()
 
 		if err != nil {
-			fmt.Println("Error getting workspace:", err)
+			fmt.Println("Error creating config:", err)
 			return nil
 		}
 
-		dbPath, err := db.Path(ws)
+		database, err := database.Create(config.Get("workspace.database_path"))
 
 		if err != nil {
-			return err
-		}
-
-		// start a connection
-		conn, err := db.Connect(dbPath)
-
-		if err != nil {
-			return err 
-		}
-
-		defer conn.Close()
-
-		store := store.New(conn)
-
-		entry, err := store.GetEntryByPath(target)
-
-		if err != nil {
-			fmt.Println("Error getting entry:", err)
+			fmt.Println("Error creating database:", err)
 			return nil
 		}
 
-		if entry == nil {
-			fmt.Println("Entry not found")
-			return nil
-		}
+		entryRepo := entry.New(database)
+		entryMetaRepo := entrymeta.New(database)
 
-		metas, err := store.GetEntryMetasByEntryID(entry.ID)
+		entry, err := entryRepo.GetByPath(args[0])
 
 		if err != nil {
-			fmt.Println("Error getting entry metas:", err)
+			fmt.Println("Error showing entry:", err)
 			return nil
 		}
 
-		entryType := "file"
+		metas, err := entryMetaRepo.ListByEntryId(entry.ID)
 
-		if entry.IsDir {
-			entryType = "directory"
+		if err != nil {
+			fmt.Println("Error listing entry metas:", err)
+			return nil
 		}
+
+		s := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("12"))
 
 		fmt.Printf("%s\n", entry.Path)
-		fmt.Printf("\ttype: %s\n", entryType)
 
-		for _, meta := range metas {
-			fmt.Printf("\t%s: %s\n", meta.Name, meta.Value)
+		for _, m := range metas {
+			fmt.Printf("%s: %s\n", s.Render(m.Name), m.Value)
 		}
 
-
 		return nil
-
 	},
 }
 

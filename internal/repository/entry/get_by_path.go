@@ -4,7 +4,7 @@ import (
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 
-func (r * Repository) GetEntryByPath(path string) (*models.Entry, error) {
+func (r * Repository) GetByPath(path string) (*models.Entry, error) {
 	// SELECT ...
 	smtmt := `
 	SELECT id, path, is_dir
