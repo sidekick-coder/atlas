@@ -12,7 +12,7 @@ import (
 )
 
 var entryExtractCmd = &cobra.Command{
-	Use:   "entry:extract",
+	Use:   "extract",
 	Short: "Extract an entry from the workspace",
 	Run: func(cmd *cobra.Command, args []string) {
 		config, err := config.Create()

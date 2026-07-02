@@ -2,51 +2,42 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/sidekick-coder/atlas/internal/workspace"
-	"github.com/sidekick-coder/atlas/internal/db"
-	"github.com/sidekick-coder/atlas/internal/sync"
 	"github.com/spf13/cobra"
+	"charm.land/lipgloss/v2"
+	"github.com/sidekick-coder/atlas/internal/app"
+	"github.com/sidekick-coder/atlas/internal/sync/v2"
 )
 
-// syncAllCmd represents the syncAll command
-var syncAllCmd = &cobra.Command{
-	Use:   "sync:all",
-	Short: "Sync all files and directories in the workspace",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		ws, err := workspace.Get()
+var entrySyncAllCmd = &cobra.Command{
+	Use:   "sync-all",
+	Short: "Sync all entries",
+	Run: func(cmd *cobra.Command, args []string) {
+		app, err := app.Create()
 
 		if err != nil {
-			fmt.Println("Error getting workspace:", err)
-			return nil
+			fmt.Println(err)
+			return
 		}
 
-		dbPath, err := db.Path(ws)
+		sync := sync.Create(
+			app.Drive(),
+			app.EntryRepo(),
+			app.EntryMetaRepo(),
+		)
+
+		s := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("12"))
+
+		err = sync.All()
 
 		if err != nil {
-			return err
+			fmt.Println("Error syncing entry:", err)
+			return
 		}
 
-		// start a connection
-		conn, err := db.Connect(dbPath)
-
-		if err != nil {
-			return err 
-		}
-
-		defer conn.Close()
-
-		if err := sync.All(conn, ws); err != nil {
-			fmt.Println("Error syncing all files and directories:", err)
-			return nil
-		}
-
-		fmt.Println("Successfully synced all files and directories in the workspace")
-
-		return nil
-
+		fmt.Printf("%s\n", s.Render("Successfully synced entries "))
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(syncAllCmd)
+	rootCmd.AddCommand(entrySyncAllCmd)
 }

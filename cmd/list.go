@@ -10,7 +10,7 @@ import (
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
-	Use:   "entry:list",
+	Use:   "list",
 	Short: "List entries in the workspace",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		app, err := app.Create()
