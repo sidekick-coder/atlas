@@ -2,10 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/sidekick-coder/atlas/internal/config"
-	"github.com/sidekick-coder/atlas/internal/database"
-	"github.com/sidekick-coder/atlas/internal/repository/entry"
+	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/spf13/cobra"
+	"charm.land/lipgloss/v2"
 )
 
 // listCmd represents the list command
@@ -13,31 +12,39 @@ var listCmd = &cobra.Command{
 	Use:   "entry:list",
 	Short: "List entries in the workspace",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		config, err := config.Create()
+		app, err := app.Create()
 
 		if err != nil {
-			fmt.Println("Error creating config:", err)
+			fmt.Println(err)
 			return nil
 		}
 
-		database, err := database.Create(config.Get("workspace.database_path"))
+		entryRepo := app.EntryRepo()
+		entryMetaRepo := app.EntryMetaRepo()
 
-		if err != nil {
-			fmt.Println("Error creating database:", err)
-			return nil
-		}
-
-		repo := entry.New(database)
-
-		entries, err := repo.List()
+		entries, err := entryRepo.List()
 
 		if err != nil {
 			fmt.Println("Error listing entries:", err)
 			return nil
 		}
 
+		s := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("12"))
+
+
 		for _, entry := range entries {
-			fmt.Printf("%s (dir: %t)\n", entry.Path, entry.IsDir)
+			fmt.Printf("%s\n", entry.Path)
+
+			meta, err := entryMetaRepo.ListByEntryID(entry.ID)
+
+			if err != nil {
+				fmt.Println("Error fetching metadata for entry:", err)
+				continue
+			}
+
+			for _, m := range meta {
+				fmt.Printf("  %s: %s\n", s.Render(m.Name), m.Value)
+			}
 		}
 
 		return nil

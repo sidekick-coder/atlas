@@ -45,7 +45,7 @@ var entryShowCmd = &cobra.Command{
 			return nil
 		}
 
-		metas, err := entryMetaRepo.ListByEntryId(entry.ID)
+		metas, err := entryMetaRepo.ListByEntryID(entry.ID)
 
 		if err != nil {
 			fmt.Println("Error listing entry metas:", err)

@@ -7,7 +7,7 @@ import (
 func (r * Repository) List() ([]models.Entry, error) {
 	// SELECT ...
 	smtmt := `
-	SELECT id, path, is_dir
+	SELECT id, path
 	FROM entries;
 	`
 
@@ -24,7 +24,7 @@ func (r * Repository) List() ([]models.Entry, error) {
 	for rows.Next() {
 		var entry models.Entry
 
-		err := rows.Scan(&entry.ID, &entry.Path, &entry.IsDir)
+		err := rows.Scan(&entry.ID, &entry.Path)
 
 		if err != nil {
 			return nil, err

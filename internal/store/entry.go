@@ -34,7 +34,7 @@ func (s *Store) GetEntryByPath(path string) (*models.Entry, error) {
 	if rows.Next() {
 		var entry models.Entry
 
-		err := rows.Scan(&entry.ID, &entry.Path, &entry.IsDir)
+		err := rows.Scan(&entry.ID, &entry.Path)
 
 		if err != nil {
 			return nil, err

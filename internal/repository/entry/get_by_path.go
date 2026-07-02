@@ -7,7 +7,7 @@ import (
 func (r * Repository) GetByPath(path string) (*models.Entry, error) {
 	// SELECT ...
 	smtmt := `
-	SELECT id, path, is_dir
+	SELECT id, path
 	FROM entries
 	WHERE path = $1
 	LIMIT 1;
@@ -24,7 +24,7 @@ func (r * Repository) GetByPath(path string) (*models.Entry, error) {
 	if rows.Next() {
 		var entry models.Entry
 
-		err := rows.Scan(&entry.ID, &entry.Path, &entry.IsDir)
+		err := rows.Scan(&entry.ID, &entry.Path)
 
 		if err != nil {
 			return nil, err

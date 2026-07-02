@@ -4,7 +4,7 @@ import (
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 
-func (r * Repository) ListByEntryId(entryId int64) ([]models.EntryMeta, error) {
+func (r * Repository) ListByEntryID(entryId int64) ([]models.EntryMeta, error) {
 	// SELECT ...
 	smtmt := `
 	SELECT id, entry_id, name, value
