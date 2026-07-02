@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
-	"github.com/sidekick-coder/atlas/internal/workspace"
-	"github.com/sidekick-coder/atlas/internal/db"
+	"github.com/sidekick-coder/atlas/internal/config"
+	"github.com/sidekick-coder/atlas/internal/database"
 	"github.com/spf13/cobra"
 )
 
@@ -14,12 +14,15 @@ var initCmd = &cobra.Command{
 	Short: "initialize .atlas folder in directory",
 	Long: `This command initializes a .atlas folder in the current directory. This folder is used to store metadata about your files and directories.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		ws, err := workspace.Get()
+		config, err := config.Create()
+
 		if err != nil {
-			return err
+			fmt.Println("Error creating config:", err)
+			return nil
 		}
 
-		dir := fmt.Sprintf("%s/.atlas", ws) 
+
+		dir := config.Get("workspace.atlas_path")
 
 		info, err := os.Stat(dir)
 
@@ -28,29 +31,26 @@ var initCmd = &cobra.Command{
 			return nil
 		}
 
-		fmt.Printf("Creating .atlas folder in %s\n", ws)
+		fmt.Printf("Creating .atlas folder in %s\n", dir)
 
 		if err := os.MkdirAll(dir, fs.ModePerm); err != nil {
 			return err
 		}
 
-		dbPath, err := db.Path(ws)
+		database, err := database.Create(config.Get("workspace.database_path"))
 
 		if err != nil {
-			return err
+			fmt.Println("Error creating database:", err)
+			return nil
 		}
 
-		// start a connection
-		conn, err := db.Connect(dbPath)
+		err = database.Migrate()
 
 		if err != nil {
-			return err 
+			fmt.Println("Error migrating database:", err)
+			return nil
 		}
 
-		// run migrations
-		if err := db.Migrate(conn); err != nil {
-			return err
-		}
 
 		fmt.Println("Initialized .atlas folder and database")
 
