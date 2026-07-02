@@ -9,7 +9,7 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "atlas",
-	Short: "Add metadata to your files and directories",
+	Short: "Metadata for your files and directories",
 	Long: `This is a CLI tool that allows you to add metadata to your files and directories. and then search for them based on that metadata. It is a simple and easy to use tool that can be used to organize your files and directories.`,
 }
 
