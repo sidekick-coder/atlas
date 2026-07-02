@@ -16,9 +16,14 @@ var configShowCmd = &cobra.Command{
 	Use:   "config:show",
 	Short: "Prints the current configuration settings",
 	Run: func(cmd *cobra.Command, args []string) {
-		config := config.Load()
+		config, err := config.Create()
 
-		for key, value := range config.Entries {
+		if err != nil {
+			fmt.Println("Error creating config:", err)
+			return
+		}
+
+		for key, value := range config.GetAll() {
 			s := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("12"))
 
 			fmt.Printf("%s: %s\n", s.Render(key), value)

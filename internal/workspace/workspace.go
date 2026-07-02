@@ -14,3 +14,13 @@ func Get() (string, error) {
 
     return os.Getwd()
 }
+
+func GetRootPath() string {
+	rootPath, err := Get()
+
+	if err != nil {
+		panic(err)
+	}
+
+	return rootPath
+}

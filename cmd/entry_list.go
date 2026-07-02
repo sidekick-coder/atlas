@@ -2,39 +2,34 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/sidekick-coder/atlas/internal/workspace"
-	"github.com/sidekick-coder/atlas/internal/db"
+	"github.com/sidekick-coder/atlas/internal/config"
+	"github.com/sidekick-coder/atlas/internal/database"
+	"github.com/sidekick-coder/atlas/internal/repository/entry"
 	"github.com/spf13/cobra"
 )
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
-	Use:   "list",
+	Use:   "entry:list",
 	Short: "List entries in the workspace",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		ws, err := workspace.Get()
+		config, err := config.Create()
 
 		if err != nil {
-			fmt.Println("Error getting workspace:", err)
+			fmt.Println("Error creating config:", err)
 			return nil
 		}
 
-		dbPath, err := db.Path(ws)
+		database, err := database.Create(config.Get("workspace.database_path"))
 
 		if err != nil {
-			return err
+			fmt.Println("Error creating database:", err)
+			return nil
 		}
 
-		// start a connection
-		conn, err := db.Connect(dbPath)
+		repo := entry.New(database)
 
-		if err != nil {
-			return err 
-		}
-
-		defer conn.Close()
-
-		entries, err := db.SelectEntries(conn)
+		entries, err := repo.List()
 
 		if err != nil {
 			fmt.Println("Error listing entries:", err)
