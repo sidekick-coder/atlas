@@ -5,3 +5,9 @@ type Entry struct {
 	Name  string
 	IsDir bool
 }
+
+type EntryInfo struct {
+	Path	 string 
+	Type	 string 
+	Ext 	 string
+}

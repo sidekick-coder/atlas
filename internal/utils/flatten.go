@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func Flatten( input map[string]any, output map[string]string, prefix string) {
+func Flatten( input map[string]any, output map[string]any, prefix string) {
 	for k, v := range input {
 		key := k
 		if prefix != "" {
@@ -30,8 +30,8 @@ func Flatten( input map[string]any, output map[string]string, prefix string) {
 	}
 }
 
-func FlattenMap(input map[string]any, prefix string) map[string]string {
-	output := make(map[string]string)
+func FlattenMap(input map[string]any, prefix string) map[string]any {
+	output := make(map[string]any)
 	Flatten(input, output, prefix)
 	return output
 }
