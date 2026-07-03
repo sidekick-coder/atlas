@@ -1,6 +1,4 @@
-- [ ] search entries
-- [ ] global db connection and config
-- [ ] plan how extract metadata from entries (markdown frontmatter)
+- [ ] list query syntax
 - [ ] plan how to handle custom actions (create-task, create-project, etc.)
 
 ## Sync 
