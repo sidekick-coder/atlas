@@ -6,6 +6,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 
@@ -138,13 +139,13 @@ func (c *EntryList) SelectedEntry() *models.Entry {
 func (c *EntryList) Update(msg tea.Msg) tea.Cmd {
 	switch msg := msg.(type) {
 	case tea.KeyPressMsg:
-		switch msg.Code {
-		case tea.KeyUp:
+		switch {
+		case key.Matches(msg, DefaultKeyMap.Up):
 			if c.cursor > 0 {
 				c.cursor--
 				return func() tea.Msg { return EntrySelectedMsg{Entry: c.entries[c.cursor]} }
 			}
-		case tea.KeyDown:
+		case key.Matches(msg, DefaultKeyMap.Down):
 			if c.cursor < len(c.entries)-1 {
 				c.cursor++
 				return func() tea.Msg { return EntrySelectedMsg{Entry: c.entries[c.cursor]} }

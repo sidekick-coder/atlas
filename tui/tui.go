@@ -27,7 +27,6 @@ func (m model) Init() tea.Cmd {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if m.currentView == "browser" {
 		cmd := m.browserScreen.Update(msg)
-
 		return m, cmd
 	}
 
