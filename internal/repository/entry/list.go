@@ -1,17 +1,46 @@
 package entry
 
 import (
+	"strings"
+	"fmt"
+
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 
-func (r * Repository) List() ([]models.Entry, error) {
-	// SELECT ...
-	smtmt := `
-	SELECT id, path
-	FROM entries;
-	`
+type ListOptions struct {
+	Query []string
+}
 
-    rows, err := r.Database.Query(smtmt)
+func (r *Repository) List(options ...ListOptions) ([]models.Entry, error) {
+	stmt := []string{
+		"SELECT entries.id, entries.path",
+		"FROM entries",
+		"WHERE 1=1",
+	}
+
+	params := []interface{}{}
+
+	if len(options) > 0 && len(options[0].Query) > 0 {
+		node, err := ParseQuery(options[0].Query)
+		if err != nil {
+			return nil, err
+		}
+
+		if node != nil {
+			condition, err := BuildSQL(node, &params)
+			if err != nil {
+				return nil, err
+			}
+			stmt = append(stmt, "AND", condition)
+		}
+	}
+
+	stmtStr := strings.Join(stmt, " ")
+
+	fmt.Println("SQL:", stmtStr)
+	fmt.Println("Parameters:", params)
+
+	rows, err := r.Database.Query(stmtStr, params...)
 
 	if err != nil {
 		return nil, err

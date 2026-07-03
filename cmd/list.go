@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
+	"github.com/sidekick-coder/atlas/internal/repository/entry"
 	"github.com/sidekick-coder/atlas/internal/utils"
 )
 
@@ -23,7 +24,9 @@ var listCmd = &cobra.Command{
 		entryRepo := app.EntryRepo()
 		entryMetaRepo := app.EntryMetaRepo()
 
-		entries, err := entryRepo.List()
+		entries, err := entryRepo.List(entry.ListOptions{
+			Query: args,
+		})
 
 		if err != nil {
 			fmt.Println("Error listing entries:", err)
