@@ -77,7 +77,7 @@ var extIcons = map[string]string{
 func fileIcon(path string) string {
 	// Directory (no extension, or ends with /)
 	if strings.HasSuffix(path, "/") {
-		return " "
+		return "󰉋 "
 	}
 	ext := strings.ToLower(filepath.Ext(path))
 	if icon, ok := extIcons[ext]; ok {
