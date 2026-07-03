@@ -74,6 +74,11 @@ func (m *BrowserScreen) Update(msg tea.Msg) tea.Cmd {
 
 	case components.EntrySelectedMsg:
 		return m.loadMetas(msg.Entry.ID)
+	
+	case tea.KeyMsg:
+		if msg.String() == "ctrl+c" || msg.String() == "q" {
+			return tea.Quit
+		}
 
 	default:
 		return m.entryList.Update(msg)

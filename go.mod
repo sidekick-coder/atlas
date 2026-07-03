@@ -3,6 +3,7 @@ module github.com/sidekick-coder/atlas
 go 1.26.2
 
 require (
+	charm.land/bubbles/v2 v2.1.0 // indirect
 	charm.land/bubbletea/v2 v2.0.8 // indirect
 	charm.land/lipgloss/v2 v2.0.4 // indirect
 	github.com/BurntSushi/toml v0.3.1 // indirect
