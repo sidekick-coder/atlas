@@ -1,15 +1,47 @@
 package metadata 
 
 import (
-	"github.com/sidekick-coder/atlas/internal/drive/v2"
-	"strings"
-	"github.com/sidekick-coder/atlas/internal/utils"
-	"github.com/adrg/frontmatter"
 	"os"
 	"path/filepath"
+	"strings"
+	"fmt"
+	"github.com/goccy/go-yaml"
+	"github.com/sidekick-coder/atlas/internal/drive/v2"
+	"github.com/sidekick-coder/atlas/internal/utils"
+	"github.com/adrg/frontmatter"
 )
 
 type MarkdownHandler struct {}
+
+func ExtractFromContent(content string) (string, map[string]any, error) {
+	result := map[string]any{}
+
+	bodyRaw, err := frontmatter.Parse(strings.NewReader(content), result)
+
+	body := string(bodyRaw)
+
+	if err != nil {
+		return "", nil, err
+	}
+
+	flat := utils.FlattenMap(result, "frontmatter")
+
+	return body, flat, nil
+}
+
+func Marshal(body string, frontmatter map[string]any) (string, error) {
+	result := ""
+
+	yamlBytes, err := yaml.Marshal(frontmatter)
+
+	if err != nil {
+		return "", err
+	}
+
+	result = fmt.Sprintf("---\n%s---\n%s", string(yamlBytes), body)
+
+	return result, nil
+}
 
 func (m MarkdownHandler) ID() string {
 	return "markdown"
@@ -18,28 +50,60 @@ func (m MarkdownHandler) ID() string {
 func (m MarkdownHandler) Extract(info *drive.EntryInfo) (map[string]string, error) {
 	contents, err := os.ReadFile(filepath.Join(info.AbsolutePath))
 
-	data := string(contents)
+	if err != nil {
+		return nil, err
+	}
+
+	body, flat, err := ExtractFromContent(string(contents))
 
 	if err != nil {
 		return nil, err
 	}
 
-	result := map[string]any{}
+	result := utils.StringifyMap(flat)
+	
+	result["body"] = body
 
-	_, err = frontmatter.Parse(strings.NewReader(data), result)
-
-	if err != nil {
-		return nil, err
-	}
-
-	flat := utils.FlattenMap(result, "frontmatter")
-
-	return utils.StringifyMap(flat), nil
+	return result, nil
 }
 
 func (m MarkdownHandler) Set(info *drive.EntryInfo, name string, value string) error {
-	// Implement logic to set metadata in a Markdown file
-	// For example, you could modify the front matter or other metadata formats
+	isFrontmatterField := strings.HasPrefix(name, "frontmatter.")
+
+	if !isFrontmatterField {
+		return nil
+	}
+
+	contents, err := os.ReadFile(filepath.Join(info.AbsolutePath))
+
+	data := string(contents)
+
+	if err != nil {
+		return err
+	}
+
+	body, metas, err := ExtractFromContent(data)
+
+	if err != nil {
+		return err
+	}
+
+	metas[name] = value
+
+	unflattened := utils.Unflatten(metas)
+
+	newContents, err := Marshal(body, unflattened["frontmatter"].(map[string]any))
+
+	if err != nil {
+		return err
+	}
+
+	err = os.WriteFile(filepath.Join(info.AbsolutePath), []byte(newContents), 0644)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

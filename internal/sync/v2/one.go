@@ -1,7 +1,6 @@
 package sync
 
 import (
-	"fmt"
 	"github.com/sidekick-coder/atlas/internal/metadata"
 	"github.com/sidekick-coder/atlas/internal/drive/v2"
 )
@@ -12,13 +11,17 @@ func (s *Sync) OneByInfo(info * drive.EntryInfo) error {
 
 	data, err := metadata.Extract(info, handlers)
 
-	fmt.Println("Extracted metadata:", data)
-
 	if err != nil {
 		return err 
 	}
 
 	entry, err := s.entryRepo.Upsert(info.Path)
+
+	if err != nil {
+		return err
+	}
+
+	err = s.entryMetaRepo.DeleteByEntryID(entry.ID)
 
 	if err != nil {
 		return err

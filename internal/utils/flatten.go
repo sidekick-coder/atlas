@@ -16,14 +16,34 @@ func Flatten( input map[string]any, output map[string]any, prefix string) {
 			Flatten(val, output, key)
 
 		case map[any]any:
-				tmp := make(map[string]any)
+			tmp := make(map[string]any)
 			for k2, v2 := range val {
 				if ks, ok := k2.(string); ok {
 					tmp[ks] = v2
 				}
 			}
 			Flatten(tmp, output, key)
+		case []any:
+			for i, v2 := range val {
+				idxKey := fmt.Sprintf("%s[%d]", key, i)
 
+				switch vv := v2.(type) {
+				case map[string]any:
+					Flatten(vv, output, idxKey)
+
+				case map[any]any:
+					tmp := make(map[string]any)
+					for k2, v3 := range vv {
+						if ks, ok := k2.(string); ok {
+							tmp[ks] = v3
+						}
+					}
+					Flatten(tmp, output, idxKey)
+
+				default:
+					output[idxKey] = fmt.Sprint(v2)
+				}
+			}
 		default:
 			output[key] = fmt.Sprint(val)
 		}

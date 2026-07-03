@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"slices"
+	"strings"
 	"github.com/sidekick-coder/atlas/internal/models"
 	"charm.land/lipgloss/v2"
 )
@@ -24,14 +25,17 @@ func PrintMap(payload map[string]string) {
 		fmt.Printf("%s: %s\n", s.Render(key), payload[key])
 	}
 
-
 }
 
 func PrintMetas(metas []models.EntryMeta) {
 	mapMetas := map[string]string{}
 
 	for _, meta := range metas {
-		mapMetas[meta.Name] = meta.Value
+		val := strings.ReplaceAll(meta.Value, "\n", "\\n")
+		val = strings.ReplaceAll(val, "\t", "\\t")
+		val = strings.ReplaceAll(val, "\r", "\\r")
+
+		mapMetas[meta.Name] = val 
 	}
 
 	PrintMap(mapMetas)
