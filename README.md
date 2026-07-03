@@ -1,4 +1,4 @@
-- [ ] list query syntax
+- [ ] custom metadata handler (probably comunicate via stdin/stdout)
 - [ ] plan how to handle custom actions (create-task, create-project, etc.)
 
 ## Sync 

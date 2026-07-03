@@ -2,8 +2,6 @@ package entry
 
 import (
 	"strings"
-	"fmt"
-
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 
@@ -36,9 +34,6 @@ func (r *Repository) List(options ...ListOptions) ([]models.Entry, error) {
 	}
 
 	stmtStr := strings.Join(stmt, " ")
-
-	fmt.Println("SQL:", stmtStr)
-	fmt.Println("Parameters:", params)
 
 	rows, err := r.Database.Query(stmtStr, params...)
 
