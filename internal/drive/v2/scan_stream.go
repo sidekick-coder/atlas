@@ -3,13 +3,14 @@ package drive
 import (
 	"io/fs"
 	"path/filepath"
+	"github.com/sidekick-coder/atlas/internal/models"
 )
 
 type ScanOptions struct {
 	Ignores []string
 }
 
-func (d *Drive) ScanStream(fn func(EntryInfo) error, options ...ScanOptions) error {
+func (d *Drive) ScanStream(fn func(models.EntryInfo) error, options ...ScanOptions) error {
 	ignores := []string{}
 	root := d.RootPath
 
@@ -38,18 +39,8 @@ func (d *Drive) ScanStream(fn func(EntryInfo) error, options ...ScanOptions) err
 			return nil
 		}
 
-		Type := "file"
+		entryInfo := models.NewEntryInfoFromDirEntry(root, RelativePath, d)
 
-		if d.IsDir() {
-			Type = "directory"
-		}
-
-		return fn(EntryInfo{
-			BaseName:     d.Name(),
-			Path:         RelativePath,
-			AbsolutePath: path,
-			Type:         Type,
-			Ext:          filepath.Ext(d.Name()),
-		})
+		return fn(entryInfo)
 	})
 }

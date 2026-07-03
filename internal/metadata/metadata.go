@@ -3,15 +3,14 @@ package metadata
 import (
 	"strings"
 	"fmt"
-	"github.com/sidekick-coder/atlas/internal/drive/v2"
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 
 type Meta struct {
-	info     *drive.EntryInfo
+	info     *models.EntryInfo
 }
 
-func Create(info *drive.EntryInfo) (*Meta, error) {
+func Create(info *models.EntryInfo) (*Meta, error) {
 	meta := &Meta{
 		info: info,
 	}

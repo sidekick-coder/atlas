@@ -2,11 +2,11 @@ package sync
 
 import (
 	"github.com/sidekick-coder/atlas/internal/metadata"
-	"github.com/sidekick-coder/atlas/internal/drive/v2"
+	"github.com/sidekick-coder/atlas/internal/models"
 )
 
 
-func (s *Sync) OneByInfo(info * drive.EntryInfo) error {
+func (s *Sync) OneByInfo(info * models.EntryInfo) error {
 	handlers := metadata.GetHandlers(info)
 
 	data, err := metadata.Extract(info, handlers)

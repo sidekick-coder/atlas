@@ -9,7 +9,7 @@ import (
 )
 
 var entrySyncAllCmd = &cobra.Command{
-	Use:   "sync-all",
+	Use:   "sync:all",
 	Short: "Sync all entries",
 	Run: func(cmd *cobra.Command, args []string) {
 		app, err := app.Create()

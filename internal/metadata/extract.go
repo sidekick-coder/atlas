@@ -2,10 +2,10 @@ package metadata
 
 import (
 	"strings"
-	"github.com/sidekick-coder/atlas/internal/drive/v2"
+	"github.com/sidekick-coder/atlas/internal/models"
 )
 
-func Extract(info *drive.EntryInfo, handlers []Handler) (map[string]string, error) {
+func Extract(info *models.EntryInfo, handlers []Handler) (map[string]string, error) {
 	metadata := make(map[string]string)
 
 	ids := []string{}

@@ -1,13 +1,13 @@
 package sync
 
 import (
-	"github.com/sidekick-coder/atlas/internal/drive/v2"
+	"github.com/sidekick-coder/atlas/internal/models"
 )
 
 
 func (s *Sync) All() error {
 
-	cb := func(e drive.EntryInfo) error {
+	cb := func(e models.EntryInfo) error {
 		return s.OneByInfo(&e)
 	}
 

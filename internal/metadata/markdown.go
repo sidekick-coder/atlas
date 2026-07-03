@@ -6,7 +6,7 @@ import (
 	"strings"
 	"fmt"
 	"github.com/goccy/go-yaml"
-	"github.com/sidekick-coder/atlas/internal/drive/v2"
+	"github.com/sidekick-coder/atlas/internal/models"
 	"github.com/sidekick-coder/atlas/internal/utils"
 	"github.com/adrg/frontmatter"
 )
@@ -47,7 +47,7 @@ func (m MarkdownHandler) ID() string {
 	return "markdown"
 }
 
-func (m MarkdownHandler) Extract(info *drive.EntryInfo) (map[string]string, error) {
+func (m MarkdownHandler) Extract(info *models.EntryInfo) (map[string]string, error) {
 	contents, err := os.ReadFile(filepath.Join(info.AbsolutePath))
 
 	if err != nil {
@@ -67,7 +67,7 @@ func (m MarkdownHandler) Extract(info *drive.EntryInfo) (map[string]string, erro
 	return result, nil
 }
 
-func (m MarkdownHandler) Set(info *drive.EntryInfo, name string, value string) error {
+func (m MarkdownHandler) Set(info *models.EntryInfo, name string, value string) error {
 	isFrontmatterField := strings.HasPrefix(name, "frontmatter.")
 
 	if !isFrontmatterField {
@@ -107,7 +107,7 @@ func (m MarkdownHandler) Set(info *drive.EntryInfo, name string, value string) e
 	return nil
 }
 
-func (m MarkdownHandler) Unset(info *drive.EntryInfo, name string) error {
+func (m MarkdownHandler) Unset(info *models.EntryInfo, name string) error {
 	isFrontmatterField := strings.HasPrefix(name, "frontmatter.")
 
 	if !isFrontmatterField {

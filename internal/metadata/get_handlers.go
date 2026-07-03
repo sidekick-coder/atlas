@@ -1,10 +1,10 @@
 package metadata 
 
 import (
-	"github.com/sidekick-coder/atlas/internal/drive/v2"
+	"github.com/sidekick-coder/atlas/internal/models"
 )
 
-func GetHandlers(info *drive.EntryInfo) []Handler {
+func GetHandlers(info *models.EntryInfo) []Handler {
 	handlers := []Handler{}
 
 	if (info.Type == "directory") {

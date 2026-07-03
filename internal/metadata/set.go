@@ -1,10 +1,10 @@
 package metadata
 
 import (
-	"github.com/sidekick-coder/atlas/internal/drive/v2"
+	"github.com/sidekick-coder/atlas/internal/models"
 )
 
-func Set(info *drive.EntryInfo, name string, value string, handlers []Handler) (bool, error) {
+func Set(info *models.EntryInfo, name string, value string, handlers []Handler) (bool, error) {
 
 	for _, handler := range handlers {
 		err := handler.Set(info, name, value)

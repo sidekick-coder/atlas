@@ -5,14 +5,6 @@ import (
 	"github.com/sidekick-coder/atlas/internal/utils"
 )
 
-type EntryInfo struct {
-	BaseName string
-	Path	 string 
-	AbsolutePath string
-	Type	 string 
-	Ext 	 string
-}
-
 type Drive struct {
 	RootPath string
 }
