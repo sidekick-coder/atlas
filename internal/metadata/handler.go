@@ -8,4 +8,5 @@ type Handler interface {
 	ID() string
 	Extract(info *drive.EntryInfo) (map[string]string, error)
 	Set(info *drive.EntryInfo, name string, value string) error
+	Unset(info *drive.EntryInfo, name string) error
 }

@@ -18,7 +18,11 @@ func PrintMap(payload map[string]string) {
 	}
 
 	slices.SortFunc(keys, func(a, b string) int {
-		return len(a) - len(b)
+		if len(a) != len(b) {
+			return len(a) - len(b)
+		}
+
+		return strings.Compare(a, b)
 	})
 
 	for _, key := range keys {

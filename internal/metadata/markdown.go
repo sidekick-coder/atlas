@@ -107,3 +107,42 @@ func (m MarkdownHandler) Set(info *drive.EntryInfo, name string, value string) e
 	return nil
 }
 
+func (m MarkdownHandler) Unset(info *drive.EntryInfo, name string) error {
+	isFrontmatterField := strings.HasPrefix(name, "frontmatter.")
+
+	if !isFrontmatterField {
+		return nil
+	}
+
+	contents, err := os.ReadFile(filepath.Join(info.AbsolutePath))
+
+	data := string(contents)
+
+	if err != nil {
+		return err
+	}
+
+	body, metas, err := ExtractFromContent(data)
+
+	if err != nil {
+		return err
+	}
+
+	delete(metas, name)
+
+	unflattened := utils.Unflatten(metas)
+
+	newContents, err := Marshal(body, unflattened["frontmatter"].(map[string]any))
+
+	if err != nil {
+		return err
+	}
+
+	err = os.WriteFile(filepath.Join(info.AbsolutePath), []byte(newContents), 0644)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
