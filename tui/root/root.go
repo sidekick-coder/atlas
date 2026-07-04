@@ -11,6 +11,8 @@ import (
 	"github.com/sidekick-coder/atlas/tui/components"
 	"github.com/sidekick-coder/atlas/tui/screen"
 	"github.com/sidekick-coder/atlas/tui/screen/entry"
+	"github.com/sidekick-coder/atlas/tui/screen/entrysingle"
+	"github.com/sidekick-coder/atlas/tui/messages"
 )
 
 type model struct {
@@ -107,7 +109,7 @@ func (m *model) SetCurrentScreen(index int) {
 	m.SetSize(m.width, m.height)
 }
 
-func (m *model) AddScreen(name string, options map[string]string) {
+func (m *model) AddScreen(name string, options map[string]any) {
 	if name == "entry" {
 		s := entry.Create(m.app)
 		m.screens = append(m.screens, s)
@@ -117,6 +119,30 @@ func (m *model) AddScreen(name string, options map[string]string) {
 		m.SetCurrentScreen(index)
 		return
 	}
+
+	if name == "entry-single" {
+		entryID, ok := options["entry_id"].(int64)
+
+		if !ok {
+			fmt.Println("entryID not provided or not an int64")
+			return
+		}
+
+		s := entrysingle.Create(m.app, entryID)
+		m.screens = append(m.screens, s)
+		index := len(m.screens) - 1
+		m.tabBar.Add(fmt.Sprintf("%d: %s", index, s.Title()))
+
+		m.SetCurrentScreen(index)
+		return
+	}
+
+	toastMsg := components.ToastShowMsg{
+		Message: fmt.Sprintf("Unknown screen: %s", name),
+		Level:   1,
+	}
+
+	m.Update(toastMsg)
 }
 
 func (m *model) SetSize(width int, height int) {
@@ -155,7 +181,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case components.ToastShowMsg:
 		cmd := components.GlobalToast.Show(msg.Message, msg.Level, 2*time.Second)
 		return m, cmd
-	case AddScreenMsg:
+	case messages.AddScreen:
 		m.AddScreen(msg.Name, msg.Options)
 
 		return m, nil

@@ -88,3 +88,10 @@ func (e *EntryList) MoveDown() {
 		e.CurrentIndex++
 	}
 }
+
+func (e *EntryList) SelectEntryID() int64 {
+	entry := e.Entries[e.CurrentIndex] 
+
+	return entry.ID
+
+}

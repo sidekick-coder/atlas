@@ -1,4 +1,4 @@
-package entry 
+package entrysingle 
 
 import (
 	"github.com/charmbracelet/bubbles/key"

@@ -1,34 +1,23 @@
-package entry
+package entrysingle
 
 import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/bubbles/key"
-	"github.com/sidekick-coder/atlas/tui/messages"
 )
 
 func (s *Screen) Update(msg tea.Msg) tea.Cmd {
 	switch msg := msg.(type) {
 	case tea.KeyPressMsg:
 		if key.Matches(msg, Bindings.Up) {
-			s.List.MoveUp()
 			return nil
 		}
 
 		if key.Matches(msg, Bindings.Down) {
-			s.List.MoveDown()
 			return nil
-		}
-
-		if key.Matches(msg, Bindings.Enter) {
-			name := "entry-single"
-
-			options := map[string]any{}
-			options["entry_id"] = s.List.SelectEntryID()
-
-			return messages.AddScreenCmd(name, options)
 		}
 
 	}
 
 	return nil
 }
+
