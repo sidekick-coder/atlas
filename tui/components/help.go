@@ -50,6 +50,11 @@ func (h *HelpScreen) View() string {
 	bindings := []key.Binding{
 		h.keymap.Up,
 		h.keymap.Down,
+		h.keymap.FocusNext,
+		h.keymap.MetaAdd,
+		h.keymap.MetaReplace,
+		h.keymap.MetaUpdate,
+		h.keymap.MetaEditor,
 		h.keymap.Help,
 		h.keymap.Quit,
 	}

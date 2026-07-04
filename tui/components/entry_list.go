@@ -111,6 +111,7 @@ type EntrySelectedMsg struct {
 type EntryList struct {
 	entries []models.Entry
 	cursor  int
+	focused bool
 	width   int
 	height  int
 }
@@ -122,6 +123,10 @@ func NewEntryList() *EntryList {
 func (c *EntryList) SetEntries(entries []models.Entry) {
 	c.entries = entries
 	c.cursor = 0
+}
+
+func (c *EntryList) SetFocused(focused bool) {
+	c.focused = focused
 }
 
 func (c *EntryList) SetSize(width, height int) {
@@ -179,6 +184,15 @@ func (c *EntryList) View() string {
 		rows = append(rows, listItemStyle.Width(innerWidth).Render("No entries"))
 	}
 
+	borderColor := lipgloss.Color("240")
+	if c.focused {
+		borderColor = lipgloss.Color("12")
+	}
+
 	content := lipgloss.JoinVertical(lipgloss.Left, rows...)
-	return listContainerStyle.Width(c.width - 2).Height(c.height - 2).Render(content)
+	return listContainerStyle.
+		BorderForeground(borderColor).
+		Width(c.width - 2).
+		Height(c.height - 2).
+		Render(content)
 }

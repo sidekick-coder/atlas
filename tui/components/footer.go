@@ -2,6 +2,7 @@ package components
 
 import (
 	"fmt"
+	"strings"
 
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/bubbles/key"
@@ -18,40 +19,34 @@ var (
 
 // Footer renders a one-line shortcuts bar.
 type Footer struct {
-	width  int
-	keymap KeyMap
+	width    int
+	bindings []key.Binding
 }
 
-func NewFooter(km KeyMap) *Footer {
-	return &Footer{keymap: km}
+func NewFooter() *Footer {
+	return &Footer{}
 }
 
 func (f *Footer) SetWidth(width int) {
 	f.width = width
 }
 
-func (f *Footer) View() string {
-	bindings := []key.Binding{
-		f.keymap.Up,
-		f.keymap.Down,
-		f.keymap.Help,
-		f.keymap.Quit,
-	}
+func (f *Footer) SetBindings(bindings ...key.Binding) {
+	f.bindings = bindings
+}
 
+func (f *Footer) View() string {
 	var parts []string
-	for _, b := range bindings {
+	for _, b := range f.bindings {
 		h := b.Help()
+		if h.Key == "" {
+			continue
+		}
 		parts = append(parts, fmt.Sprintf("%s %s", footerKeyStyle.Render(h.Key), footerStyle.Render(h.Desc)))
 	}
 
 	sep := footerStyle.Render("  ·  ")
-	row := ""
-	for i, p := range parts {
-		if i > 0 {
-			row += sep
-		}
-		row += p
-	}
+	row := strings.Join(parts, sep)
 
 	return footerStyle.Width(f.width).Render(row)
 }
