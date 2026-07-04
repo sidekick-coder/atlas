@@ -6,6 +6,7 @@ import (
 	"github.com/sidekick-coder/atlas/internal/drive/v2"
 	"github.com/sidekick-coder/atlas/internal/repository/entry"
 	"github.com/sidekick-coder/atlas/internal/repository/entrymeta"
+	sync "github.com/sidekick-coder/atlas/internal/sync/v2"
 )
 
 type App struct {
@@ -49,9 +50,18 @@ func Create() (*App, error) {
 	return app, nil
 }
 
+func (a *App) WorkspacePath() string {
+	return a.config.Get("workspace.path")
+}
+
 func (a *App) Drive() *drive.Drive {
     return a.drive
 }
+
+func (a *App) Syncer() *sync.Sync {
+	return sync.Create(a.drive, a.entryRepo, a.entryMetaRepo)
+}
+
 
 func (a *App) EntryRepo() *entry.Repository {
     return a.entryRepo

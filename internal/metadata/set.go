@@ -7,12 +7,16 @@ import (
 func Set(info *models.EntryInfo, name string, value string, handlers []Handler) (bool, error) {
 
 	for _, handler := range handlers {
-		err := handler.Set(info, name, value)
+		updated, err := handler.Set(info, name, value)
 
 		if err != nil {
 			return false, err
 		}
+
+		if updated {
+			return true, nil
+		}
 	}
 
-	return true, nil
+	return false, nil
 }

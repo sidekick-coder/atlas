@@ -12,7 +12,11 @@ import (
 
 var (
 	metaRowStyle = lipgloss.NewStyle().
-			Padding(0, 1)
+			Padding(0, 1).
+			Foreground(lipgloss.Color("244"))
+
+	metaRowNameStyle = lipgloss.NewStyle().
+				Foreground(lipgloss.Color("75")) // soft blue for key
 
 	metaRowSelectedStyle = lipgloss.NewStyle().
 				Padding(0, 1).
@@ -20,8 +24,12 @@ var (
 				Foreground(lipgloss.Color("12"))
 
 	metasContainerStyle = lipgloss.NewStyle().
-				Border(lipgloss.RoundedBorder()).
-				BorderForeground(lipgloss.Color("240"))
+				Border(lipgloss.RoundedBorder())
+
+	metasTitleStyle = lipgloss.NewStyle().
+			Bold(true).
+			Foreground(lipgloss.Color("12")).
+			Padding(0, 1)
 )
 
 type EntryMetas struct {
@@ -57,6 +65,7 @@ func (c *EntryMetas) SetEntryID(id int64) {
 func (c *EntryMetas) SetMetas(metas []models.EntryMeta) {
 	// Preserve cursor position by keeping the same meta name selected.
 	var selectedName string
+
 	if c.cursor < len(c.metas) {
 		selectedName = c.metas[c.cursor].Name
 	}
@@ -180,10 +189,12 @@ func (c *EntryMetas) View() string {
 			valueStr = ansi.Truncate(valueStr, maxValueLen-1, "…")
 		}
 
-		line := nameStr + " " + valueStr
 		if selected {
+			line := nameStr + " " + valueStr
 			rows = append(rows, metaRowSelectedStyle.Width(innerWidth).Render("▶ "+line))
 		} else {
+			// Color key and value separately for unselected rows.
+			line := metaRowNameStyle.Render(nameStr) + " " + valueStr
 			rows = append(rows, metaRowStyle.Width(innerWidth).Render("  "+line))
 		}
 	}
@@ -192,12 +203,13 @@ func (c *EntryMetas) View() string {
 		rows = append(rows, metaRowStyle.Width(innerWidth).Render("No metadata"))
 	}
 
-	borderColor := lipgloss.Color("240")
+	borderColor := lipgloss.Color("24") // dim blue
 	if c.focused {
-		borderColor = lipgloss.Color("12")
+		borderColor = lipgloss.Color("33") // bright blue — glowing
 	}
 
-	content := lipgloss.JoinVertical(lipgloss.Left, rows...)
+	title := metasTitleStyle.Render(" Metadata")
+	content := lipgloss.JoinVertical(lipgloss.Left, title, lipgloss.JoinVertical(lipgloss.Left, rows...))
 	return metasContainerStyle.
 		BorderForeground(borderColor).
 		Width(c.width - 2).

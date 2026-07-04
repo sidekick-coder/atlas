@@ -92,7 +92,8 @@ func fileIcon(path string) string {
 
 var (
 	listItemStyle = lipgloss.NewStyle().
-			Padding(0, 1)
+			Padding(0, 1).
+			Foreground(lipgloss.Color("244"))
 
 	listItemSelectedStyle = lipgloss.NewStyle().
 				Padding(0, 1).
@@ -100,8 +101,12 @@ var (
 				Foreground(lipgloss.Color("12"))
 
 	listContainerStyle = lipgloss.NewStyle().
-				Border(lipgloss.RoundedBorder()).
-				BorderForeground(lipgloss.Color("240"))
+				Border(lipgloss.RoundedBorder())
+
+	listTitleStyle = lipgloss.NewStyle().
+			Bold(true).
+			Foreground(lipgloss.Color("12")).
+			Padding(0, 1)
 )
 
 type EntrySelectedMsg struct {
@@ -184,12 +189,13 @@ func (c *EntryList) View() string {
 		rows = append(rows, listItemStyle.Width(innerWidth).Render("No entries"))
 	}
 
-	borderColor := lipgloss.Color("240")
+	borderColor := lipgloss.Color("24") // dim blue
 	if c.focused {
-		borderColor = lipgloss.Color("12")
+		borderColor = lipgloss.Color("33") // bright blue — glowing
 	}
 
-	content := lipgloss.JoinVertical(lipgloss.Left, rows...)
+	title := listTitleStyle.Render(" Entries")
+	content := lipgloss.JoinVertical(lipgloss.Left, title, lipgloss.JoinVertical(lipgloss.Left, rows...))
 	return listContainerStyle.
 		BorderForeground(borderColor).
 		Width(c.width - 2).

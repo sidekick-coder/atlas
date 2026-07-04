@@ -11,6 +11,7 @@ type KeyMap struct {
 	MetaUpdate  key.Binding
 	MetaEditor  key.Binding
 	MetaAdd     key.Binding
+	SyncEntry   key.Binding
 	Help        key.Binding
 	Quit        key.Binding
 }
@@ -19,11 +20,11 @@ type KeyMap struct {
 var DefaultKeyMap = KeyMap{
 	Up: key.NewBinding(
 		key.WithKeys("k", "up"),
-		key.WithHelp("↑/k", "move up"),
+		key.WithHelp("↑/k", "up"),
 	),
 	Down: key.NewBinding(
 		key.WithKeys("j", "down"),
-		key.WithHelp("↓/j", "move down"),
+		key.WithHelp("↓/j", "down"),
 	),
 	FocusNext: key.NewBinding(
 		key.WithKeys("tab"),
@@ -31,23 +32,27 @@ var DefaultKeyMap = KeyMap{
 	),
 	MetaReplace: key.NewBinding(
 		key.WithKeys("r"),
-		key.WithHelp("r", "replace value"),
+		key.WithHelp("r", "replace"),
 	),
 	MetaUpdate: key.NewBinding(
 		key.WithKeys("u"),
-		key.WithHelp("u", "update value"),
+		key.WithHelp("u", "update"),
 	),
 	MetaEditor: key.NewBinding(
 		key.WithKeys("e"),
-		key.WithHelp("e", "edit in editor"),
+		key.WithHelp("e", "editor"),
 	),
 	MetaAdd: key.NewBinding(
 		key.WithKeys("a"),
 		key.WithHelp("a", "add meta"),
 	),
+	SyncEntry: key.NewBinding(
+		key.WithKeys("s"),
+		key.WithHelp("s", "sync entry"),
+	),
 	Help: key.NewBinding(
 		key.WithKeys("?"),
-		key.WithHelp("?", "show help"),
+		key.WithHelp("?", "help"),
 	),
 	Quit: key.NewBinding(
 		key.WithKeys("q", "ctrl+c"),

@@ -1,6 +1,8 @@
 package tui
 
 import (
+	"time"
+
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/tui/components"
@@ -26,10 +28,29 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	if ws, ok := msg.(tea.WindowSizeMsg); ok {
-		m.width = ws.Width
-		m.height = ws.Height
-		components.GlobalInput.SetSize(ws.Width, ws.Height)
+	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.width = msg.Width
+		m.height = msg.Height
+		components.GlobalInput.SetSize(msg.Width, msg.Height)
+		components.GlobalToast.SetSize(msg.Width, msg.Height)
+
+	case components.ToastExpiredMsg:
+		components.GlobalToast.Hide()
+		return m, nil
+
+	case components.ToastShowMsg:
+		cmd := components.GlobalToast.Show(msg.Message, msg.Level, 2*time.Second)
+		return m, cmd
+
+	case components.BatchMsg:
+		// Dispatch each message as its own Cmd so they are all processed.
+		cmds := make([]tea.Cmd, len(msg.Msgs))
+		for i, inner := range msg.Msgs {
+			inner := inner
+			cmds[i] = func() tea.Msg { return inner }
+		}
+		return m, tea.Batch(cmds...)
 	}
 
 	// Route all input to GlobalInput while it's active; block everything else.
@@ -54,6 +75,10 @@ func (m model) View() tea.View {
 
 	if components.GlobalInput.Active() {
 		content = components.PlaceOverlay(components.GlobalInput.Box(), content, m.width, m.height)
+	}
+
+	if components.GlobalToast.Active() {
+		content = components.PlaceOverlay(components.GlobalToast.Box(), content, m.width, m.height)
 	}
 
 	v := tea.NewView(content)

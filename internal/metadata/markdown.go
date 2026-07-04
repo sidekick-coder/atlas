@@ -67,11 +67,11 @@ func (m MarkdownHandler) Extract(info *models.EntryInfo) (map[string]string, err
 	return result, nil
 }
 
-func (m MarkdownHandler) Set(info *models.EntryInfo, name string, value string) error {
+func (m MarkdownHandler) Set(info *models.EntryInfo, name string, value string) (bool, error) {
 	isFrontmatterField := strings.HasPrefix(name, "frontmatter.")
 
 	if !isFrontmatterField {
-		return nil
+		return false, nil
 	}
 
 	contents, err := os.ReadFile(filepath.Join(info.AbsolutePath))
@@ -79,13 +79,13 @@ func (m MarkdownHandler) Set(info *models.EntryInfo, name string, value string) 
 	data := string(contents)
 
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	body, metas, err := ExtractFromContent(data)
 
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	metas[name] = value
@@ -95,16 +95,16 @@ func (m MarkdownHandler) Set(info *models.EntryInfo, name string, value string) 
 	newContents, err := Marshal(body, unflattened["frontmatter"].(map[string]any))
 
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	err = os.WriteFile(filepath.Join(info.AbsolutePath), []byte(newContents), 0644)
 
 	if err != nil {
-		return err
+		return false, err
 	}
 
-	return nil
+	return true, nil
 }
 
 func (m MarkdownHandler) Unset(info *models.EntryInfo, name string) error {

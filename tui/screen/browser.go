@@ -1,13 +1,16 @@
 package screen
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
+	"time"
 
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/sidekick-coder/atlas/internal/app"
+	"github.com/sidekick-coder/atlas/internal/metadata"
 	"github.com/sidekick-coder/atlas/internal/models"
 	"github.com/sidekick-coder/atlas/tui/components"
 )
@@ -30,26 +33,28 @@ const (
 )
 
 type BrowserScreen struct {
-	app        *app.App
-	entryList  *components.EntryList
-	entryMetas *components.EntryMetas
-	footer     *components.Footer
-	help       *components.HelpScreen
-	showHelp   bool
-	focus      focusedPanel
-	width      int
-	height     int
+	app           *app.App
+	entryList     *components.EntryList
+	entryMetas    *components.EntryMetas
+	footer        *components.Footer
+	help          *components.HelpScreen
+	showHelp      bool
+	focus         focusedPanel
+	width         int
+	height        int
+	workspacePath string
 }
 
 func NewBrowserScreen(a *app.App) *BrowserScreen {
 	km := components.DefaultKeyMap
 	s := &BrowserScreen{
-		app:        a,
-		entryList:  components.NewEntryList(),
-		entryMetas: components.NewEntryMetas(),
-		footer:     components.NewFooter(),
-		help:       components.NewHelpScreen(km),
-		focus:      focusList,
+		app:           a,
+		entryList:     components.NewEntryList(),
+		entryMetas:    components.NewEntryMetas(),
+		footer:        components.NewFooter(),
+		help:          components.NewHelpScreen(km),
+		focus:         focusList,
+		workspacePath: a.WorkspacePath(),
 	}
 	s.entryList.SetFocused(true)
 	s.updateFooter()
@@ -95,20 +100,37 @@ func (m *BrowserScreen) Update(msg tea.Msg) tea.Cmd {
 			m.entryMetas.SetMetas(msg.metas)
 		}
 
+	case metasReloadMsg:
+		if msg.err == nil {
+			return m.loadMetas(msg.entryID)
+		}
+
+	case components.ToastShowMsg:
+		return components.GlobalToast.Show(msg.Message, msg.Level, 4*time.Second)
+
 	case components.EntrySelectedMsg:
 		m.entryMetas.SetEntryID(msg.Entry.ID)
 		return m.loadMetas(msg.Entry.ID)
 
 	case components.MetaInputSubmitMsg:
-		return m.saveMeta(msg.EntryID, msg.Name, msg.Value)
+		entry := m.entryList.SelectedEntry()
+		if entry == nil {
+			return nil
+		}
+		return m.saveMeta(entry.Path, msg.Name, msg.Value)
 
 	case components.MetaOpenEditorMsg:
 		return m.openEditor(msg.EntryID, msg.Name, msg.CurrentValue)
 
 	case metaEditorDoneMsg:
-		if msg.err == nil {
-			return m.saveMeta(msg.entryID, msg.name, msg.value)
+		if msg.err != nil {
+			return components.GlobalToast.Show(msg.err.Error(), components.ToastError, 4*time.Second)
 		}
+		entry := m.entryList.SelectedEntry()
+		if entry == nil {
+			return nil
+		}
+		return m.saveMeta(entry.Path, msg.name, msg.value)
 
 	case tea.KeyPressMsg:
 		switch {
@@ -119,6 +141,12 @@ func (m *BrowserScreen) Update(msg tea.Msg) tea.Cmd {
 			return nil
 		case key.Matches(msg, components.DefaultKeyMap.FocusNext):
 			m.cycleFocus()
+			return nil
+		case key.Matches(msg, components.DefaultKeyMap.SyncEntry):
+			entry := m.entryList.SelectedEntry()
+			if entry != nil {
+				return m.syncEntry(entry.Path)
+			}
 			return nil
 		}
 		if m.focus == focusList {
@@ -137,14 +165,56 @@ type metaEditorDoneMsg struct {
 	err     error
 }
 
-func (m *BrowserScreen) saveMeta(entryID int64, name, value string) tea.Cmd {
+type metasReloadMsg struct {
+	entryID int64
+	err     error
+}
+
+// saveMeta writes via the metadata package, syncs, then reloads.
+func (m *BrowserScreen) saveMeta(entryPath, name, value string) tea.Cmd {
 	return func() tea.Msg {
-		_, err := m.app.EntryMetaRepo().UpsertMany(entryID, map[string]string{name: value})
+		info, err := m.app.Drive().Get(entryPath)
 		if err != nil {
-			return metasLoadedMsg{err: err}
+			return components.ToastShowMsg{Message: fmt.Sprintf("drive error: %v", err), Level: components.ToastError}
 		}
-		metas, err := m.app.EntryMetaRepo().ListByEntryID(entryID)
-		return metasLoadedMsg{metas: metas, err: err}
+
+		handlers := metadata.GetHandlers(info)
+		success, err := metadata.Set(info, name, value, handlers)
+		if err != nil {
+			return components.ToastShowMsg{Message: fmt.Sprintf("set error: %v", err), Level: components.ToastError}
+		}
+		if !success {
+			return components.ToastShowMsg{Message: fmt.Sprintf("cannot set '%s' on this file type", name), Level: components.ToastError}
+		}
+
+		if err := m.app.Syncer().One(entryPath); err != nil {
+			return components.ToastShowMsg{Message: fmt.Sprintf("sync error: %v", err), Level: components.ToastError}
+		}
+
+		entry, err := m.app.EntryRepo().GetByPath(entryPath)
+		if err != nil {
+			return components.ToastShowMsg{Message: fmt.Sprintf("reload error: %v", err), Level: components.ToastError}
+		}
+		return metasReloadMsg{entryID: entry.ID}
+	}
+}
+
+// syncEntry runs sync.One then reloads metas for the entry.
+func (m *BrowserScreen) syncEntry(entryPath string) tea.Cmd {
+	return func() tea.Msg {
+		if err := m.app.Syncer().One(entryPath); err != nil {
+			return components.ToastShowMsg{Message: fmt.Sprintf("sync error: %v", err), Level: components.ToastError}
+		}
+		entry, err := m.app.EntryRepo().GetByPath(entryPath)
+		if err != nil {
+			return components.ToastShowMsg{Message: fmt.Sprintf("reload error: %v", err), Level: components.ToastError}
+		}
+		return components.BatchMsg{
+			Msgs: []tea.Msg{
+				components.ToastShowMsg{Message: "synced " + entryPath, Level: components.ToastSuccess},
+				metasReloadMsg{entryID: entry.ID},
+			},
+		}
 	}
 }
 
@@ -189,7 +259,7 @@ func (m *BrowserScreen) cycleFocus() {
 
 func (m *BrowserScreen) updateFooter() {
 	km := components.DefaultKeyMap
-	shared := []key.Binding{km.Up, km.Down, km.FocusNext, km.Help, km.Quit}
+	shared := []key.Binding{km.Up, km.Down, km.FocusNext, km.SyncEntry, km.Help, km.Quit}
 	if m.focus == focusMetas {
 		metaBindings := []key.Binding{km.MetaAdd, km.MetaReplace, km.MetaUpdate, km.MetaEditor}
 		m.footer.SetBindings(append(shared[:3], append(metaBindings, shared[3:]...)...)...)
@@ -199,8 +269,9 @@ func (m *BrowserScreen) updateFooter() {
 }
 
 func (m *BrowserScreen) updateSizes() {
+	const headerHeight = 1
 	const footerHeight = 1
-	contentHeight := m.height - footerHeight
+	contentHeight := m.height - headerHeight - footerHeight
 
 	listWidth := m.width / 3
 	metasWidth := m.width - listWidth
@@ -211,21 +282,42 @@ func (m *BrowserScreen) updateSizes() {
 	m.help.SetSize(m.width, m.height)
 }
 
+var (
+	headerStyle = lipgloss.NewStyle().
+			Bold(true).
+			Foreground(lipgloss.Color("33")).
+			Background(lipgloss.Color("235")).
+			Padding(0, 1)
+
+	headerDimStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("244")).
+			Background(lipgloss.Color("235")).
+			Padding(0, 1)
+)
+
 // Render returns the screen content as a plain string (no tea.View wrapper).
 // The root model uses this to composite overlays before creating the final View.
 func (m *BrowserScreen) Render() string {
+	if m.showHelp {
+		return m.help.View()
+	}
+
+	const headerHeight = 1
 	const footerHeight = 1
-	contentHeight := m.height - footerHeight
+	contentHeight := m.height - headerHeight - footerHeight
+
+	// Header: workspace path
+	icon := "󰉋 "
+	header := lipgloss.NewStyle().
+		Width(m.width).
+		Background(lipgloss.Color("235")).
+		Render(headerStyle.Render(icon+"Atlas") + headerDimStyle.Render(m.workspacePath))
 
 	mainArea := lipgloss.NewStyle().Width(m.width).Height(contentHeight).Render(
 		lipgloss.JoinHorizontal(lipgloss.Top, m.entryList.View(), m.entryMetas.View()),
 	)
-	bg := lipgloss.JoinVertical(lipgloss.Left, mainArea, m.footer.View())
 
-	if m.showHelp {
-		return m.help.View()
-	}
-	return bg
+	return lipgloss.JoinVertical(lipgloss.Left, header, mainArea, m.footer.View())
 }
 
 func (m *BrowserScreen) View() tea.View {
