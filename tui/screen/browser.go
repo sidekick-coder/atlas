@@ -111,10 +111,6 @@ func (m *BrowserScreen) Update(msg tea.Msg) tea.Cmd {
 		}
 
 	case tea.KeyPressMsg:
-		// Global shortcuts are blocked while the meta input overlay is open.
-		if m.entryMetas.InputActive() {
-			return m.entryMetas.Update(msg)
-		}
 		switch {
 		case key.Matches(msg, components.DefaultKeyMap.Quit):
 			return tea.Quit
@@ -211,33 +207,29 @@ func (m *BrowserScreen) updateSizes() {
 
 	m.entryList.SetSize(listWidth, contentHeight)
 	m.entryMetas.SetSize(metasWidth, contentHeight)
-	m.entryMetas.SetOverlaySize(m.width, m.height)
 	m.footer.SetWidth(m.width)
 	m.help.SetSize(m.width, m.height)
 }
 
-func (m *BrowserScreen) View() tea.View {
+// Render returns the screen content as a plain string (no tea.View wrapper).
+// The root model uses this to composite overlays before creating the final View.
+func (m *BrowserScreen) Render() string {
 	const footerHeight = 1
 	contentHeight := m.height - footerHeight
 
-	listView := m.entryList.View()
-	metasView := m.entryMetas.View()
 	mainArea := lipgloss.NewStyle().Width(m.width).Height(contentHeight).Render(
-		lipgloss.JoinHorizontal(lipgloss.Top, listView, metasView),
+		lipgloss.JoinHorizontal(lipgloss.Top, m.entryList.View(), m.entryMetas.View()),
 	)
 	bg := lipgloss.JoinVertical(lipgloss.Left, mainArea, m.footer.View())
 
-	var content string
-	switch {
-	case m.showHelp:
-		content = m.help.View()
-	case m.entryMetas.InputActive():
-		content = components.PlaceOverlay(m.entryMetas.ActiveOverlay(), bg, m.width, m.height)
-	default:
-		content = bg
+	if m.showHelp {
+		return m.help.View()
 	}
+	return bg
+}
 
-	v := tea.NewView(content)
+func (m *BrowserScreen) View() tea.View {
+	v := tea.NewView(m.Render())
 	v.AltScreen = true
 	return v
 }

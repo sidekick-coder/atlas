@@ -3,20 +3,21 @@ package tui
 import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
+	"github.com/sidekick-coder/atlas/tui/components"
 	"github.com/sidekick-coder/atlas/tui/screen"
 )
 
 type model struct {
 	currentView   string
 	browserScreen *screen.BrowserScreen
+	width         int
+	height        int
 }
 
 func NewModel(a *app.App) model {
-	browserScreen := screen.NewBrowserScreen(a)
-
 	return model{
 		currentView:   "browser",
-		browserScreen: browserScreen,
+		browserScreen: screen.NewBrowserScreen(a),
 	}
 }
 
@@ -25,6 +26,18 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if ws, ok := msg.(tea.WindowSizeMsg); ok {
+		m.width = ws.Width
+		m.height = ws.Height
+		components.GlobalInput.SetSize(ws.Width, ws.Height)
+	}
+
+	// Route all input to GlobalInput while it's active; block everything else.
+	if components.GlobalInput.Active() {
+		cmd := components.GlobalInput.Update(msg)
+		return m, cmd
+	}
+
 	if m.currentView == "browser" {
 		cmd := m.browserScreen.Update(msg)
 		return m, cmd
@@ -34,33 +47,27 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() tea.View {
+	var content string
 	if m.currentView == "browser" {
-		return m.browserScreen.View()
+		content = m.browserScreen.Render()
 	}
 
-	v := tea.NewView("View not found")
+	if components.GlobalInput.Active() {
+		content = components.PlaceOverlay(components.GlobalInput.Box(), content, m.width, m.height)
+	}
 
+	v := tea.NewView(content)
 	v.AltScreen = true
-
 	return v
 }
 
 func Run() error {
 	a, err := app.Create()
-
 	if err != nil {
 		return err
 	}
 
-	m := NewModel(a)
-
-	p := tea.NewProgram(m)
-
+	p := tea.NewProgram(NewModel(a))
 	_, err = p.Run()
-
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }

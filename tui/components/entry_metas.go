@@ -25,21 +25,16 @@ var (
 )
 
 type EntryMetas struct {
-	metas    []models.EntryMeta
-	entryID  int64
-	cursor   int
-	focused  bool
-	input    *MetaInput
-	addInput *MetaAddInput
-	width    int
-	height   int
+	metas   []models.EntryMeta
+	entryID int64
+	cursor  int
+	focused bool
+	width   int
+	height  int
 }
 
 func NewEntryMetas() *EntryMetas {
-	return &EntryMetas{
-		input:    NewMetaInput(),
-		addInput: NewMetaAddInput(),
-	}
+	return &EntryMetas{}
 }
 
 func (c *EntryMetas) SetEntryID(id int64) {
@@ -76,25 +71,8 @@ func (c *EntryMetas) SetSize(width, height int) {
 	c.height = height
 }
 
-// SetOverlaySize passes the full terminal dimensions to the input overlays.
-func (c *EntryMetas) SetOverlaySize(width, height int) {
-	c.input.SetSize(width, height)
-	c.addInput.SetSize(width, height)
-}
-
-func (c *EntryMetas) InputActive() bool {
-	return c.input.Active() || c.addInput.Active()
-}
 
 func (c *EntryMetas) Update(msg tea.Msg) tea.Cmd {
-	// While input overlay is open, route everything to it.
-	if c.input.Active() {
-		return c.input.Update(msg)
-	}
-	if c.addInput.Active() {
-		return c.addInput.Update(msg)
-	}
-
 	switch msg := msg.(type) {
 	case tea.KeyPressMsg:
 		switch {
@@ -107,16 +85,38 @@ func (c *EntryMetas) Update(msg tea.Msg) tea.Cmd {
 				c.cursor++
 			}
 		case key.Matches(msg, DefaultKeyMap.MetaAdd):
-			c.addInput.Open(c.entryID)
+			GlobalInput.
+				SetTitle("Add Metadata").
+				SetOnSubmit(func(name string) tea.Cmd {
+					entryID := c.entryID
+					return func() tea.Msg {
+						return MetaInputSubmitMsg{EntryID: entryID, Name: name, Value: ""}
+					}
+				}).
+				Open("")
 		case key.Matches(msg, DefaultKeyMap.MetaReplace):
 			if len(c.metas) > 0 {
 				m := c.metas[c.cursor]
-				c.input.Open(m.EntryID, m.Name, "")
+				GlobalInput.
+					SetTitle(m.Name).
+					SetOnSubmit(func(value string) tea.Cmd {
+						return func() tea.Msg {
+							return MetaInputSubmitMsg{EntryID: m.EntryID, Name: m.Name, Value: value}
+						}
+					}).
+					Open("")
 			}
 		case key.Matches(msg, DefaultKeyMap.MetaUpdate):
 			if len(c.metas) > 0 {
 				m := c.metas[c.cursor]
-				c.input.Open(m.EntryID, m.Name, m.Value)
+				GlobalInput.
+					SetTitle(m.Name).
+					SetOnSubmit(func(value string) tea.Cmd {
+						return func() tea.Msg {
+							return MetaInputSubmitMsg{EntryID: m.EntryID, Name: m.Name, Value: value}
+						}
+					}).
+					Open(m.Value)
 			}
 		case key.Matches(msg, DefaultKeyMap.MetaEditor):
 			if len(c.metas) > 0 {
@@ -140,17 +140,6 @@ func sanitizeValue(v string) string {
 	v = strings.ReplaceAll(v, "\n", " ")
 	v = strings.ReplaceAll(v, "\t", " ")
 	return strings.TrimSpace(v)
-}
-
-// ActiveOverlay returns the raw dialog box (no padding) for the active input.
-func (c *EntryMetas) ActiveOverlay() string {
-	if c.input.Active() {
-		return c.input.Box()
-	}
-	if c.addInput.Active() {
-		return c.addInput.Box()
-	}
-	return ""
 }
 
 func (c *EntryMetas) View() string {
