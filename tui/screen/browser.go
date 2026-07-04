@@ -222,13 +222,9 @@ func (m *BrowserScreen) View() tea.View {
 
 	listView := m.entryList.View()
 	metasView := m.entryMetas.View()
-
-	mainArea := lipgloss.Place(
-		m.width, contentHeight,
-		lipgloss.Left, lipgloss.Top,
+	mainArea := lipgloss.NewStyle().Width(m.width).Height(contentHeight).Render(
 		lipgloss.JoinHorizontal(lipgloss.Top, listView, metasView),
 	)
-
 	bg := lipgloss.JoinVertical(lipgloss.Left, mainArea, m.footer.View())
 
 	var content string
@@ -236,7 +232,7 @@ func (m *BrowserScreen) View() tea.View {
 	case m.showHelp:
 		content = m.help.View()
 	case m.entryMetas.InputActive():
-		content = m.entryMetas.ActiveOverlay()
+		content = components.PlaceOverlay(m.entryMetas.ActiveOverlay(), bg, m.width, m.height)
 	default:
 		content = bg
 	}

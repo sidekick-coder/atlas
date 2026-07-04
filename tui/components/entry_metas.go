@@ -142,12 +142,13 @@ func sanitizeValue(v string) string {
 	return strings.TrimSpace(v)
 }
 
+// ActiveOverlay returns the raw dialog box (no padding) for the active input.
 func (c *EntryMetas) ActiveOverlay() string {
 	if c.input.Active() {
-		return c.input.View()
+		return c.input.Box()
 	}
 	if c.addInput.Active() {
-		return c.addInput.View()
+		return c.addInput.Box()
 	}
 	return ""
 }

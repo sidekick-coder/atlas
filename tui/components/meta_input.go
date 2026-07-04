@@ -7,6 +7,31 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 )
 
+// centerBox positions box in the center of a width×height area using only
+// leading newlines and per-line padding — no space-fill, so the terminal
+// background shows through.
+func centerBox(box string, width, height int) string {
+	lines := strings.Split(box, "\n")
+	boxH := len(lines)
+	boxW := lipgloss.Width(lines[0])
+
+	topPad := (height - boxH) / 2
+	leftPad := (width - boxW) / 2
+	if topPad < 0 {
+		topPad = 0
+	}
+	if leftPad < 0 {
+		leftPad = 0
+	}
+
+	pad := strings.Repeat(" ", leftPad)
+	for i, l := range lines {
+		lines[i] = pad + l
+	}
+
+	return strings.Repeat("\n", topPad) + strings.Join(lines, "\n")
+}
+
 // MetaInputSubmitMsg is emitted when the user confirms a value in the input overlay.
 type MetaInputSubmitMsg struct {
 	EntryID int64
@@ -175,16 +200,16 @@ func (m *MetaInput) Update(msg tea.Msg) tea.Cmd {
 	return nil
 }
 
-func (m *MetaInput) View() string {
-	innerWidth := inputBoxWidth - 4 // subtract borders (2) and side spaces (2)
-
+func (m *MetaInput) box() string {
+	innerWidth := inputBoxWidth - 4
 	top := buildTopBorder(m.name, inputBoxWidth)
 	inputRow := buildRow(renderCursor(m.buf, m.cursor), innerWidth)
 	bottom := buildBottomBorder(inputDimStyle.Render("enter")+" · "+inputDimStyle.Render("esc"), inputBoxWidth)
-
-	box := lipgloss.JoinVertical(lipgloss.Left, top, inputRow, bottom)
-	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, box)
+	return lipgloss.JoinVertical(lipgloss.Left, top, inputRow, bottom)
 }
+
+func (m *MetaInput) Box() string  { return m.box() }
+func (m *MetaInput) View() string { return centerBox(m.box(), m.width, m.height) }
 
 // ── MetaAddInput ─────────────────────────────────────────────────────────────
 
@@ -268,15 +293,15 @@ func (m *MetaAddInput) Update(msg tea.Msg) tea.Cmd {
 	return nil
 }
 
-func (m *MetaAddInput) View() string {
+func (m *MetaAddInput) box() string {
 	innerWidth := inputBoxWidth - 4
-
 	hint := inputDimStyle.Render("enter") + " · " + inputDimStyle.Render("esc")
 	top := buildTopBorder("Add Metadata", inputBoxWidth)
 	inputRow := buildRow(renderCursor(m.buf, m.cursor), innerWidth)
 	bottom := buildBottomBorder(hint, inputBoxWidth)
-
-	box := lipgloss.JoinVertical(lipgloss.Left, top, inputRow, bottom)
-	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, box)
+	return lipgloss.JoinVertical(lipgloss.Left, top, inputRow, bottom)
 }
+
+func (m *MetaAddInput) Box() string  { return m.box() }
+func (m *MetaAddInput) View() string { return centerBox(m.box(), m.width, m.height) }
 
