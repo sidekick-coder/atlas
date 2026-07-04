@@ -8,6 +8,8 @@ type KeyMap struct {
 	Down        key.Binding
 	PageNext    key.Binding
 	PagePrev    key.Binding
+	TabNext     key.Binding
+	TabPrev     key.Binding
 	FocusNext   key.Binding
 	MetaReplace key.Binding
 	MetaUpdate  key.Binding
@@ -35,6 +37,14 @@ var DefaultKeyMap = KeyMap{
 	PagePrev: key.NewBinding(
 		key.WithKeys("h", "left", "ctrl+b"),
 		key.WithHelp("h/←", "prev page"),
+	),
+	TabNext: key.NewBinding(
+		key.WithKeys("ctrl+l", "ctrl+right"),
+		key.WithHelp("ctrl+→", "next tab"),
+	),
+	TabPrev: key.NewBinding(
+		key.WithKeys("ctrl+h", "ctrl+left"),
+		key.WithHelp("ctrl+←", "prev tab"),
 	),
 	FocusNext: key.NewBinding(
 		key.WithKeys("tab"),

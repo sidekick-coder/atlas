@@ -35,8 +35,16 @@ func (f *Footer) SetBindings(bindings ...key.Binding) {
 	f.bindings = bindings
 }
 
-func (f *Footer) View() string {
+func (f *Footer) Render() string {
+	container := lipgloss.NewStyle().
+		BorderStyle(lipgloss.NormalBorder()).
+		Width(f.width - 4).
+		Margin(0, 2).
+		Padding(0, 2).
+		BorderForeground(lipgloss.Color("12"))
+
 	var parts []string
+
 	for _, b := range f.bindings {
 		h := b.Help()
 		if h.Key == "" {
@@ -48,5 +56,9 @@ func (f *Footer) View() string {
 	sep := footerStyle.Render("  ·  ")
 	row := strings.Join(parts, sep)
 
-	return footerStyle.Width(f.width).Render(row)
+	return container.Render(row)
+}
+
+func (f *Footer) View() string {
+	return f.Render()
 }

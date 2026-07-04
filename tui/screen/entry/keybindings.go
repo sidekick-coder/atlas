@@ -1,0 +1,28 @@
+package entry 
+
+import (
+	"github.com/charmbracelet/bubbles/key"
+)
+
+type KeyMap struct {
+	Up   key.Binding
+	Down key.Binding
+}
+
+var Bindings = KeyMap{
+	Up: key.NewBinding(
+		key.WithKeys("k", "up"),
+		key.WithHelp("k/up", "up"),
+	),
+	Down: key.NewBinding(
+		key.WithKeys("j", "down"),
+		key.WithHelp("j/down", "down"),
+	),
+}
+
+func (s *Screen) GetBindings() []key.Binding {
+	return []key.Binding{
+		Bindings.Up,
+		Bindings.Down,
+	}
+}

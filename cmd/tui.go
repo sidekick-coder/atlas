@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"os"
 
+	tea "charm.land/bubbletea/v2"
+	tui "github.com/sidekick-coder/atlas/tui/root"
+	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/spf13/cobra"
-	"github.com/sidekick-coder/atlas/tui"
 )
 
 // uiCmd represents the ui command
@@ -13,7 +15,19 @@ var tuiCmd = &cobra.Command{
 	Use:   "tui",
 	Short: "Launch the terminal user interface",
 	Run: func(cmd *cobra.Command, args []string) {
-		err := tui.Run()
+		a, err := app.Create()
+
+		if err != nil {
+			panic(fmt.Sprintf("Error creating app: %v", err))
+		}
+
+		root := tui.New(a)
+
+		root.Init()
+
+		p := tea.NewProgram(root)
+
+		_, err = p.Run()
 
 		if err != nil {
 			fmt.Println("Error launching TUI:", err)

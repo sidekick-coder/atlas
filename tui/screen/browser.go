@@ -329,9 +329,4 @@ func (m *BrowserScreen) Render() string {
 	return lipgloss.JoinVertical(lipgloss.Left, header, mainArea, m.footer.View())
 }
 
-func (m *BrowserScreen) View() tea.View {
-	v := tea.NewView(m.Render())
-	v.AltScreen = true
-	return v
-}
-
+func (m *BrowserScreen) Title() string { return "󰉋 Browser" }
