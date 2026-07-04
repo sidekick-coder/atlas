@@ -1,5 +1,22 @@
+- [ ] implement open handlers
 - [ ] custom metadata handler (probably comunicate via stdin/stdout)
 - [ ] plan how to handle custom actions (create-task, create-project, etc.)
+
+## Open 
+
+You can defined witch command use to open an entry, for example you can use `code` to open a file in VSCode or `nvim` to open it in Neovim.
+
+```toml 
+open.handlers.markdown.pattern=*.md
+open.handlers.markdown.command="code {{entry.path}}"
+```
+
+Or integrate with tmux for example:
+
+```toml
+open.handlers.markdown.pattern=*.md
+open.handlers.markdown.command="tmux new-window -n {{entry.name}} 'nvim {{entry.path}}'"
+```
 
 ## Sync 
 

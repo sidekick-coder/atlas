@@ -286,7 +286,6 @@ var (
 	headerStyle = lipgloss.NewStyle().
 			Bold(true).
 			Foreground(lipgloss.Color("33")).
-			Background(lipgloss.Color("235")).
 			Padding(0, 1)
 
 	headerDimStyle = lipgloss.NewStyle().
@@ -310,8 +309,7 @@ func (m *BrowserScreen) Render() string {
 	icon := "󰉋 "
 	header := lipgloss.NewStyle().
 		Width(m.width).
-		Background(lipgloss.Color("235")).
-		Render(headerStyle.Render(icon+"Atlas") + headerDimStyle.Render(m.workspacePath))
+		Render(headerStyle.Render(icon+"Atlas") + m.workspacePath)
 
 	mainArea := lipgloss.NewStyle().Width(m.width).Height(contentHeight).Render(
 		lipgloss.JoinHorizontal(lipgloss.Top, m.entryList.View(), m.entryMetas.View()),
