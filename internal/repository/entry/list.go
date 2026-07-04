@@ -7,6 +7,8 @@ import (
 
 type ListOptions struct {
 	Query []string
+	Limit int 
+	Offset int
 }
 
 func (r *Repository) List(options ...ListOptions) ([]models.Entry, error) {
@@ -31,6 +33,16 @@ func (r *Repository) List(options ...ListOptions) ([]models.Entry, error) {
 			}
 			stmt = append(stmt, "AND", condition)
 		}
+	}
+
+	if len(options) > 0 && options[0].Limit > 0 {
+		stmt = append(stmt, "LIMIT ?")
+		params = append(params, options[0].Limit)
+	}
+
+	if len(options) > 0 && options[0].Offset > 0 {
+		stmt = append(stmt, "OFFSET ?")
+		params = append(params, options[0].Offset)
 	}
 
 	stmtStr := strings.Join(stmt, " ")
