@@ -220,13 +220,6 @@ func (m *BrowserScreen) View() tea.View {
 	const footerHeight = 1
 	contentHeight := m.height - footerHeight
 
-	// When the meta input is active, render it full-screen over everything.
-	if m.entryMetas.InputActive() {
-		v := tea.NewView(m.entryMetas.View())
-		v.AltScreen = true
-		return v
-	}
-
 	listView := m.entryList.View()
 	metasView := m.entryMetas.View()
 
@@ -236,15 +229,20 @@ func (m *BrowserScreen) View() tea.View {
 		lipgloss.JoinHorizontal(lipgloss.Top, listView, metasView),
 	)
 
-	content := lipgloss.JoinVertical(lipgloss.Left, mainArea, m.footer.View())
+	bg := lipgloss.JoinVertical(lipgloss.Left, mainArea, m.footer.View())
 
-	if m.showHelp {
+	var content string
+	switch {
+	case m.showHelp:
 		content = m.help.View()
+	case m.entryMetas.InputActive():
+		content = m.entryMetas.ActiveOverlay()
+	default:
+		content = bg
 	}
 
 	v := tea.NewView(content)
 	v.AltScreen = true
-
 	return v
 }
 

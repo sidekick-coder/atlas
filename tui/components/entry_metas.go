@@ -47,8 +47,24 @@ func (c *EntryMetas) SetEntryID(id int64) {
 }
 
 func (c *EntryMetas) SetMetas(metas []models.EntryMeta) {
+	// Preserve cursor position by keeping the same meta name selected.
+	var selectedName string
+	if c.cursor < len(c.metas) {
+		selectedName = c.metas[c.cursor].Name
+	}
+
 	c.metas = metas
+
+	// Try to find the previously selected meta by name.
 	c.cursor = 0
+	if selectedName != "" {
+		for i, m := range metas {
+			if m.Name == selectedName {
+				c.cursor = i
+				break
+			}
+		}
+	}
 }
 
 func (c *EntryMetas) SetFocused(focused bool) {
@@ -126,14 +142,17 @@ func sanitizeValue(v string) string {
 	return strings.TrimSpace(v)
 }
 
-func (c *EntryMetas) View() string {
+func (c *EntryMetas) ActiveOverlay() string {
 	if c.input.Active() {
 		return c.input.View()
 	}
 	if c.addInput.Active() {
 		return c.addInput.View()
 	}
+	return ""
+}
 
+func (c *EntryMetas) View() string {
 	// 2 for border, 2 for padding (left+right from row style)
 	innerWidth := c.width - 2
 	if innerWidth < 4 {
