@@ -1,4 +1,8 @@
-package config 
+package config
+
+import (
+	"github.com/sidekick-coder/atlas/internal/utils"
+)
 
 type Config struct {
 	entries map[string]string
@@ -18,4 +22,30 @@ func (c *Config) Set(key, value string) {
 
 func (c *Config) GetAll() map[string]string {
 	return c.entries
+}
+
+func (c *Config) GetAllWithPrefix(prefix string) map[string]string {
+	result := make(map[string]string)
+
+	for k, v := range c.entries {
+		if len(k) >= len(prefix) && k[:len(prefix)] == prefix {
+			result[k] = v
+		}
+	}
+
+	return result
+}
+
+func (c *Config) GetAsArray(key string) []any {
+	entries := c.GetAllWithPrefix(key)
+
+	input := make(map[string]any)
+
+	for k, v := range entries {
+		input[k] = v
+	}
+
+	flattend := utils.Unflatten(input)
+
+	return flattend[key].([]any)
 }
