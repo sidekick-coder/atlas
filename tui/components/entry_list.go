@@ -1,6 +1,7 @@
 package components
 
 import (
+	"fmt"
 	"path/filepath"
 	"strings"
 
@@ -114,20 +115,37 @@ type EntrySelectedMsg struct {
 }
 
 type EntryList struct {
-	entries []models.Entry
-	cursor  int
-	focused bool
-	width   int
-	height  int
+	entries    []models.Entry
+	cursor     int
+	focused    bool
+	width      int
+	height     int
+	page       int
+	pageSize   int
+	totalCount int
 }
 
 func NewEntryList() *EntryList {
-	return &EntryList{}
+	return &EntryList{pageSize: 30}
 }
 
-func (c *EntryList) SetEntries(entries []models.Entry) {
+func (c *EntryList) SetEntries(entries []models.Entry, totalCount int) {
 	c.entries = entries
+	c.totalCount = totalCount
 	c.cursor = 0
+}
+
+func (c *EntryList) Page() int    { return c.page }
+func (c *EntryList) PageSize() int { return c.pageSize }
+func (c *EntryList) TotalPages() int {
+	if c.pageSize <= 0 {
+		return 1
+	}
+	t := (c.totalCount + c.pageSize - 1) / c.pageSize
+	if t < 1 {
+		return 1
+	}
+	return t
 }
 
 func (c *EntryList) SetFocused(focused bool) {
@@ -146,6 +164,13 @@ func (c *EntryList) SelectedEntry() *models.Entry {
 	return &c.entries[c.cursor]
 }
 
+// EntryPageChangedMsg is emitted when the user navigates to a different page.
+type EntryPageChangedMsg struct {
+	Page   int
+	Offset int
+	Limit  int
+}
+
 func (c *EntryList) Update(msg tea.Msg) tea.Cmd {
 	switch msg := msg.(type) {
 	case tea.KeyPressMsg:
@@ -159,6 +184,22 @@ func (c *EntryList) Update(msg tea.Msg) tea.Cmd {
 			if c.cursor < len(c.entries)-1 {
 				c.cursor++
 				return func() tea.Msg { return EntrySelectedMsg{Entry: c.entries[c.cursor]} }
+			}
+		case key.Matches(msg, DefaultKeyMap.PageNext):
+			if c.page < c.TotalPages()-1 {
+				c.page++
+				c.cursor = 0
+				return func() tea.Msg {
+					return EntryPageChangedMsg{Page: c.page, Offset: c.page * c.pageSize, Limit: c.pageSize}
+				}
+			}
+		case key.Matches(msg, DefaultKeyMap.PagePrev):
+			if c.page > 0 {
+				c.page--
+				c.cursor = 0
+				return func() tea.Msg {
+					return EntryPageChangedMsg{Page: c.page, Offset: c.page * c.pageSize, Limit: c.pageSize}
+				}
 			}
 		}
 	}
@@ -194,8 +235,15 @@ func (c *EntryList) View() string {
 		borderColor = lipgloss.Color("33") // bright blue — glowing
 	}
 
+	// Pagination footer: "page 2 / 5  ·  42 total"
+	dimStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
+	accentStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("33")).Bold(true)
+	paginationText := accentStyle.Render(fmt.Sprintf("%d", c.page+1)) +
+		dimStyle.Render(fmt.Sprintf(" / %d  ·  %d total", c.TotalPages(), c.totalCount))
+	pagination := dimStyle.Width(innerWidth).Align(lipgloss.Right).Render(paginationText)
+
 	title := listTitleStyle.Render(" Entries")
-	content := lipgloss.JoinVertical(lipgloss.Left, title, lipgloss.JoinVertical(lipgloss.Left, rows...))
+	content := lipgloss.JoinVertical(lipgloss.Left, title, lipgloss.JoinVertical(lipgloss.Left, rows...), pagination)
 	return listContainerStyle.
 		BorderForeground(borderColor).
 		Width(c.width - 2).

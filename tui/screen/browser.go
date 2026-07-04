@@ -12,11 +12,13 @@ import (
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/internal/metadata"
 	"github.com/sidekick-coder/atlas/internal/models"
+	entryrepo "github.com/sidekick-coder/atlas/internal/repository/entry"
 	"github.com/sidekick-coder/atlas/tui/components"
 )
 
 type entriesLoadedMsg struct {
 	entries []models.Entry
+	total   int
 	err     error
 }
 
@@ -62,13 +64,18 @@ func NewBrowserScreen(a *app.App) *BrowserScreen {
 }
 
 func (m *BrowserScreen) Init() tea.Cmd {
-	return m.loadEntries()
+	return m.loadEntries(0)
 }
 
-func (m *BrowserScreen) loadEntries() tea.Cmd {
+func (m *BrowserScreen) loadEntries(offset int) tea.Cmd {
+	limit := m.entryList.PageSize()
 	return func() tea.Msg {
-		entries, err := m.app.EntryRepo().List()
-		return entriesLoadedMsg{entries: entries, err: err}
+		total, err := m.app.EntryRepo().Count()
+		if err != nil {
+			return entriesLoadedMsg{err: err}
+		}
+		entries, err := m.app.EntryRepo().List(entryrepo.ListOptions{Limit: limit, Offset: offset})
+		return entriesLoadedMsg{entries: entries, total: total, err: err}
 	}
 }
 
@@ -88,12 +95,15 @@ func (m *BrowserScreen) Update(msg tea.Msg) tea.Cmd {
 
 	case entriesLoadedMsg:
 		if msg.err == nil {
-			m.entryList.SetEntries(msg.entries)
+			m.entryList.SetEntries(msg.entries, msg.total)
 			if entry := m.entryList.SelectedEntry(); entry != nil {
 				m.entryMetas.SetEntryID(entry.ID)
 				return m.loadMetas(entry.ID)
 			}
 		}
+
+	case components.EntryPageChangedMsg:
+		return m.loadEntries(msg.Offset)
 
 	case metasLoadedMsg:
 		if msg.err == nil {
@@ -264,7 +274,8 @@ func (m *BrowserScreen) updateFooter() {
 		metaBindings := []key.Binding{km.MetaAdd, km.MetaReplace, km.MetaUpdate, km.MetaEditor}
 		m.footer.SetBindings(append(shared[:3], append(metaBindings, shared[3:]...)...)...)
 	} else {
-		m.footer.SetBindings(shared...)
+		pageBindings := []key.Binding{km.PagePrev, km.PageNext}
+		m.footer.SetBindings(append(shared[:2], append(pageBindings, shared[2:]...)...)...)
 	}
 }
 

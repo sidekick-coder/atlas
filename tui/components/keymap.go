@@ -6,6 +6,8 @@ import "github.com/charmbracelet/bubbles/key"
 type KeyMap struct {
 	Up          key.Binding
 	Down        key.Binding
+	PageNext    key.Binding
+	PagePrev    key.Binding
 	FocusNext   key.Binding
 	MetaReplace key.Binding
 	MetaUpdate  key.Binding
@@ -25,6 +27,14 @@ var DefaultKeyMap = KeyMap{
 	Down: key.NewBinding(
 		key.WithKeys("j", "down"),
 		key.WithHelp("↓/j", "down"),
+	),
+	PageNext: key.NewBinding(
+		key.WithKeys("l", "right", "ctrl+f"),
+		key.WithHelp("l/→", "next page"),
+	),
+	PagePrev: key.NewBinding(
+		key.WithKeys("h", "left", "ctrl+b"),
+		key.WithHelp("h/←", "prev page"),
 	),
 	FocusNext: key.NewBinding(
 		key.WithKeys("tab"),
