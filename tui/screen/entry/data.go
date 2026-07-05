@@ -12,6 +12,7 @@ func (s *Screen) Load() error {
 	options := entry.ListOptions{
 		Limit: s.Limit,
 		Offset: offset,
+		Query: []string{},
 	}
 
 	if s.Query != "" {

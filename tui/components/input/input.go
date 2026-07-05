@@ -33,7 +33,7 @@ func (i *Input) SetColor(c color.Color) *Input {
 	return i
 }
 
-func (i *Input) OnSubmit(fn func(string) tea.Cmd) *Input {
+func (i *Input) SetCallback(fn func(string) tea.Cmd) *Input {
 	i.callback = fn
 	return i
 }
@@ -48,9 +48,7 @@ func (i *Input) SetScreenSize(width, height int) {
 	i.ScreenHeight = height
 }
 
-func (i *Input) Open(initialValue string) {
-	i.Buf = []rune(initialValue)
-	i.Cursor = len(i.Buf)
+func (i *Input) Open() {
 	i.Active = true
 }
 
@@ -58,4 +56,9 @@ func (i *Input) Close() {
 	i.Active = false
 	i.Buf = nil
 	i.Cursor = 0
+}
+
+func (i *Input) SetInitialValue(initialValue string) {
+	i.Buf = []rune(initialValue)
+	i.Cursor = len(i.Buf)
 }

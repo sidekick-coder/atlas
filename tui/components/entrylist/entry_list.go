@@ -96,10 +96,12 @@ func (e *EntryList) MoveDown() {
 	}
 }
 
-func (e *EntryList) SelectedEntry() models.Entry {
-	entry := e.Entries[e.CurrentIndex] 
+func (e *EntryList) SelectedEntry() (models.Entry, bool) {
+	if e.CurrentIndex < 0 || e.CurrentIndex >= len(e.Entries) {
+		return models.Entry{}, false
+	}
 
-	return entry
+	return e.Entries[e.CurrentIndex], true
 }
 
 func (e *EntryList) HasSeletion() bool {

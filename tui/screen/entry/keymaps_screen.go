@@ -10,11 +10,11 @@ type ScreenKeyMap struct {
 	Up     key.Binding
 	Down   key.Binding
 	Enter  key.Binding
-	Next   key.Binding 
+	Next   key.Binding
 	Prev   key.Binding
 	Sync   key.Binding
 	Reload key.Binding
-	Search  key.Binding
+	Search key.Binding
 }
 
 var ScreenBindings = ScreenKeyMap{
@@ -46,7 +46,7 @@ var ScreenBindings = ScreenKeyMap{
 		key.WithKeys("r"),
 		key.WithHelp("r", "reload"),
 	),
-	Search: key.NewBinding( 
+	Search: key.NewBinding(
 		key.WithKeys("/"),
 		key.WithHelp("/", "search"),
 	),
@@ -104,20 +104,25 @@ func (s *Screen) HandleScreenKeymaps(msg tea.Msg) tea.Cmd {
 
 	if key.Matches(keyMsg, ScreenBindings.Enter) {
 		name := "entry-single"
-		entry := s.List.SelectedEntry()
+		entry, selected := s.List.SelectedEntry()
 
 		options := map[string]any{}
-		options["path"] = entry.Path
+
+		if selected {
+			options["path"] = entry.Path
+		}
 
 		return messages.AddScreenCmd(name, options)
 	}
 
-	if (key.Matches(keyMsg, ScreenBindings.Search)) {
-		return messages.InputCmd("Search", func(input string) tea.Cmd {
+	if key.Matches(keyMsg, ScreenBindings.Search) {
+		cb := func(input string) tea.Cmd {
 			s.Search(input)
 
 			return messages.SkipCmd()
-		})
+		}
+
+		return messages.InputWithInitialCmd("Search", s.Query, cb)
 	}
 
 	return nil

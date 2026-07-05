@@ -40,9 +40,9 @@ func (s *Screen) HandleUserKeyMaps(mgs tea.Msg) tea.Cmd {
 
 	ctx := map[string]any{}
 
-	if len(s.List.Entries) > 0 {
-		entry := s.List.SelectedEntry()
+	entry, selected := s.List.SelectedEntry()
 
+	if selected {
 		ctx["Entry"] = entry
 		ctx["EntryID"] = entry.ID
 		ctx["EntryPath"] = entry.Path

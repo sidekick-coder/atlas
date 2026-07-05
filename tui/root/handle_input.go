@@ -8,7 +8,9 @@ import (
 func (m *model) HandleInput(msg tea.Msg) tea.Cmd {
 	if im, ok := msg.(messages.Input); ok {
 		m.input.SetTitle(im.Title)
-		m.input.Open("")
+		m.input.SetInitialValue(im.InitialValue)
+		m.input.SetCallback(im.Callback)
+		m.input.Open()
 		return nil
 	}
 
