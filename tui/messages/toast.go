@@ -21,3 +21,11 @@ func ToastCmd(message string, level string, duration int) tea.Cmd {
 func ToastErrorCmd(message string, duration int) tea.Cmd {
 	return ToastCmd(message, "error", duration)
 }
+
+func ToastInfoCmd(message string, duration int) tea.Cmd {
+	return ToastCmd(message, "info", duration)
+}
+
+func ToastSuccessCmd(message string, duration int) tea.Cmd {
+	return ToastCmd(message, "success", duration)
+}

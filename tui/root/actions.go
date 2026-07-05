@@ -30,7 +30,7 @@ func (m *model) actionBindingMessageHandler(mgs tea.Msg) tea.Cmd {
 }
 
 
-func (m *model) actionMessageHandler(msg tea.Msg) tea.Cmd {
+func (m *model) HandleActions(msg tea.Msg) tea.Cmd {
 	a, ok := msg.(messages.Action)
 
 	if !ok {

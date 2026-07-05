@@ -6,7 +6,6 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
-	"github.com/charmbracelet/bubbles/key"
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/tui/components"
 	"github.com/sidekick-coder/atlas/tui/messages"
@@ -25,33 +24,6 @@ type model struct {
 	tabBar  *components.TabBar
 	toolbar *components.Toolbar
 	footer  *components.Footer
-}
-
-type GlobalKeyMap struct {
-	Quit      key.Binding
-	OpenEntry key.Binding
-
-	NextScreen key.Binding
-	PrevScreen key.Binding
-}
-
-var GlobalBindings = GlobalKeyMap{
-	Quit: key.NewBinding(
-		key.WithKeys("q", "ctrl+c"),
-		key.WithHelp("q", "quit"),
-	),
-	OpenEntry: key.NewBinding(
-		key.WithKeys("e"),
-		key.WithHelp("e", "open entry screen"),
-	),
-	NextScreen: key.NewBinding(
-		key.WithKeys("tab"),
-		key.WithHelp("tab", "next screen"),
-	),
-	PrevScreen: key.NewBinding(
-		key.WithKeys("shift+tab"),
-		key.WithHelp("shift+tab", "previous screen"),
-	),
 }
 
 func New(a *app.App) model {
@@ -81,29 +53,6 @@ func New(a *app.App) model {
 	m.SetBindings()
 
 	return m
-}
-
-func (m *model) GetBindings() []key.Binding {
-	bindings := []key.Binding{}
-
-	s := m.screens[m.currentIndex]
-
-	bindings = append(bindings, s.GetBindings()...)
-	bindings = append(bindings, GlobalBindings.Quit)
-	bindings = append(bindings, GlobalBindings.OpenEntry)
-	bindings = append(bindings, GlobalBindings.NextScreen)
-	bindings = append(bindings, GlobalBindings.PrevScreen)
-
-	actions := m.app.Config().GetKeymapsByGroup("global")
-
-	for _, action := range actions {
-		bindings = append(bindings, key.NewBinding(
-			key.WithKeys(action.Keys...),
-			key.WithHelp(action.Keys[0], action.Description),
-		))
-	}
-
-	return bindings
 }
 
 func (m *model) SetBindings() {
@@ -188,7 +137,11 @@ func (m model) Init() tea.Cmd {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	handlers := []func(tea.Msg) tea.Cmd{}
 
-	handlers = append(handlers, m.actionMessageHandler, m.actionBindingMessageHandler)
+	handlers = append(handlers,
+		m.HandleActions,
+		m.actionBindingMessageHandler,
+		m.HandleGlobalKeyMaps,
+	)
 
 	for _, handler := range handlers {
 		cmd := handler(msg)
@@ -215,30 +168,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.AddScreen(msg.Name, msg.Options)
 
 		return m, nil
-	case tea.KeyPressMsg:
-		if key.Matches(msg, GlobalBindings.Quit) {
-			return m, tea.Quit
-		}
-
-		if key.Matches(msg, GlobalBindings.OpenEntry) {
-			m.AddScreen("entry", nil)
-			return m, nil
-		}
-
-		if key.Matches(msg, GlobalBindings.NextScreen) {
-			nextIndex := (m.currentIndex + 1) % len(m.screens)
-			m.currentIndex = nextIndex
-			m.tabBar.SetCurrent(nextIndex)
-			return m, nil
-		}
-
-		if key.Matches(msg, GlobalBindings.PrevScreen) {
-			prevIndex := (m.currentIndex - 1 + len(m.screens)) % len(m.screens)
-			m.currentIndex = prevIndex
-			m.tabBar.SetCurrent(prevIndex)
-
-			return m, nil
-		}
 	}
 
 	if len(m.screens) == 0 {
