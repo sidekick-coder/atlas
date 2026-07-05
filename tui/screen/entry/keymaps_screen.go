@@ -14,6 +14,7 @@ type ScreenKeyMap struct {
 	Prev   key.Binding
 	Sync   key.Binding
 	Reload key.Binding
+	Search  key.Binding
 }
 
 var ScreenBindings = ScreenKeyMap{
@@ -45,6 +46,10 @@ var ScreenBindings = ScreenKeyMap{
 		key.WithKeys("r"),
 		key.WithHelp("r", "reload"),
 	),
+	Search: key.NewBinding( 
+		key.WithKeys("/"),
+		key.WithHelp("/", "search"),
+	),
 }
 
 func (s *Screen) GetScreenBindigs() []key.Binding {
@@ -58,6 +63,7 @@ func (s *Screen) GetScreenBindigs() []key.Binding {
 		ScreenBindings.Sync,
 		ScreenBindings.Enter,
 		ScreenBindings.Reload,
+		ScreenBindings.Search,
 	)
 
 	return bindings
@@ -104,6 +110,14 @@ func (s *Screen) HandleScreenKeymaps(msg tea.Msg) tea.Cmd {
 		options["path"] = entry.Path
 
 		return messages.AddScreenCmd(name, options)
+	}
+
+	if (key.Matches(keyMsg, ScreenBindings.Search)) {
+		return messages.InputCmd("Search", func(input string) tea.Cmd {
+			s.Search(input)
+
+			return messages.SkipCmd()
+		})
 	}
 
 	return nil

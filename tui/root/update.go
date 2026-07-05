@@ -1,0 +1,59 @@
+package root
+
+import (
+	"time"
+
+	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/components"
+	"github.com/sidekick-coder/atlas/tui/messages"
+)
+
+func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	handlers := []func(tea.Msg) tea.Cmd{}
+
+	handlers = append(handlers,
+		m.HandleActions,
+		m.actionBindingMessageHandler,
+		m.HandleInput,
+		m.HandleGlobalKeyMap,
+	)
+
+	for _, handler := range handlers {
+		cmd := handler(msg)
+
+		if cmd != nil {
+			return m, cmd
+		}
+	}
+
+	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.SetSize(msg.Width, msg.Height)
+	case components.ToastExpiredMsg:
+		components.GlobalToast.Hide()
+		return m, nil
+
+	case components.ToastShowMsg:
+		cmd := components.GlobalToast.Show(msg.Message, msg.Level, 2*time.Second)
+		return m, cmd
+	case messages.Toast:
+		cmd := components.GlobalToast.Show(msg.Message, components.ToastInfo, 2*time.Second)
+		return m, cmd
+	case messages.AddScreen:
+		err := m.AddScreen(msg.Name, msg.Options)
+
+		if err != nil {
+			return m, messages.ToastErrorCmd(err.Error(), 3*1000)
+		}
+
+		return m, nil
+	}
+
+	if len(m.screens) == 0 {
+		return m, nil
+	}
+
+	cmd := m.screens[m.currentIndex].Update(msg)
+
+	return m, cmd
+}

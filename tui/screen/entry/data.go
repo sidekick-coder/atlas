@@ -69,3 +69,9 @@ func (s *Screen) Reset() error {
 	return s.Load()
 }
 
+func (s *Screen) Search(query string) error {
+	s.Query = query
+	s.CurrentPage = 1
+
+	return s.Load()
+}
