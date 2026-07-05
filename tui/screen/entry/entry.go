@@ -2,9 +2,10 @@ package entry
 
 import (
 	tea "charm.land/bubbletea/v2"
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/sidekick-coder/atlas/internal/app"
-	"github.com/sidekick-coder/atlas/internal/repository/entry"
 	"github.com/sidekick-coder/atlas/tui/components/entrylist"
+	"github.com/sidekick-coder/atlas/tui/messages"
 )
 
 type Screen struct {
@@ -12,8 +13,10 @@ type Screen struct {
 	Width  int 
 	Height int
 	Limit int 
-	Offset int 
 	Query string
+	Count int
+	TotalPages int
+	CurrentPage int
 	List *entrylist.EntryList
 }
 
@@ -24,13 +27,13 @@ func Create(a *app.App) *Screen {
 		App: a,
 		Width:  100,
 		Height: 100,
-		Limit:  20,
-		Offset: 0,
+		Limit:  30,
+		Count: 0,
+		TotalPages: 0,
+		CurrentPage: 1,
 		Query:  "",
 		List: list,
 	}
-
-	s.Load()
 
 	return s
 }
@@ -42,6 +45,12 @@ func (s *Screen) Title() string {
 
 func (s *Screen) Init() tea.Cmd {
 	// Initialization logic for the Entry Screen
+	err := s.Load()
+
+	if err != nil {
+		return messages.ToastErrorCmd(err.Error(), 3 * 1000)
+	}
+
 	return nil
 }
 
@@ -52,30 +61,32 @@ func (s *Screen) SetSize(width, height int) {
 	s.List.SetSize(width, height)
 }
 
-func (s *Screen) Load() error {
-	repo := s.App.EntryRepo()
-
-	options := entry.ListOptions{
-		Limit: s.Limit,
-		Offset: s.Offset,
-	}
-
-	if s.Query != "" {
-		options.Query = []string{s.Query}
-	}
-
-	entries, err := repo.List(options)
-
-	if err != nil {
-		return err
-	}
-
-	s.List.SetEntries(entries)
-
-	return nil
-}
-
 
 func (s *Screen) Render() string {
 	return s.List.Render()
+}
+
+func (s *Screen) GetBindings() []key.Binding {
+	bindings := []key.Binding{}
+
+	bindings = append(bindings, s.GetScreenBindigs()...)
+	bindings = append(bindings, s.GetUserKeymapBindings()...)
+
+	return bindings
+}
+
+func (s *Screen) Update(msg tea.Msg) tea.Cmd {
+	handlers := []func(tea.Msg) tea.Cmd{}
+
+	handlers = append(handlers, s.HandleUserKeyMaps, s.HandleScreenKeymaps)
+
+	for _, handler := range handlers {
+		cmd := handler(msg)
+
+		if cmd != nil {
+			return cmd
+		}
+	}
+
+	return nil
 }

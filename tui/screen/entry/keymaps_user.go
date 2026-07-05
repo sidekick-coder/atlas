@@ -8,7 +8,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/messages"
 )
 
-func (s *Screen) GetKeymapBindings() []key.Binding {
+func (s *Screen) GetUserKeymapBindings() []key.Binding {
 	keymaps := s.App.Config().GetKeymapsByGroup("entry-list")
 
 	bindings := []key.Binding{}
@@ -25,8 +25,7 @@ func (s *Screen) GetKeymapBindings() []key.Binding {
 	return bindings
 }
 
-
-func (s *Screen) HandleKeyMaps(mgs tea.Msg) tea.Cmd {
+func (s *Screen) HandleUserKeyMaps(mgs tea.Msg) tea.Cmd {
 	keyMsg, ok := mgs.(tea.KeyMsg)
 
 	if !ok {
@@ -35,15 +34,22 @@ func (s *Screen) HandleKeyMaps(mgs tea.Msg) tea.Cmd {
 
 	keymaps := s.App.Config().GetKeymapsByGroup("entry-list")
 
+	if len(s.List.Entries) == 0 {
+		return nil
+	}
 
-	entry := s.List.SelectedEntry()
+	ctx := map[string]any{}
 
-	ctx := s.App.ActionManager().CreateContext(map[string]any{
-		"Entry": entry,
-		"EntryID": entry.ID,
-		"EntryPath": entry.Path,
-		"EntryAbsolutePath": filepath.Join(s.App.WorkspacePath(), entry.Path),
-	})
+	if len(s.List.Entries) > 0 {
+		entry := s.List.SelectedEntry()
+
+		ctx["Entry"] = entry
+		ctx["EntryID"] = entry.ID
+		ctx["EntryPath"] = entry.Path
+		ctx["EntryAbsolutePath"] = filepath.Join(s.App.WorkspacePath(), entry.Path)
+	}
+
+	ctx = s.App.ActionManager().CreateContext(ctx)
 
 	for _, km := range keymaps {
 		b := key.NewBinding(
@@ -58,4 +64,3 @@ func (s *Screen) HandleKeyMaps(mgs tea.Msg) tea.Cmd {
 
 	return nil
 }
-

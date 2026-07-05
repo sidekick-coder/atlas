@@ -1,6 +1,7 @@
 package root
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -33,7 +34,7 @@ func New(a *app.App) model {
 	screens = append(screens, entryScreen)
 
 	tabBar := components.NewTabBar()
-	tabBar.Add("0: " + entryScreen.Title())
+	tabBar.Add("[0]: " + entryScreen.Title())
 
 	toolbar := components.NewToolbar()
 	toolbar.SetTitle("󰉋 " + a.WorkspacePath())
@@ -71,42 +72,39 @@ func (m *model) SetCurrentScreen(index int) {
 	m.footer.SetBindings(m.GetBindings()...)
 
 	m.SetSize(m.width, m.height)
+
+	s := m.screens[index]
+	s.Init()
 }
 
-func (m *model) AddScreen(name string, options map[string]any) {
+func (m *model) AddScreen(name string, options map[string]any) error {
 	if name == "entry" {
 		s := entry.Create(m.app)
 		m.screens = append(m.screens, s)
 		index := len(m.screens) - 1
-		m.tabBar.Add(fmt.Sprintf("%d: %s", index, s.Title()))
+		m.tabBar.Add(fmt.Sprintf("[%d]: %s", index, s.Title()))
 
 		m.SetCurrentScreen(index)
-		return
+		return nil
 	}
 
 	if name == "entry-single" {
-		entryID, ok := options["entry_id"].(int64)
+		path, ok := options["path"].(string)
 
 		if !ok {
-			fmt.Println("entryID not provided or not an int64")
-			return
+			return errors.New("Path not provided")
 		}
 
-		s := entrysingle.Create(m.app, entryID)
+		s := entrysingle.Create(m.app, path)
 		m.screens = append(m.screens, s)
 		index := len(m.screens) - 1
-		m.tabBar.Add(fmt.Sprintf("%d: %s", index, s.Title()))
+		m.tabBar.Add(fmt.Sprintf("[%d]: %s", index, s.Title()))
 
 		m.SetCurrentScreen(index)
-		return
+		return nil
 	}
 
-	toastMsg := components.ToastShowMsg{
-		Message: fmt.Sprintf("Unknown screen: %s", name),
-		Level:   1,
-	}
-
-	m.Update(toastMsg)
+	return errors.New(fmt.Sprintf("Unknown screen: %s", name))
 }
 
 func (m *model) SetSize(width int, height int) {
@@ -131,6 +129,14 @@ func (m *model) SetSize(width int, height int) {
 }
 
 func (m model) Init() tea.Cmd {
+	s := m.screens[m.currentIndex]
+
+	cmd := s.Init()
+
+	if cmd != nil {
+		return cmd
+	}
+
 	return nil
 }
 
@@ -140,7 +146,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	handlers = append(handlers,
 		m.HandleActions,
 		m.actionBindingMessageHandler,
-		m.HandleGlobalKeyMaps,
+		m.HandleGlobalKeyMap,
 	)
 
 	for _, handler := range handlers {
@@ -165,7 +171,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		cmd := components.GlobalToast.Show(msg.Message, components.ToastInfo, 2*time.Second)
 		return m, cmd
 	case messages.AddScreen:
-		m.AddScreen(msg.Name, msg.Options)
+		err := m.AddScreen(msg.Name, msg.Options)
+
+		if err != nil {
+			return m, messages.ToastErrorCmd(err.Error(), 3 * 1000)
+		}
 
 		return m, nil
 	}

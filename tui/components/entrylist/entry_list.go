@@ -34,6 +34,12 @@ func (e *EntryList) SetFocus(focus bool) {
 
 func (e *EntryList) SetEntries(entries []models.Entry) {
 	e.Entries = entries
+
+	maxIndex := len(entries) - 1
+
+	if e.CurrentIndex > maxIndex {
+		e.CurrentIndex = maxIndex
+	}
 }
 
 func (e *EntryList) Render() string {
@@ -61,8 +67,9 @@ func (e *EntryList) Render() string {
 
 	var items []string
 
-	for _, entry := range e.Entries {
-		if entry.ID == e.Entries[e.CurrentIndex].ID {
+
+	for index, entry := range e.Entries {
+		if index == e.CurrentIndex {
 			result := selected.Render(entry.Path)
 
 			items = append(items, result)
@@ -93,6 +100,14 @@ func (e *EntryList) SelectedEntry() models.Entry {
 	entry := e.Entries[e.CurrentIndex] 
 
 	return entry
+}
+
+func (e *EntryList) HasSeletion() bool {
+	if len(e.Entries) == 0 {
+		return false
+	}
+
+	return true
 }
 
 func (e *EntryList) SelectedEntryID() int64 {
