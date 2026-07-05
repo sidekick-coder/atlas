@@ -9,10 +9,10 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/tui/components"
+	"github.com/sidekick-coder/atlas/tui/messages"
 	"github.com/sidekick-coder/atlas/tui/screen"
 	"github.com/sidekick-coder/atlas/tui/screen/entry"
 	"github.com/sidekick-coder/atlas/tui/screen/entrysingle"
-	"github.com/sidekick-coder/atlas/tui/messages"
 )
 
 type model struct {
@@ -57,7 +57,6 @@ var GlobalBindings = GlobalKeyMap{
 func New(a *app.App) model {
 	screens := []screen.Screen{}
 
-
 	entryScreen := entry.Create(a)
 	screens = append(screens, entryScreen)
 
@@ -75,10 +74,11 @@ func New(a *app.App) model {
 		screens:      screens,
 		tabBar:       tabBar,
 		toolbar:      toolbar,
-		footer: 	 footer,
+		footer:       footer,
 	}
 
 	m.SetCurrentScreen(0)
+	m.SetBindings()
 
 	return m
 }
@@ -86,15 +86,30 @@ func New(a *app.App) model {
 func (m *model) GetBindings() []key.Binding {
 	bindings := []key.Binding{}
 
+	s := m.screens[m.currentIndex]
+
+	bindings = append(bindings, s.GetBindings()...)
 	bindings = append(bindings, GlobalBindings.Quit)
 	bindings = append(bindings, GlobalBindings.OpenEntry)
 	bindings = append(bindings, GlobalBindings.NextScreen)
 	bindings = append(bindings, GlobalBindings.PrevScreen)
 
-	currentScreen := m.screens[m.currentIndex]
-	bindings = append(bindings, currentScreen.GetBindings()...)
+	actions := m.app.Config().GetKeymapsByGroup("global")
+
+	for _, action := range actions {
+		bindings = append(bindings, key.NewBinding(
+			key.WithKeys(action.Keys...),
+			key.WithHelp(action.Keys[0], action.Description),
+		))
+	}
 
 	return bindings
+}
+
+func (m *model) SetBindings() {
+	bindings := m.GetBindings()
+
+	m.footer.SetBindings(bindings...)
 }
 
 func (m *model) SetCurrentScreen(index int) {
@@ -171,6 +186,18 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	handlers := []func(tea.Msg) tea.Cmd{}
+
+	handlers = append(handlers, m.actionMessageHandler, m.actionBindingMessageHandler)
+
+	for _, handler := range handlers {
+		cmd := handler(msg)
+
+		if cmd != nil {
+			return m, cmd
+		}
+	}
+
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.SetSize(msg.Width, msg.Height)
@@ -180,6 +207,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case components.ToastShowMsg:
 		cmd := components.GlobalToast.Show(msg.Message, msg.Level, 2*time.Second)
+		return m, cmd
+	case messages.Toast:
+		cmd := components.GlobalToast.Show(msg.Message, components.ToastInfo, 2*time.Second)
 		return m, cmd
 	case messages.AddScreen:
 		m.AddScreen(msg.Name, msg.Options)
@@ -245,10 +275,6 @@ func (m model) View() tea.View {
 
 	const tabBarHeight = 1
 	const toolbarHeight = 1
-
-	// contentHeight := m.height - tabBarHeight - toolbarHeight
-
-	// full := m.tabBar.View() + "\n" + content
 
 	v := tea.NewView(content)
 	v.AltScreen = true

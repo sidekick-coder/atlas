@@ -27,8 +27,12 @@ var actionCmd = &cobra.Command{
 			fmt.Println("Error creating action manager:", err)
 			return
 		}
+
+		ctx := am.CreateContext(map[string]any{
+			"Params": params,
+		})
 		
-		err = am.Execute(name, params)
+		err = am.Execute(name, ctx)
 
 		if err != nil {
 			fmt.Println("Error executing action:", err)

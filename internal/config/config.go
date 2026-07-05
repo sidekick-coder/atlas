@@ -46,6 +46,17 @@ func (c *Config) GetAsArray(key string) []any {
 	}
 
 	flattend := utils.Unflatten(input)
+	result := flattend[key]
 
-	return flattend[key].([]any)
+	if result == nil {
+		return []any{}
+	}
+
+	ra, ok := result.([]any)
+
+	if !ok {
+		return []any{}
+	}
+
+	return ra
 }

@@ -89,9 +89,14 @@ func (e *EntryList) MoveDown() {
 	}
 }
 
-func (e *EntryList) SelectEntryID() int64 {
+func (e *EntryList) SelectedEntry() models.Entry {
+	entry := e.Entries[e.CurrentIndex] 
+
+	return entry
+}
+
+func (e *EntryList) SelectedEntryID() int64 {
 	entry := e.Entries[e.CurrentIndex] 
 
 	return entry.ID
-
 }

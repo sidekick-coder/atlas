@@ -5,34 +5,27 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
-	"text/template"
-	"bytes"
+	"github.com/sidekick-coder/atlas/internal/template"
 )
 
 type ShellAction struct {
 	Options map[string]string
 }
 
-func (c ShellAction) Execute(params []string) error {
+func (c ShellAction) Execute(ctx ActionContext) error {
 	command := c.Options["command"]
 
 	if command == "" {
 		return errors.New("command not specified in action options")
 	}
 
-	ctx := make(map[string]any)
+	rendered, err := template.Render(command, ctx)
 
-	ctx["Params"] = params
+	if err != nil {
+		return errors.New("failed to render command template: " + err.Error())
+	}
 
-	t := template.Must(template.New("command").Parse(command))
-
-	var out bytes.Buffer 
-
-	t.Execute(&out, ctx)
-
-	command = out.String()
-
-	cmd := exec.Command("sh", "-c", command)
+	cmd := exec.Command("sh", "-c", rendered)
 
 	output, err := cmd.CombinedOutput()
 

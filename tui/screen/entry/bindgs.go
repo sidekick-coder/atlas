@@ -26,8 +26,13 @@ var Bindings = KeyMap{
 }
 
 func (s *Screen) GetBindings() []key.Binding {
-	return []key.Binding{
-		Bindings.Up,
-		Bindings.Down,
-	}
+	bindings := []key.Binding{}
+
+	bindings = append(bindings, Bindings.Up)
+	bindings = append(bindings, Bindings.Down)
+	bindings = append(bindings, Bindings.Enter)
+
+	bindings = append(bindings, s.GetKeymapBindings()...)
+
+	return bindings
 }

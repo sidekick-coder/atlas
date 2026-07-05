@@ -7,6 +7,18 @@ import (
 )
 
 func (s *Screen) Update(msg tea.Msg) tea.Cmd {
+	handlers := []func(tea.Msg) tea.Cmd{}
+
+	handlers = append(handlers, s.HandleKeyMaps)
+
+	for _, handler := range handlers {
+		cmd := handler(msg)
+
+		if cmd != nil {
+			return cmd
+		}
+	}
+
 	switch msg := msg.(type) {
 	case tea.KeyPressMsg:
 		if key.Matches(msg, Bindings.Up) {
@@ -21,9 +33,10 @@ func (s *Screen) Update(msg tea.Msg) tea.Cmd {
 
 		if key.Matches(msg, Bindings.Enter) {
 			name := "entry-single"
+			entry := s.List.SelectedEntry()
 
 			options := map[string]any{}
-			options["entry_id"] = s.List.SelectEntryID()
+			options["entry_id"] = entry.ID
 
 			return messages.AddScreenCmd(name, options)
 		}

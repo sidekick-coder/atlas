@@ -1,5 +1,7 @@
 package actionmanager 
 
+type ActionContext map[string]any
+
 type Action interface {
-	Execute(params []string) error
+	Execute(ctx ActionContext) error
 }

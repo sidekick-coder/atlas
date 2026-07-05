@@ -1,6 +1,7 @@
-package app 
+package app
 
 import (
+	"github.com/sidekick-coder/atlas/internal/actionmanager"
 	"github.com/sidekick-coder/atlas/internal/config"
 	"github.com/sidekick-coder/atlas/internal/database"
 	"github.com/sidekick-coder/atlas/internal/drive/v2"
@@ -13,8 +14,11 @@ type App struct {
 	config *config.Config
 	drive *drive.Drive
 	database *database.Database
+
 	entryRepo *entry.Repository
 	entryMetaRepo *entrymeta.Repository
+
+	actionManager *actionmanager.ActionManager
 }
 
 func Create() (*App, error) {
@@ -36,6 +40,12 @@ func Create() (*App, error) {
 		return nil, err
 	}
 
+	actionManager, err := actionmanager.New(config)
+
+	if err != nil {
+		return nil, err
+	}
+
 	entryRepo := entry.New(database)
 	entryMetaRepo := entrymeta.New(database)
 
@@ -43,6 +53,9 @@ func Create() (*App, error) {
 		config: config,
 		database: database,
 		drive: drive,
+
+		actionManager: actionManager,
+
 		entryRepo: entryRepo,
 		entryMetaRepo: entryMetaRepo,
 	}
@@ -52,6 +65,14 @@ func Create() (*App, error) {
 
 func (a *App) WorkspacePath() string {
 	return a.config.Get("workspace.path")
+}
+
+func (a *App) ActionManager() *actionmanager.ActionManager {
+	return a.actionManager
+}
+
+func (a *App) Config() *config.Config {
+    return a.config
 }
 
 func (a *App) Drive() *drive.Drive {

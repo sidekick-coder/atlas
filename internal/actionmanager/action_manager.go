@@ -9,6 +9,7 @@ import (
 
 type ActionManager struct {
 	actions map[string]Action
+	config  *config.Config
 }
 
 func New(c *config.Config) (*ActionManager, error) {
@@ -49,6 +50,7 @@ func New(c *config.Config) (*ActionManager, error) {
 
 	am := &ActionManager{
 		actions: actions,
+		config:  c,
 	}
 
 	return am, nil
@@ -59,14 +61,14 @@ func (am *ActionManager) Register(name string, action Action) error {
 	return nil
 }
 
-func (am *ActionManager) Execute(name string, params []string) error {
+func (am *ActionManager) Execute(name string, ctx ActionContext) error {
 	action, exists := am.actions[name]
 
 	if !exists {
 		return fmt.Errorf("action %s not found", name)
 	}
 
-	err := action.Execute(params)
+	err := action.Execute(ctx)
 
 	if err != nil {
 		return fmt.Errorf("error executing action %s: %v", name, err)
