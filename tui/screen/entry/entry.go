@@ -2,7 +2,7 @@ package entry
 
 import (
 	tea "charm.land/bubbletea/v2"
-	"github.com/charmbracelet/bubbles/key"
+	"charm.land/bubbles/v2/key"
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/tui/components/entrylist"
 	"github.com/sidekick-coder/atlas/tui/messages"
@@ -42,7 +42,7 @@ func Create(payload tuimodels.ScreenPayload) (models.Screen, error) {
 
 
 func (s *Screen) Title() string {
-	return "Entries"
+	return "entries"
 }
 
 func (s *Screen) Init() tea.Cmd {

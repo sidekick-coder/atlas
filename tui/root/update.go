@@ -16,7 +16,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.actionBindingMessageHandler,
 		m.HandleInput,
 		m.HandleGlobalKeyMap,
+
 		m.HandleScreeManagerKeypress,
+		m.HandleScreeManagerMessages,
 	)
 
 	for _, handler := range handlers {

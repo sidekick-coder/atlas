@@ -2,7 +2,7 @@ package entry
 
 import (
 	tea "charm.land/bubbletea/v2"
-	"github.com/charmbracelet/bubbles/key"
+	"charm.land/bubbles/v2/key"
 	"github.com/sidekick-coder/atlas/tui/messages"
 )
 
@@ -112,7 +112,10 @@ func (s *Screen) HandleScreenKeymaps(msg tea.Msg) tea.Cmd {
 			options["path"] = entry.Path
 		}
 
-		return messages.AddScreenCmd(name, options)
+		return messages.AddScreenCmd(messages.AddScreen{
+			Name:    name,
+			Options: options,
+		})
 	}
 
 	if key.Matches(keyMsg, ScreenBindings.Search) {

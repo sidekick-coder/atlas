@@ -8,24 +8,32 @@ type Toast struct {
 	Duration int // Duration in seconds
 }
 
-func ToastCmd(message string, level string, duration int) tea.Cmd {
+func ToastCmd(mgs Toast) tea.Cmd {
 	return func() tea.Msg {
-		return Toast{
-			Message: message,
-			Level:   level,
-			Duration: duration,
-		}
+		return mgs
 	}
 }
 
-func ToastErrorCmd(message string, duration int) tea.Cmd {
-	return ToastCmd(message, "error", duration)
+func ToastErrorCmd(message string, duration ...int) tea.Cmd {
+	return ToastCmd(Toast{
+		Message:  message,
+		Level:    "error",
+		Duration: duration[0],
+	})
 }
 
-func ToastInfoCmd(message string, duration int) tea.Cmd {
-	return ToastCmd(message, "info", duration)
+func ToastInfoCmd(message string, duration ...int) tea.Cmd {
+	return ToastCmd(Toast{
+		Message:  message,
+		Level:    "info",
+		Duration: duration[0],
+	})
 }
 
-func ToastSuccessCmd(message string, duration int) tea.Cmd {
-	return ToastCmd(message, "success", duration)
+func ToastSuccessCmd(message string, duration ...int) tea.Cmd {
+	return ToastCmd(Toast{
+		Message:  message,
+		Level:    "success",
+		Duration: duration[0],
+	})
 }

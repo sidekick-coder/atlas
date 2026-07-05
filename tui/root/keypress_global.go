@@ -2,7 +2,7 @@ package root
 
 import (
 	tea "charm.land/bubbletea/v2"
-	"github.com/charmbracelet/bubbles/key"
+	"charm.land/bubbles/v2/key"
 )
 
 func (m *model) HandleGlobalKeyMap(msg tea.Msg) tea.Cmd {

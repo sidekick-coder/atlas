@@ -31,6 +31,11 @@ func (t *TabBar) Add(item string) {
 	t.Items = append(t.Items, item)
 }
 
+func (t *TabBar) Clear() {
+	t.Items = []string{}
+	t.Current = 0
+}
+
 func (t *TabBar) Render() string {
 	container := lipgloss.NewStyle().
 		Width(t.Width-4).
@@ -38,7 +43,7 @@ func (t *TabBar) Render() string {
 
 	items := make([]string, len(t.Items))
 
-	shared := lipgloss.NewStyle().Padding(0, 2)
+	shared := lipgloss.NewStyle().Padding(0, 1)
 
 	normal := shared.Background(lipgloss.Color("0")).Foreground(lipgloss.Color("7"))
 	active := shared.Background(lipgloss.Color("12")).Foreground(lipgloss.Color("0"))

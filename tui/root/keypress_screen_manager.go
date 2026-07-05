@@ -2,7 +2,7 @@ package root
 
 import (
 	tea "charm.land/bubbletea/v2"
-	"github.com/charmbracelet/bubbles/key"
+	"charm.land/bubbles/v2/key"
 )
 
 func (m *model) HandleScreeManagerKeypress(msg tea.Msg) tea.Cmd {
@@ -23,6 +23,12 @@ func (m *model) HandleScreeManagerKeypress(msg tea.Msg) tea.Cmd {
 		prevIndex := (m.currentIndex - 1 + len(m.screens)) % len(m.screens)
 		m.currentIndex = prevIndex
 		m.tabBar.SetCurrent(prevIndex)
+
+		return nil
+	}
+
+	if key.Matches(km, ScreenBindings.Add) {
+		m.AddScreen("empty", nil)
 
 		return nil
 	}

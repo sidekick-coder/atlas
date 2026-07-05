@@ -4,21 +4,27 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/tui/components"
+	"github.com/sidekick-coder/atlas/tui/screen/empty"
 )
 
 
 func (m model) View() tea.View {
-	s, ok := m.GetCurrentScreen()
 
-	if !ok {
-		s = m.emptyScreen
+	body := empty.Placeholder(empty.PlaceholderPayload{
+		Width:  m.width,
+		Height: m.screenHeight,
+		Text:  "No screens available. Press 'a' to add a new screen.",
+	})
+
+	if s, ok := m.GetCurrentScreen(); ok {
+		body = s.Render()
 	}
 
 	content := lipgloss.JoinVertical(
 		lipgloss.Left,
 		m.toolbar.Render(),
 		m.tabBar.Render(),
-		s.Render(),
+		body,
 		m.footer.Render(),
 	)
 

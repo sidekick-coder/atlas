@@ -2,7 +2,7 @@ package entrysingle
 
 import (
 	tea "charm.land/bubbletea/v2"
-	"github.com/charmbracelet/bubbles/key"
+	"charm.land/bubbles/v2/key"
 )
 
 func (s *Screen) Update(msg tea.Msg) tea.Cmd {

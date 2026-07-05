@@ -1,7 +1,7 @@
 package root
 
 import (
-	"github.com/charmbracelet/bubbles/key"
+	"charm.land/bubbles/v2/key"
 )
 
 
@@ -20,3 +20,10 @@ func (m *model) GetBindings() []key.Binding {
 
 	return bindings
 }
+
+func (m *model) LoadBindings() {
+	bindings := m.GetBindings()
+
+	m.footer.SetBindings(bindings...)
+}
+

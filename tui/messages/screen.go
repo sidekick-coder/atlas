@@ -7,11 +7,32 @@ type AddScreen struct {
 	Options map[string]any
 }
 
-func AddScreenCmd(name string, options map[string]any) tea.Cmd {
+type RemoveScreen struct {
+	Index int
+}
+
+type ReplaceCurrentScreen struct {
+	Index int
+	Name  string
+	Options map[string]any
+}
+
+
+func AddScreenCmd(msg AddScreen) tea.Cmd {
 	return func() tea.Msg {
-		return AddScreen{
-			Name: name,
-			Options: options,
-		}
+		return msg
 	}
 }
+
+func RemoveScreenCmd(msg RemoveScreen) tea.Cmd {
+	return func() tea.Msg {
+		return msg
+	}
+}
+
+func ReplaceScreenCmd(msg ReplaceCurrentScreen) tea.Cmd {
+	return func() tea.Msg {
+		return msg
+	}
+}
+

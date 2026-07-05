@@ -1,14 +1,14 @@
 package empty 
 
 import (
-	"github.com/charmbracelet/bubbles/key"
+	"charm.land/bubbles/v2/key"
 )
 
-type KeyMap struct {
+type ScreenKeyMap struct {
 	EntryList key.Binding
 }
 
-var Bindings = KeyMap{
+var ScreenBindings = ScreenKeyMap{
 	EntryList: key.NewBinding(
 		key.WithKeys("e"),
 		key.WithHelp("e", "entry list"),
@@ -17,6 +17,6 @@ var Bindings = KeyMap{
 
 func (s *Screen) GetBindings() []key.Binding {
 	return []key.Binding{
-		Bindings.EntryList,
+		ScreenBindings.EntryList,
 	}
 }

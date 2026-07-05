@@ -1,6 +1,6 @@
 package components
 
-import "github.com/charmbracelet/bubbles/key"
+import "charm.land/bubbles/v2/key"
 
 // KeyMap holds all key bindings used across the TUI.
 type KeyMap struct {

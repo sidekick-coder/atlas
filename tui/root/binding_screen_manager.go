@@ -1,15 +1,20 @@
 package root
 
 import (
-	"github.com/charmbracelet/bubbles/key"
+	"charm.land/bubbles/v2/key"
 )
 
 type ScreenManagerKeyMap struct {
+	Add  key.Binding
 	Next key.Binding
 	Prev key.Binding
 }
 
 var ScreenBindings = ScreenManagerKeyMap{
+	Add: key.NewBinding(
+		key.WithKeys("a"),
+		key.WithHelp("a", "add screen"),
+	),
 	Next: key.NewBinding(
 		key.WithKeys("tab"),
 		key.WithHelp("tab", "next screen"),
@@ -22,6 +27,7 @@ var ScreenBindings = ScreenManagerKeyMap{
 
 func (m *model) GetScreenManagerBindings() []key.Binding {
 	return []key.Binding{
+		ScreenBindings.Add,
 		ScreenBindings.Next,
 		ScreenBindings.Prev,
 	}

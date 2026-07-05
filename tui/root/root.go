@@ -6,14 +6,10 @@ import (
 	"github.com/sidekick-coder/atlas/tui/components"
 	"github.com/sidekick-coder/atlas/tui/components/input"
 	"github.com/sidekick-coder/atlas/tui/models"
-	"github.com/sidekick-coder/atlas/tui/screen/empty"
-	"github.com/sidekick-coder/atlas/tui/screen/entry"
 )
 
 type model struct {
 	app *app.App
-
-	emptyScreen models.Screen
 
 	screens      []models.Screen
 	availableScreens map[string]models.ScreenFactory
@@ -33,10 +29,6 @@ func New(a *app.App) model {
 	screens := []models.Screen{}
 	availableScreens := make(map[string]models.ScreenFactory)
 
-	es := empty.Create(models.ScreenPayload{
-		App: a,
-	})
-
 	tabBar := components.NewTabBar()
 
 	toolbar := components.NewToolbar()
@@ -51,8 +43,6 @@ func New(a *app.App) model {
 		currentIndex: 0,
 
 		screens:     screens,
-		emptyScreen: es,
-
 		tabBar:  tabBar,
 		toolbar: toolbar,
 		footer:  footer,
@@ -61,30 +51,8 @@ func New(a *app.App) model {
 	}
 
 	m.SetCurrentScreen(0)
-	m.SetBindings()
 
 	return m
-}
-
-func (m *model) SetBindings() {
-	bindings := m.GetBindings()
-
-	m.footer.SetBindings(bindings...)
-}
-
-func (m *model) SetCurrentScreen(index int) {
-	if index < 0 || index >= len(m.screens) {
-		return
-	}
-
-	m.currentIndex = index
-	m.tabBar.SetCurrent(index)
-	m.footer.SetBindings(m.GetBindings()...)
-
-	m.SetSize(m.width, m.height)
-
-	s := m.screens[index]
-	s.Init()
 }
 
 func (m *model) SetSize(width int, height int) {
@@ -104,7 +72,6 @@ func (m *model) SetSize(width int, height int) {
 	footerHeight := 1
 	contentHeight := height - toolbarHeight - tabBarHeight - footerHeight
 	m.screenHeight = contentHeight
-	m.emptyScreen.SetSize(width, contentHeight)
 
 	for _, s := range m.screens {
 		s.SetSize(width, contentHeight)
@@ -112,7 +79,7 @@ func (m *model) SetSize(width int, height int) {
 }
 
 func (m model) Init() tea.Cmd {
-	m.availableScreens["entries"] = entry.Create
-
+	m.LoadScreenRegistry()
+	m.LoadBindings()
 	return nil
 }

@@ -2,27 +2,25 @@ package empty
 
 import (
 	tea "charm.land/bubbletea/v2"
-	lipgloss "charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/tui/models"
 )
 
 type Screen struct {
-	Width  int 
+	Width  int
 	Height int
 }
 
-func Create(payload models.ScreenPayload) *Screen {
+func Create(payload models.ScreenPayload) (models.Screen, error) {
 	s := &Screen{
 		Width:  100,
 		Height: 100,
 	}
 
-	return s
+	return s, nil
 }
 
-
 func (s *Screen) Title() string {
-	return "Empty Screen"
+	return "empty"
 }
 
 func (s *Screen) Init() tea.Cmd {
@@ -35,20 +33,20 @@ func (s *Screen) SetSize(width, height int) {
 	s.Height = height
 }
 
-func (s *Screen) Load() error {
+func (s *Screen) Update(msg tea.Msg) tea.Cmd {
+	handlers := []func(tea.Msg) tea.Cmd{}
+
+	handlers = append(handlers,
+		s.HandleKeyPress,
+	)
+
+	for _, handler := range handlers {
+		cmd := handler(msg)
+
+		if cmd != nil {
+			return cmd
+		}
+	}
+
 	return nil
-}
-
-func (s *Screen) Render() string {
-	border := lipgloss.NewStyle().
-		BorderStyle(lipgloss.NormalBorder()).
-		Width(s.Width - 4).
-		Height(s.Height - 4).
-		Margin(0, 2).
-		Align(lipgloss.Center, lipgloss.Center).
-		BorderForeground(lipgloss.Color("12"))
-
-	content := "Empty Screen"
-
-	return border.Render(content)
 }
