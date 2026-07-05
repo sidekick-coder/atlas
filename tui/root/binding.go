@@ -8,12 +8,15 @@ import (
 func (m *model) GetBindings() []key.Binding {
 	bindings := []key.Binding{}
 
-	s := m.screens[m.currentIndex]
+	s, ok := m.GetCurrentScreen()
 
-	bindings = append(bindings, s.GetBindings()...)
+	if ok {
+		bindings = append(bindings, s.GetBindings()...)
+	}
 
 	bindings = append(bindings, m.GetGlobalBindings()...)
 	bindings = append(bindings, m.GetUserBindings()...)
+	bindings = append(bindings, m.GetScreenManagerBindings()...)
 
 	return bindings
 }

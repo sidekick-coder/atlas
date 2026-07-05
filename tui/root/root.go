@@ -1,25 +1,28 @@
 package root
 
 import (
-	"errors"
-	"fmt"
-
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/tui/components"
 	"github.com/sidekick-coder/atlas/tui/components/input"
-	"github.com/sidekick-coder/atlas/tui/screen"
+	"github.com/sidekick-coder/atlas/tui/models"
+	"github.com/sidekick-coder/atlas/tui/screen/empty"
 	"github.com/sidekick-coder/atlas/tui/screen/entry"
-	"github.com/sidekick-coder/atlas/tui/screen/entrysingle"
 )
 
 type model struct {
-	app          *app.App
-	screens      []screen.Screen
+	app *app.App
+
+	emptyScreen models.Screen
+
+	screens      []models.Screen
+	availableScreens map[string]models.ScreenFactory
+	screenHeight int
 	currentIndex int
-	width        int
-	height       int
-	input        *input.Input
+
+	width  int
+	height int
+	input  *input.Input
 
 	tabBar  *components.TabBar
 	toolbar *components.Toolbar
@@ -27,13 +30,14 @@ type model struct {
 }
 
 func New(a *app.App) model {
-	screens := []screen.Screen{}
+	screens := []models.Screen{}
+	availableScreens := make(map[string]models.ScreenFactory)
 
-	entryScreen := entry.Create(a)
-	screens = append(screens, entryScreen)
+	es := empty.Create(models.ScreenPayload{
+		App: a,
+	})
 
 	tabBar := components.NewTabBar()
-	tabBar.Add("[0]: " + entryScreen.Title())
 
 	toolbar := components.NewToolbar()
 	toolbar.SetTitle("󰉋 " + a.WorkspacePath())
@@ -45,11 +49,15 @@ func New(a *app.App) model {
 	m := model{
 		app:          a,
 		currentIndex: 0,
-		screens:      screens,
-		tabBar:       tabBar,
-		toolbar:      toolbar,
-		footer:       footer,
-		input:        input,
+
+		screens:     screens,
+		emptyScreen: es,
+
+		tabBar:  tabBar,
+		toolbar: toolbar,
+		footer:  footer,
+		input:   input,
+		availableScreens: availableScreens,
 	}
 
 	m.SetCurrentScreen(0)
@@ -79,36 +87,6 @@ func (m *model) SetCurrentScreen(index int) {
 	s.Init()
 }
 
-func (m *model) AddScreen(name string, options map[string]any) error {
-	if name == "entry" {
-		s := entry.Create(m.app)
-		m.screens = append(m.screens, s)
-		index := len(m.screens) - 1
-		m.tabBar.Add(fmt.Sprintf("[%d]: %s", index, s.Title()))
-
-		m.SetCurrentScreen(index)
-		return nil
-	}
-
-	if name == "entry-single" {
-		path, ok := options["path"].(string)
-
-		if !ok {
-			return errors.New("Path not provided")
-		}
-
-		s := entrysingle.Create(m.app, path)
-		m.screens = append(m.screens, s)
-		index := len(m.screens) - 1
-		m.tabBar.Add(fmt.Sprintf("[%d]: %s", index, s.Title()))
-
-		m.SetCurrentScreen(index)
-		return nil
-	}
-
-	return errors.New(fmt.Sprintf("Unknown screen: %s", name))
-}
-
 func (m *model) SetSize(width int, height int) {
 	m.width = width
 	m.height = height
@@ -125,6 +103,8 @@ func (m *model) SetSize(width int, height int) {
 	tabBarHeight := 1
 	footerHeight := 1
 	contentHeight := height - toolbarHeight - tabBarHeight - footerHeight
+	m.screenHeight = contentHeight
+	m.emptyScreen.SetSize(width, contentHeight)
 
 	for _, s := range m.screens {
 		s.SetSize(width, contentHeight)
@@ -132,14 +112,7 @@ func (m *model) SetSize(width int, height int) {
 }
 
 func (m model) Init() tea.Cmd {
-	s := m.screens[m.currentIndex]
-
-	cmd := s.Init()
-
-	if cmd != nil {
-		return cmd
-	}
+	m.availableScreens["entries"] = entry.Create
 
 	return nil
 }
-

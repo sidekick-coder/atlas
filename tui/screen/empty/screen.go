@@ -1,43 +1,28 @@
-package entrysingle
+package empty
 
 import (
-	"path/filepath"
-
 	tea "charm.land/bubbletea/v2"
-	"github.com/sidekick-coder/atlas/internal/app"
+	lipgloss "charm.land/lipgloss/v2"
+	"github.com/sidekick-coder/atlas/tui/models"
 )
 
 type Screen struct {
-	App *app.App
 	Width  int 
 	Height int
-	Path string
 }
 
-func Create(a *app.App, Path string) *Screen {
+func Create(payload models.ScreenPayload) *Screen {
 	s := &Screen{
-		App: a,
 		Width:  100,
 		Height: 100,
-		Path: Path,
 	}
-
-	s.Load()
 
 	return s
 }
 
 
 func (s *Screen) Title() string {
-	maxLength := 20
-
-	baseName := filepath.Base(s.Path)
-
-	if len(baseName) > maxLength {
-		return baseName[:maxLength] + "..."
-	}
-
-	return baseName
+	return "Empty Screen"
 }
 
 func (s *Screen) Init() tea.Cmd {
@@ -55,5 +40,15 @@ func (s *Screen) Load() error {
 }
 
 func (s *Screen) Render() string {
-	return "Hello, World!"
+	border := lipgloss.NewStyle().
+		BorderStyle(lipgloss.NormalBorder()).
+		Width(s.Width - 4).
+		Height(s.Height - 4).
+		Margin(0, 2).
+		Align(lipgloss.Center, lipgloss.Center).
+		BorderForeground(lipgloss.Color("12"))
+
+	content := "Empty Screen"
+
+	return border.Render(content)
 }

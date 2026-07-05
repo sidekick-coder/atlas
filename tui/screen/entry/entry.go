@@ -6,6 +6,8 @@ import (
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/tui/components/entrylist"
 	"github.com/sidekick-coder/atlas/tui/messages"
+	"github.com/sidekick-coder/atlas/tui/models"
+	tuimodels "github.com/sidekick-coder/atlas/tui/models"
 )
 
 type Screen struct {
@@ -20,11 +22,11 @@ type Screen struct {
 	List *entrylist.EntryList
 }
 
-func Create(a *app.App) *Screen {
+func Create(payload tuimodels.ScreenPayload) (models.Screen, error) {
 	list := entrylist.New()
 
 	s := &Screen{
-		App: a,
+		App: payload.App,
 		Width:  100,
 		Height: 100,
 		Limit:  30,
@@ -35,7 +37,7 @@ func Create(a *app.App) *Screen {
 		List: list,
 	}
 
-	return s
+	return s, nil
 }
 
 

@@ -1,9 +1,15 @@
-package screen
+package models
 
 import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/bubbles/key"
+	"github.com/sidekick-coder/atlas/internal/app"
 )
+
+type ScreenPayload struct {
+	App *app.App
+	Options map[string]any
+}
 
 // Screen is the interface every top-level screen must implement.
 type Screen interface {
@@ -14,3 +20,6 @@ type Screen interface {
 	GetBindings() []key.Binding
 	Render() string
 }
+
+
+type ScreenFactory func(payload ScreenPayload) (Screen, error)

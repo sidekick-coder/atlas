@@ -16,6 +16,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.actionBindingMessageHandler,
 		m.HandleInput,
 		m.HandleGlobalKeyMap,
+		m.HandleScreeManagerKeypress,
 	)
 
 	for _, handler := range handlers {
@@ -39,14 +40,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case messages.Toast:
 		cmd := components.GlobalToast.Show(msg.Message, components.ToastInfo, 2*time.Second)
 		return m, cmd
-	case messages.AddScreen:
-		err := m.AddScreen(msg.Name, msg.Options)
-
-		if err != nil {
-			return m, messages.ToastErrorCmd(err.Error(), 3*1000)
-		}
-
-		return m, nil
 	}
 
 	if len(m.screens) == 0 {

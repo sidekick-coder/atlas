@@ -8,17 +8,17 @@ import (
 
 
 func (m model) View() tea.View {
-	if len(m.screens) == 0 {
-		return tea.NewView("No screen available")
-	}
+	s, ok := m.GetCurrentScreen()
 
-	currentScreen := m.screens[m.currentIndex]
+	if !ok {
+		s = m.emptyScreen
+	}
 
 	content := lipgloss.JoinVertical(
 		lipgloss.Left,
 		m.toolbar.Render(),
 		m.tabBar.Render(),
-		currentScreen.Render(),
+		s.Render(),
 		m.footer.Render(),
 	)
 
