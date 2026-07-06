@@ -11,7 +11,7 @@ func (r *Repository) Upsert(path string) (*models.Entry, error) {
 	ON CONFLICT (path) DO NOTHING;
 	`
 
-	_, err := r.Database.Query(smtmt, path)
+	_, err := r.Database.Exec(smtmt, path)
 
 	if err != nil {
 		return nil, err

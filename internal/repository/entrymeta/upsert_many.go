@@ -12,7 +12,7 @@ func (r * Repository) UpsertMany(entryId int64, metas map[string]string) ([]mode
 	`
 
 	for name, value := range metas {
-		_, err := r.Database.Query(smtmt, entryId, name, value)
+		_, err := r.Database.Exec(smtmt, entryId, name, value)
 
 		if err != nil {
 			return nil, err

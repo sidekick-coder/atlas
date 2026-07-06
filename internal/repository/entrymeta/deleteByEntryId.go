@@ -7,7 +7,7 @@ func (r * Repository) DeleteByEntryID(entryId int64) error {
 	WHERE entry_id = $1;
 	`
 
-	_, err := r.Database.Query(smtmt, entryId)
+	_, err := r.Database.Exec(smtmt, entryId)
 
 	if err != nil {
 		return err

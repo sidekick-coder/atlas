@@ -1,11 +1,11 @@
-- [ ] custom metadata handler (probably comunicate via stdin/stdout)
-- [ ] plan how to handle custom actions (create-task, create-project, etc.)
-- [ ] plan entities
-
 ## todo
-- [ ] tui: query filter in the list screen
+- [x] tui: query filter in the list screen
+- [x] tui: entry single page defulat page for entry with a list of metas
+- [ ] tui: sync page
+- [ ] sync all multithreaded
+- [ ] custom metadata handler (probably comunicate via stdin/stdout)
+- [ ] tui: move queries data to components instead of the screen
 - [ ] tui: columns in the list screen
-- [ ] tui: entry single page defulat page for entry with a list of metas
 
 ## ideas 
 
@@ -19,6 +19,14 @@
 - entry single markdown: screen to view markdown files with a frontmatter sidebar and a body
 - entry kanban: view entries in a kanban board, with columns based on a meta key
 - user predefined screens: user can define screens with a set of filters and a layout, for example a kanban board with columns based on a meta key, or a list of entries with a sidebar showing the metas of the selected entry.
+- components: elements that the user can use to compose a screen, entry list, kanba, chart, etc.
+- - custom componets are sheel scripts than recieve width and height and print the text to show in the screen
+- - buint-int components can be used too like, meta field input
+- - the components will have its own keymaps that are active when the component is focused
+- screens: screens are a list of components 
+- - define x,y,width,height and render in the screen area
+- - scroll support for each component
+
 
 ## Open 
 

@@ -17,7 +17,8 @@ func Connect(filename string) (*sql.DB, error) {
 		return nil, err
 	}
 
+	conn.SetMaxOpenConns(1)
+	conn.SetMaxIdleConns(1)
+
 	return conn, nil
 }
-
-

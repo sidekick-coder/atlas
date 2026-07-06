@@ -27,8 +27,11 @@ func (s *Sync) OneByInfo(info * models.EntryInfo) error {
 		return err
 	}
 
-	_, err = s.entryMetaRepo.UpsertMany(entry.ID, data)
+	err = s.entryMetaRepo.InsertMany(entry.ID, data)
 
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
