@@ -6,9 +6,10 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
+	"github.com/sidekick-coder/atlas/internal/models"
 	"github.com/sidekick-coder/atlas/tui/components/entrymeta"
 	"github.com/sidekick-coder/atlas/tui/messages"
-	"github.com/sidekick-coder/atlas/tui/models"
+	tuimodels "github.com/sidekick-coder/atlas/tui/models"
 )
 
 type Screen struct {
@@ -17,14 +18,21 @@ type Screen struct {
 	Height             int
 	Path               string
 	EntryMetaComponent *entrymeta.Component
+	Entry              *models.Entry
 	Metas              map[string]string
 }
 
-func Create(p models.ScreenPayload) (models.Screen, error) {
+func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 	path, ok := p.Options["path"].(string)
 
 	if !ok {
 		return nil, fmt.Errorf("path option is required for entrysingle screen")
+	}
+
+	e, err := p.App.EntryRepo().GetByPath(path)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to load entry by path: %w", err)
 	}
 
 	emc := entrymeta.Create()
@@ -33,6 +41,7 @@ func Create(p models.ScreenPayload) (models.Screen, error) {
 		App:                p.App,
 		Path:               path,
 		EntryMetaComponent: emc,
+		Entry:              e,
 		Width:              100,
 		Height:             100,
 		Metas:              map[string]string{},
@@ -60,14 +69,13 @@ func (s *Screen) Init() tea.Cmd {
 		return messages.ToastErrorCmd(err.Error())
 	}
 
-
 	return nil
 }
 
 func (s *Screen) Update(msg tea.Msg) tea.Cmd {
 	handlers := []func(tea.Msg) tea.Cmd{}
 
-	handlers = append(handlers, s.HandleScreenKeymaps)
+	handlers = append(handlers, s.HandleScreenKeymaps, s.HandleUserKeyMaps)
 
 	for _, handler := range handlers {
 		cmd := handler(msg)
@@ -79,7 +87,6 @@ func (s *Screen) Update(msg tea.Msg) tea.Cmd {
 
 	return nil
 }
-
 
 func (s *Screen) SetSize(width, height int) {
 	s.Width = width

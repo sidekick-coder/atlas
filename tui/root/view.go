@@ -34,6 +34,7 @@ func (m *model) SetSize(width int, height int) {
 }
 
 func (m model) View() tea.View {
+	m.LoadBindings()
 
 	body := empty.Placeholder(empty.PlaceholderPayload{
 		Width:  m.width,

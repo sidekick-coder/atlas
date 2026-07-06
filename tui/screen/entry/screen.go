@@ -2,11 +2,10 @@ package entry
 
 import (
 	tea "charm.land/bubbletea/v2"
-	"charm.land/bubbles/v2/key"
 	"github.com/sidekick-coder/atlas/internal/app"
+	"github.com/sidekick-coder/atlas/internal/models"
 	"github.com/sidekick-coder/atlas/tui/components/entrylist"
 	"github.com/sidekick-coder/atlas/tui/messages"
-	"github.com/sidekick-coder/atlas/tui/models"
 	tuimodels "github.com/sidekick-coder/atlas/tui/models"
 )
 
@@ -19,10 +18,14 @@ type Screen struct {
 	Count int
 	TotalPages int
 	CurrentPage int
+	Entries []models.Entry 
+	SelectedIndex int
+	SelectedEntry models.Entry 
+	SelectedEntryMetas map[string]string
 	List *entrylist.EntryList
 }
 
-func Create(payload tuimodels.ScreenPayload) (models.Screen, error) {
+func Create(payload tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 	list := entrylist.New()
 
 	s := &Screen{
@@ -35,6 +38,9 @@ func Create(payload tuimodels.ScreenPayload) (models.Screen, error) {
 		CurrentPage: 1,
 		Query:  "",
 		List: list,
+		Entries: []models.Entry{},
+		SelectedIndex: 0,
+		SelectedEntryMetas: map[string]string{},
 	}
 
 	return s, nil
@@ -66,15 +72,6 @@ func (s *Screen) SetSize(width, height int) {
 
 func (s *Screen) Render() string {
 	return s.List.Render()
-}
-
-func (s *Screen) GetBindings() []key.Binding {
-	bindings := []key.Binding{}
-
-	bindings = append(bindings, s.GetScreenBindigs()...)
-	bindings = append(bindings, s.GetUserKeymapBindings()...)
-
-	return bindings
 }
 
 func (s *Screen) Update(msg tea.Msg) tea.Cmd {
