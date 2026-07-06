@@ -115,3 +115,25 @@ func (m *model) ReplaceScreen(index int, name string, options map[string]any) te
 	return nil
 }
 
+
+func (m *model) RemoveScreen(index int) error {
+	if index < 0 || index >= len(m.screens) {
+		return fmt.Errorf("invalid screen index: %d", index)
+	}
+
+	m.screens = append(m.screens[:index], m.screens[index+1:]...)
+
+	if m.currentIndex >= len(m.screens) {
+		m.currentIndex = len(m.screens) - 1
+	}
+
+	m.LoadTabs()
+
+	if len(m.screens) > 0 {
+		m.SetCurrentScreen(m.currentIndex)
+	} else {
+		m.currentIndex = -1
+	}
+
+	return nil
+}

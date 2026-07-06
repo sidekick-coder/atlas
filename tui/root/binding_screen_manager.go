@@ -6,6 +6,7 @@ import (
 
 type ScreenManagerKeyMap struct {
 	Add  key.Binding
+	Close key.Binding
 	Next key.Binding
 	Prev key.Binding
 }
@@ -14,6 +15,10 @@ var ScreenBindings = ScreenManagerKeyMap{
 	Add: key.NewBinding(
 		key.WithKeys("a"),
 		key.WithHelp("a", "add screen"),
+	),
+	Close: key.NewBinding(
+		key.WithKeys("x"),
+		key.WithHelp("x", "close screen"),
 	),
 	Next: key.NewBinding(
 		key.WithKeys("tab"),
@@ -30,5 +35,6 @@ func (m *model) GetScreenManagerBindings() []key.Binding {
 		ScreenBindings.Add,
 		ScreenBindings.Next,
 		ScreenBindings.Prev,
+		ScreenBindings.Close,
 	}
 }

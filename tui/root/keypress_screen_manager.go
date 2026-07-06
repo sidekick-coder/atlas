@@ -33,6 +33,14 @@ func (m *model) HandleScreeManagerKeypress(msg tea.Msg) tea.Cmd {
 		return nil
 	}
 
+	if key.Matches(km, ScreenBindings.Close) {
+		if len(m.screens) > 0 {
+			m.RemoveScreen(m.currentIndex)
+		}
+
+		return nil
+	}
+
 	return nil
 }
 
