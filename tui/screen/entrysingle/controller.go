@@ -47,3 +47,13 @@ func (s *Screen) SetValue(value string) error {
 
 	return s.Load()	
 }
+
+func (s *Screen) Sync() error {
+	err := s.App.Syncer().One(s.Path)
+
+	if err != nil {
+		return err
+	}
+
+	return s.Load()
+}

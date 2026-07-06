@@ -29,6 +29,16 @@ func (s *Screen) HandleScreenKeymaps(msg tea.Msg) tea.Cmd {
 		return messages.ToastSuccessCmd("Reloaded")
 	}
 
+	if key.Matches(keyMsg, ScreenBindings.Sync) {
+		err := s.Sync()
+
+		if err != nil {
+			return messages.ToastErrorCmd(err.Error())
+		}
+
+		return messages.ToastSuccessCmd("Synced")
+	}
+
 	if (key.Matches(keyMsg, ScreenBindings.Edit)) {
 		cb := func(input string) tea.Cmd {
 			err := s.SetValue(input)

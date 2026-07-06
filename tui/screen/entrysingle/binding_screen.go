@@ -9,6 +9,7 @@ type ScreenKeyMap struct {
 	Down       key.Binding
 	Edit        key.Binding
 	Reload     key.Binding
+	Sync	   key.Binding
 }
 
 var ScreenBindings = ScreenKeyMap{
@@ -23,6 +24,10 @@ var ScreenBindings = ScreenKeyMap{
 	Edit: key.NewBinding(
 		key.WithKeys("e"),
 		key.WithHelp("e", "edit value"),
+	),
+	Sync: key.NewBinding(
+		key.WithKeys("s"),
+		key.WithHelp("s", "sync"),
 	),
 	Reload: key.NewBinding(
 		key.WithKeys("r"),
