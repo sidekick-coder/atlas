@@ -9,22 +9,8 @@ type Input struct {
 	Callback func(value string) tea.Cmd
 }
 
-func InputCmd(title string, callback func(value string) tea.Cmd) tea.Cmd {
+func InputCmd(msg Input) tea.Cmd {
 	return func() tea.Msg {
-		return Input{
-			Title:    title,
-			InitialValue:  "",
-			Callback: callback,
-		}
-	}
-}
-
-func InputWithInitialCmd(title string, initial string, callback func(value string) tea.Cmd) tea.Cmd {
-	return func() tea.Msg {
-		return Input{
-			Title:    title,
-			InitialValue:  initial,
-			Callback: callback,
-		}
+		return msg
 	}
 }

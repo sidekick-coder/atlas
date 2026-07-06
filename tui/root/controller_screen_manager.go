@@ -8,11 +8,13 @@ import (
 	"github.com/sidekick-coder/atlas/tui/models"
 	"github.com/sidekick-coder/atlas/tui/screen/empty"
 	"github.com/sidekick-coder/atlas/tui/screen/entry"
+	"github.com/sidekick-coder/atlas/tui/screen/entrysingle"
 )
 
 func (m model) LoadScreenRegistry() tea.Cmd {
 	m.availableScreens["empty"] = empty.Create
 	m.availableScreens["entry_list"] = entry.Create
+	m.availableScreens["entry_single"] = entrysingle.Create
 
 	return nil
 }
@@ -31,12 +33,14 @@ func (m *model) SetCurrentScreen(index int) {
 	}
 
 	m.currentIndex = index
-	m.tabBar.SetCurrent(index)
-	m.footer.SetBindings(m.GetBindings()...)
+
+	m.LoadBindings()
+	m.LoadTabs()
 
 	m.SetSize(m.width, m.height)
 
 	s := m.screens[index]
+
 	s.Init()
 }
 
@@ -71,7 +75,12 @@ func (m *model) CreateScreenInstance(name string, options map[string]any) (model
 	return s, nil
 }
 
-func (m *model) AddScreen(name string, options map[string]any) tea.Cmd {
+func (m *model) AddScreen(name string, args ...map[string]any) tea.Cmd {
+	options := map[string]any{}
+
+	if len(args) > 0 {
+		options = args[0]
+	}
 
 	s, err := m.CreateScreenInstance(name, options)
 

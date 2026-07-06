@@ -5,6 +5,7 @@ import (
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/tui/components"
 	"github.com/sidekick-coder/atlas/tui/components/input"
+	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/models"
 )
 
@@ -18,11 +19,13 @@ type model struct {
 
 	width  int
 	height int
-	input  *input.Input
 
 	tabBar  *components.TabBar
 	toolbar *components.Toolbar
 	footer  *components.Footer
+
+	input  *input.Input
+	toaster *toast.Component
 }
 
 func New(a *app.App) model {
@@ -37,6 +40,7 @@ func New(a *app.App) model {
 	footer := components.NewFooter()
 
 	input := input.New()
+	toaster := toast.New()
 
 	m := model{
 		app:          a,
@@ -46,36 +50,16 @@ func New(a *app.App) model {
 		tabBar:  tabBar,
 		toolbar: toolbar,
 		footer:  footer,
+
 		input:   input,
+		toaster: toaster,
+
 		availableScreens: availableScreens,
 	}
 
 	m.SetCurrentScreen(0)
 
 	return m
-}
-
-func (m *model) SetSize(width int, height int) {
-	m.width = width
-	m.height = height
-
-	components.GlobalInput.SetSize(width, height)
-	components.GlobalToast.SetSize(width, height)
-
-	m.tabBar.SetWidth(width)
-	m.toolbar.SetWidth(width)
-	m.footer.SetWidth(width)
-	m.input.SetScreenSize(width, height)
-
-	toolbarHeight := 1
-	tabBarHeight := 1
-	footerHeight := 1
-	contentHeight := height - toolbarHeight - tabBarHeight - footerHeight
-	m.screenHeight = contentHeight
-
-	for _, s := range m.screens {
-		s.SetSize(width, contentHeight)
-	}
 }
 
 func (m model) Init() tea.Cmd {

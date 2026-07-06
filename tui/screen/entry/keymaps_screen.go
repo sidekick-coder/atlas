@@ -103,7 +103,7 @@ func (s *Screen) HandleScreenKeymaps(msg tea.Msg) tea.Cmd {
 	}
 
 	if key.Matches(keyMsg, ScreenBindings.Enter) {
-		name := "entry-single"
+		name := "entry_single"
 		entry, selected := s.List.SelectedEntry()
 
 		options := map[string]any{}
@@ -125,7 +125,11 @@ func (s *Screen) HandleScreenKeymaps(msg tea.Msg) tea.Cmd {
 			return messages.SkipCmd()
 		}
 
-		return messages.InputWithInitialCmd("Search", s.Query, cb)
+		return messages.InputCmd(messages.Input{
+			Title:        "Search",
+			InitialValue: s.Query,
+			Callback:     cb,
+		})
 	}
 
 	return nil

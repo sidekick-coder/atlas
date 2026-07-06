@@ -11,14 +11,15 @@ import (
 )
 
 type App struct {
-	config *config.Config
-	drive *drive.Drive
+	config   *config.Config
+	drive    *drive.Drive
 	database *database.Database
 
-	entryRepo *entry.Repository
+	entryRepo     *entry.Repository
 	entryMetaRepo *entrymeta.Repository
 
 	actionManager *actionmanager.ActionManager
+	syncer        *sync.Sync
 }
 
 func Create() (*App, error) {
@@ -46,18 +47,23 @@ func Create() (*App, error) {
 		return nil, err
 	}
 
+
 	entryRepo := entry.New(database)
 	entryMetaRepo := entrymeta.New(database)
 
+	syncer := sync.Create(drive, entryRepo, entryMetaRepo)
+
 	app := &App{
-		config: config,
+		config:   config,
 		database: database,
-		drive: drive,
+		drive:    drive,
 
 		actionManager: actionManager,
 
-		entryRepo: entryRepo,
+		entryRepo:     entryRepo,
 		entryMetaRepo: entryMetaRepo,
+
+		syncer: syncer,
 	}
 
 	return app, nil
@@ -72,22 +78,21 @@ func (a *App) ActionManager() *actionmanager.ActionManager {
 }
 
 func (a *App) Config() *config.Config {
-    return a.config
+	return a.config
 }
 
 func (a *App) Drive() *drive.Drive {
-    return a.drive
+	return a.drive
 }
 
 func (a *App) Syncer() *sync.Sync {
 	return sync.Create(a.drive, a.entryRepo, a.entryMetaRepo)
 }
 
-
 func (a *App) EntryRepo() *entry.Repository {
-    return a.entryRepo
+	return a.entryRepo
 }
 
 func (a *App) EntryMetaRepo() *entrymeta.Repository {
-    return a.entryMetaRepo
+	return a.entryMetaRepo
 }

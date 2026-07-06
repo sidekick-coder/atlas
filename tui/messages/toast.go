@@ -3,9 +3,10 @@ package messages
 import tea "charm.land/bubbletea/v2"
 
 type Toast struct {
+	Title   string
 	Message string
-	Level   string
-	Duration int // Duration in seconds
+	Color   string
+	Seconds int // Duration in seconds
 }
 
 func ToastCmd(mgs Toast) tea.Cmd {
@@ -14,26 +15,36 @@ func ToastCmd(mgs Toast) tea.Cmd {
 	}
 }
 
-func ToastErrorCmd(message string, duration ...int) tea.Cmd {
+func ToastErrorCmd(message string, seconds ...int) tea.Cmd {
+	sec := 3
+	color := "196"
+	title := "Error"
+
+	if len(seconds) > 0 {
+		sec = seconds[0]
+	}
+
 	return ToastCmd(Toast{
-		Message:  message,
-		Level:    "error",
-		Duration: duration[0],
+		Title:   title,
+		Color:   color,
+		Message: message,
+		Seconds: sec,
 	})
 }
 
-func ToastInfoCmd(message string, duration ...int) tea.Cmd {
-	return ToastCmd(Toast{
-		Message:  message,
-		Level:    "info",
-		Duration: duration[0],
-	})
-}
+func ToastSuccessCmd(message string, seconds ...int) tea.Cmd {
+	sec := 3
+	color := "46"
+	title := "Success"
 
-func ToastSuccessCmd(message string, duration ...int) tea.Cmd {
+	if len(seconds) > 0 {
+		sec = seconds[0]
+	}
+
 	return ToastCmd(Toast{
-		Message:  message,
-		Level:    "success",
-		Duration: duration[0],
+		Title:   title,
+		Color:   color,
+		Message: message,
+		Seconds: sec,
 	})
 }
