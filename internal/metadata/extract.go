@@ -26,7 +26,7 @@ func Extract(info *models.EntryInfo, handlers []Handler) (map[string]string, err
 
 	metadata["basename"] = info.BaseName
 	metadata["type"] = info.Type
-	metadata["ext"] = info.Ext
+	metadata["ext"] = strings.TrimPrefix(info.Ext, ".")
 	metadata["handlers"] = strings.Join(ids, ",")
 
 	return metadata, nil
