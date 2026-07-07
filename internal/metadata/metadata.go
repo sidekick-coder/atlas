@@ -55,7 +55,7 @@ func (m *Meta) ExtractMap() (map[string]string, error) {
 
 	result["basename"] = m.info.BaseName
 	result["type"] = m.info.Type
-	result["ext"] = m.info.Ext
+	result["ext"] = strings.TrimPrefix(m.info.Ext, ".")
 	result["handlers"] = strings.Join(ids, ",")
 
 	return result, nil
