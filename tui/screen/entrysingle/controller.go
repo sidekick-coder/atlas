@@ -31,21 +31,44 @@ func (s *Screen) Load() error {
 	return nil
 }
 
-func (s *Screen) SetValue(value string) error {
-
-	em, ok := s.EntryMetaComponent.GetSelected()
-
-	if !ok {
-		return fmt.Errorf("no metadata selected to set value")
-	}
-
-	err := s.App.SetEntryMeta(s.Path, em.Name, value)
+func (s *Screen) UnsetMeta(name string) error {
+	err := s.App.UnsetEntryMeta(s.Path, name)
 
 	if err != nil {
 		return err
 	}
 
 	return s.Load()	
+}
+
+func (s *Screen) UnsetMetaSelected() error {
+	em, ok := s.EntryMetaComponent.GetSelected()
+
+	if !ok {
+		return fmt.Errorf("no metadata selected to set value")
+	}
+
+	return s.UnsetMeta(em.Name)
+}
+
+func (s *Screen) SetMeta(name string, value string) error {
+	err := s.App.SetEntryMeta(s.Path, name, value)
+
+	if err != nil {
+		return err
+	}
+
+	return s.Load()	
+}
+
+func (s *Screen) SetValue(value string) error {
+	em, ok := s.EntryMetaComponent.GetSelected()
+
+	if !ok {
+		return fmt.Errorf("no metadata selected to set value")
+	}
+
+	return s.SetMeta(em.Name, value)
 }
 
 func (s *Screen) Sync() error {

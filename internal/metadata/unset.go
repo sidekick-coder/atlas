@@ -5,14 +5,11 @@ import (
 )
 
 func Unset(info *models.EntryInfo, name string, handlers []Handler) (bool, error) {
+	m, err := Create(info)
 
-	for _, handler := range handlers {
-		err := handler.Unset(info, name)
-
-		if err != nil {
-			return false, err
-		}
+	if err != nil {
+		return false, err
 	}
 
-	return true, nil
+	return m.Unset(name)
 }

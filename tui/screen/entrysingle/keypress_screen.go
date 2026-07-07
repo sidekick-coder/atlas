@@ -1,8 +1,8 @@
 package entrysingle
 
 import (
-	tea "charm.land/bubbletea/v2"
 	"charm.land/bubbles/v2/key"
+	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/messages"
 )
 
@@ -39,7 +39,7 @@ func (s *Screen) HandleScreenKeymaps(msg tea.Msg) tea.Cmd {
 		return messages.ToastSuccessCmd("Synced")
 	}
 
-	if (key.Matches(keyMsg, ScreenBindings.Edit)) {
+	if key.Matches(keyMsg, ScreenBindings.Edit) {
 		cb := func(input string) tea.Cmd {
 			err := s.SetValue(input)
 
@@ -57,11 +57,38 @@ func (s *Screen) HandleScreenKeymaps(msg tea.Msg) tea.Cmd {
 		}
 
 		return messages.InputCmd(messages.Input{
-			Title:         "Edit",
-			InitialValue:  selected.Value,
-			Callback:      cb,
+			Title:        "Edit",
+			InitialValue: selected.Value,
+			Callback:     cb,
 		})
 
+	}
+
+	if key.Matches(keyMsg, ScreenBindings.Add) {
+		cb := func(input string) tea.Cmd {
+			err := s.SetMeta(input, "")
+
+			if err != nil {
+				return messages.ToastErrorCmd(err.Error())
+			}
+
+			return messages.SkipCmd()
+		}
+
+		return messages.InputCmd(messages.Input{
+			Title:    "Add",
+			Callback: cb,
+		})
+	}
+
+	if key.Matches(keyMsg, ScreenBindings.Delete) {
+		err := s.UnsetMetaSelected()
+
+		if err != nil {
+			return messages.ToastErrorCmd(err.Error())
+		}
+
+		return messages.SkipCmd()
 	}
 
 	return nil

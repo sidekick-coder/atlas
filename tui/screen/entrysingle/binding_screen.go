@@ -8,6 +8,8 @@ type ScreenKeyMap struct {
 	Up         key.Binding
 	Down       key.Binding
 	Edit        key.Binding
+	Add		key.Binding
+	Delete	 key.Binding
 	Reload     key.Binding
 	Sync	   key.Binding
 }
@@ -25,6 +27,14 @@ var ScreenBindings = ScreenKeyMap{
 		key.WithKeys("e"),
 		key.WithHelp("e", "edit value"),
 	),
+	Add: key.NewBinding(
+		key.WithKeys("a"),
+		key.WithHelp("a", "add key"),
+	),
+	Delete: key.NewBinding(
+		key.WithKeys("d"),
+		key.WithHelp("d", "delete key"),
+	),
 	Sync: key.NewBinding(
 		key.WithKeys("s"),
 		key.WithHelp("s", "sync"),
@@ -41,5 +51,8 @@ func (s *Screen) GetScreenBindigs() []key.Binding {
 		ScreenBindings.Down,
 		ScreenBindings.Edit,
 		ScreenBindings.Reload,
+		ScreenBindings.Sync,
+		ScreenBindings.Add,
+		ScreenBindings.Delete,
 	}
 }

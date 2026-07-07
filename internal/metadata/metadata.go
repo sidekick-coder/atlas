@@ -10,7 +10,7 @@ import (
 )
 
 type Meta struct {
-	info     *models.EntryInfo
+	info *models.EntryInfo
 }
 
 var SytemMetaNames = []string{"basename", "type", "ext", "handlers"}
@@ -26,15 +26,15 @@ func Create(info *models.EntryInfo) (*Meta, error) {
 func (m *Meta) GetHandlers() []Handler {
 	handlers := []Handler{}
 
-	if (m.info.Type == "directory") {
+	if m.info.Type == "directory" {
 		// return handlers
 	}
 
-	if (m.info.Ext == ".md") {
+	if m.info.Ext == ".md" {
 		handlers = append(handlers, MarkdownHandler{})
 	}
 
-	if (m.info.Ext == ".json") {
+	if m.info.Ext == ".json" {
 		handlers = append(handlers, json.Handler{})
 	}
 
@@ -81,7 +81,7 @@ func (m *Meta) Extract() ([]models.EntryMeta, error) {
 
 	for key, value := range metas {
 		meta := models.EntryMeta{
-			Name:   key,
+			Name:  key,
 			Value: value,
 		}
 
@@ -91,10 +91,9 @@ func (m *Meta) Extract() ([]models.EntryMeta, error) {
 	return result, nil
 }
 
-
 func (m *Meta) Set(name string, value string) (bool, error) {
 	if slices.Contains(SytemMetaNames, name) {
-		return false, fmt.Errorf("cannot set system field: %s", name)
+		return false, fmt.Errorf("cannot set system meta: %s", name)
 	}
 
 	handlers := m.GetHandlers()
@@ -113,4 +112,23 @@ func (m *Meta) Set(name string, value string) (bool, error) {
 	}
 
 	return false, nil
+}
+
+func (m *Meta) Unset(name string) (bool, error) {
+	if slices.Contains(SytemMetaNames, name) {
+		return false, fmt.Errorf("cannot unset system meta: %s", name)
+	}
+
+	handlers := m.GetHandlers()
+	info := m.info
+
+	for _, handler := range handlers {
+		err := handler.Unset(info, name)
+
+		if err != nil {
+			return false, err
+		}
+	}
+
+	return true, nil
 }
