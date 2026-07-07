@@ -43,7 +43,7 @@ var listCmd = &cobra.Command{
 		s := lipgloss.
 			NewStyle().
 			Bold(true).
-			Foreground(lipgloss.Red)
+			Foreground(lipgloss.Blue)
 
 		for _, entry := range entries {
 			fmt.Printf("%s\n", s.Render(entry.Path))

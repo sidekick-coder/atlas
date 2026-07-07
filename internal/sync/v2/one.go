@@ -1,18 +1,26 @@
 package sync
 
 import (
+	"strings"
+
 	"github.com/sidekick-coder/atlas/internal/metadata"
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 
+func (s *Sync) OneByInfo(info *models.EntryInfo) error {
+	smtmt := []string{}
+	params := []any{}
 
-func (s *Sync) OneByInfo(info * models.EntryInfo) error {
-	handlers := metadata.GetHandlers(info)
-
-	data, err := metadata.Extract(info, handlers)
+	m, err := metadata.Create(info)
 
 	if err != nil {
-		return err 
+		return err
+	}
+
+	data, err := m.ExtractMap()
+
+	if err != nil {
+		return err
 	}
 
 	entry, err := s.entryRepo.Upsert(info.Path)
@@ -21,13 +29,16 @@ func (s *Sync) OneByInfo(info * models.EntryInfo) error {
 		return err
 	}
 
-	err = s.entryMetaRepo.DeleteByEntryID(entry.ID)
+	is, ip := s.entryMetaRepo.InsertManySql(entry.ID, data)
 
-	if err != nil {
-		return err
-	}
+	smtmt = append(smtmt, is)
+	params = append(params, ip...)
 
-	err = s.entryMetaRepo.InsertMany(entry.ID, data)
+	finalSmtmt := strings.Join(smtmt, ";\n")
+
+	_, err = s.Database.Exec(finalSmtmt, params...)
+
+	println(finalSmtmt)
 
 	if err != nil {
 		return err
@@ -45,4 +56,3 @@ func (s *Sync) One(filepath string) error {
 
 	return s.OneByInfo(info)
 }
-

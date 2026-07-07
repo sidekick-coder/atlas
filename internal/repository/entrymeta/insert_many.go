@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-func (r * Repository) InsertMany(entryId int64, metas map[string]string) error {
+func (r * Repository) InsertManySql(entryId int64, metas map[string]string) (string, []any) {
 	smtmt := []string{}
 	params := []any{}
 	values := []string{}
@@ -18,7 +18,13 @@ func (r * Repository) InsertMany(entryId int64, metas map[string]string) error {
 
 	smtmt = append(smtmt, strings.Join(values, ","))
 
-	_, err := r.Database.Exec(strings.Join(smtmt, " "), params...)
+	return strings.Join(smtmt, " "), params
+}
+
+func (r * Repository) InsertMany(entryId int64, metas map[string]string) error {
+	smtmt, params := r.InsertManySql(entryId, metas)
+
+	_, err := r.Database.Exec(smtmt, params...)
 
 	if err != nil {
 		return err
@@ -27,3 +33,14 @@ func (r * Repository) InsertMany(entryId int64, metas map[string]string) error {
 
 	return nil
 }
+
+func (r * Repository) InsertManyByPath(path string, metas map[string]string) error {
+	entry, err := r.EntryRepository.GetByPath(path)
+
+	if err != nil {
+		return err
+	}
+
+	return r.InsertMany(entry.ID, metas)
+}
+

@@ -7,7 +7,6 @@ import (
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/internal/utils"
 	"github.com/sidekick-coder/atlas/internal/metadata"
-	"github.com/sidekick-coder/atlas/internal/sync/v2"
 )
 
 // setCmd represents the entryShow command
@@ -58,11 +57,7 @@ var setCmd = &cobra.Command{
 			return nil
 		}
 
-		sync := sync.Create(
-			app.Drive(),
-			app.EntryRepo(),
-			app.EntryMetaRepo(),
-		)
+		sync := app.Syncer()
 
 		err = sync.One(args[0])
 

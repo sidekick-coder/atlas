@@ -51,7 +51,12 @@ func Create() (*App, error) {
 	entryRepo := entry.New(database)
 	entryMetaRepo := entrymeta.New(database)
 
-	syncer := sync.Create(drive, entryRepo, entryMetaRepo)
+	syncer := sync.Create(&sync.SyncPayload{
+		Drive:      drive,
+		Database:  database,
+		EntryRepo: entryRepo,
+		EntryMetaRepo: entryMetaRepo,
+	})
 
 	app := &App{
 		config:   config,
@@ -86,7 +91,7 @@ func (a *App) Drive() *drive.Drive {
 }
 
 func (a *App) Syncer() *sync.Sync {
-	return sync.Create(a.drive, a.entryRepo, a.entryMetaRepo)
+	return a.syncer
 }
 
 func (a *App) EntryRepo() *entry.Repository {

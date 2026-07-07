@@ -1,19 +1,16 @@
 package entry
 
 import (
+	"fmt"
+
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 
-func (r * Repository) GetByPath(path string) (*models.Entry, error) {
-	// SELECT ...
-	smtmt := `
-	SELECT id, path
-	FROM entries
-	WHERE path = $1
-	LIMIT 1;
-	`
+func (r *Repository) GetByPath(path string) (*models.Entry, error) {
+	smtmt := "SELECT id, path FROM entries WHERE path = $1 LIMIT 1"
+	params := []any{path}
 
-    rows, err := r.Database.Query(smtmt, path)
+	rows, err := r.Database.Query(smtmt, params...)
 
 	if err != nil {
 		return nil, err
@@ -33,5 +30,5 @@ func (r * Repository) GetByPath(path string) (*models.Entry, error) {
 		return &entry, nil
 	}
 
-    return nil, nil
+	return nil, fmt.Errorf("entry not found for path: %s", path)
 }

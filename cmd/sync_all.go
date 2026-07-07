@@ -5,7 +5,6 @@ import (
 
 	"charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
-	"github.com/sidekick-coder/atlas/internal/models"
 	"github.com/sidekick-coder/atlas/internal/sync/v2"
 	"github.com/spf13/cobra"
 )
@@ -28,12 +27,13 @@ var syncAllCmd = &cobra.Command{
 		green := lipgloss.NewStyle().Foreground(lipgloss.Color("10"))
 		red := lipgloss.NewStyle().Foreground(lipgloss.Color("9"))
 
-		onSuccess := func(e models.EntryInfo) {
-			fmt.Printf("%s %s\n", green.Render("✓"), e.Path)
+		onSuccess := func(path string, metas map[string]string) {
+			fmt.Printf("%s\n", green.Render(path))
 		}
 
-		onError := func(e models.EntryInfo, err error) {
-			fmt.Printf("%s %s: %v\n", red.Render("✗"), e.Path, err)
+		onError := func(path string, err error) {
+			fmt.Printf("%s\n", red.Render(path))
+			fmt.Printf("Error: %v\n", err)
 		}
 
 		payload := sync.AllPayload{
@@ -49,7 +49,10 @@ var syncAllCmd = &cobra.Command{
 			return
 		}
 
-		fmt.Printf("Time: %.2f seconds\n", float64(result.Microseconds)/1e6)
+		fmt.Printf("\n")
+		fmt.Printf("Total Entries: %d\n", result.TotalEntries)
+		fmt.Printf("Total Batches: %d\n", result.TotalBatches)
+		fmt.Printf("Time: %.2f\n", result.Time.Seconds())
 		fmt.Printf("Concurrency: %d\n", result.Concurrency)
 	},
 }

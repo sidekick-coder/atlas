@@ -6,7 +6,6 @@ import (
 	"charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/internal/utils"
-	"github.com/sidekick-coder/atlas/internal/sync/v2"
 )
 
 var entrySyncCmd = &cobra.Command{
@@ -25,11 +24,7 @@ var entrySyncCmd = &cobra.Command{
 		entryRepo := app.EntryRepo()
 		entryMetaRepo := app.EntryMetaRepo()
 
-		sync := sync.Create(
-			app.Drive(),
-			app.EntryRepo(),
-			app.EntryMetaRepo(),
-		)
+		sync := app.Syncer()
 
 		s := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("12"))
 
