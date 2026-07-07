@@ -16,5 +16,9 @@ func (m *model) HandleGlobalKeyMap(msg tea.Msg) tea.Cmd {
 		return tea.Quit
 	}
 
+	if key.Matches(km, GlobalBindings.OpenSyncer) {
+		return m.AddScreen("syncer", nil)
+	}
+
 	return nil
 }

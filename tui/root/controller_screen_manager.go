@@ -9,12 +9,14 @@ import (
 	"github.com/sidekick-coder/atlas/tui/screen/empty"
 	"github.com/sidekick-coder/atlas/tui/screen/entry"
 	"github.com/sidekick-coder/atlas/tui/screen/entrysingle"
+	"github.com/sidekick-coder/atlas/tui/screen/syncer"
 )
 
 func (m model) LoadScreenRegistry() tea.Cmd {
 	m.availableScreens["empty"] = empty.Create
 	m.availableScreens["entry_list"] = entry.Create
 	m.availableScreens["entry_single"] = entrysingle.Create
+	m.availableScreens["syncer"] = syncer.Create
 
 	return nil
 }
@@ -61,9 +63,14 @@ func (m *model) CreateScreenInstance(name string, options map[string]any) (model
 		return nil, fmt.Errorf("screen factory not found for name: %s", name)
 	}
 
+	if Program == nil {
+		return nil, fmt.Errorf("program is not initialized")
+	}
+
 	p := models.ScreenPayload{
 		App: m.app,
 		Options: options,
+		Program: Program,
 	}
 
 	s, err := fac(p)
@@ -85,7 +92,7 @@ func (m *model) AddScreen(name string, args ...map[string]any) tea.Cmd {
 	s, err := m.CreateScreenInstance(name, options)
 
 	if err != nil {
-		return messages.ToastErrorCmd(fmt.Sprintf("Failed to create screen: %v", err), 3 * 1000)
+		return messages.ToastErrorCmd(fmt.Sprintf("Failed to create screen: %v", err))
 	}
 
 	m.screens = append(m.screens, s)

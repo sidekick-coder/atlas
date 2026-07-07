@@ -9,6 +9,8 @@ import (
 	"github.com/sidekick-coder/atlas/tui/models"
 )
 
+var Program *tea.Program
+
 type model struct {
 	app *app.App
 
@@ -56,8 +58,6 @@ func New(a *app.App) model {
 
 		availableScreens: availableScreens,
 	}
-
-	m.SetCurrentScreen(0)
 
 	return m
 }

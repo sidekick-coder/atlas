@@ -22,12 +22,12 @@ type SyncBatch struct {
 }
 
 type AllResult struct {
-	Concurrency  int
-	TotalEntries int
-	TotalBatches  int
+	Concurrency        int
+	TotalEntries       int
+	TotalBatches       int
 	TotalEntriesErrors int
 	TotalBatchesErrors int
-	Time         time.Duration
+	Time               time.Duration
 }
 
 type AllPayload struct {
@@ -278,13 +278,11 @@ func (s *Sync) All(payload ...AllPayload) (AllResult, error) {
 	result.TotalEntries = int(s.TotalEntries.Load())
 	result.TotalBatchesErrors = int(s.TotalBatchesErrors.Load())
 
-	if p.OnComplete != nil {
-		p.OnComplete(result)
-	}
-
 	if err != nil {
 		return result, err
 	}
+
+	p.OnComplete(result)
 
 	return result, nil
 }

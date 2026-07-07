@@ -10,6 +10,7 @@ type ScreenPayload struct {
 	App *app.App
 	Options map[string]any
 	ScreenIndex int
+	Program *tea.Program
 }
 
 // Screen is the interface every top-level screen must implement.

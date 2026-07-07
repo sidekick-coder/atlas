@@ -15,7 +15,7 @@ func ToastCmd(mgs Toast) tea.Cmd {
 	}
 }
 
-func ToastErrorCmd(message string, seconds ...int) tea.Cmd {
+func ToastErrorMessage(message string, seconds ...int) Toast {
 	sec := 3
 	color := "196"
 	title := "Error"
@@ -24,15 +24,15 @@ func ToastErrorCmd(message string, seconds ...int) tea.Cmd {
 		sec = seconds[0]
 	}
 
-	return ToastCmd(Toast{
+	return Toast{
 		Title:   title,
 		Color:   color,
 		Message: message,
 		Seconds: sec,
-	})
+	}
 }
 
-func ToastSuccessCmd(message string, seconds ...int) tea.Cmd {
+func ToastSuccessMessage(message string, seconds ...int) Toast {
 	sec := 3
 	color := "46"
 	title := "Success"
@@ -41,10 +41,18 @@ func ToastSuccessCmd(message string, seconds ...int) tea.Cmd {
 		sec = seconds[0]
 	}
 
-	return ToastCmd(Toast{
+	return Toast{
 		Title:   title,
 		Color:   color,
 		Message: message,
 		Seconds: sec,
-	})
+	}
+}
+
+func ToastErrorCmd(message string, seconds ...int) tea.Cmd {
+	return ToastCmd(ToastErrorMessage(message, seconds...))
+}
+
+func ToastSuccessCmd(message string, seconds ...int) tea.Cmd {
+	return ToastCmd(ToastSuccessMessage(message, seconds...))
 }

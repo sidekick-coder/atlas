@@ -5,8 +5,8 @@ import (
 	"os"
 
 	tea "charm.land/bubbletea/v2"
-	tui "github.com/sidekick-coder/atlas/tui/root"
 	"github.com/sidekick-coder/atlas/internal/app"
+	tui "github.com/sidekick-coder/atlas/tui/root"
 	"github.com/spf13/cobra"
 )
 
@@ -23,9 +23,9 @@ var tuiCmd = &cobra.Command{
 
 		root := tui.New(a)
 
-		root.Init()
-
 		p := tea.NewProgram(root)
+
+		tui.Program = p
 
 		_, err = p.Run()
 

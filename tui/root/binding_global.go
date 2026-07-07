@@ -6,6 +6,7 @@ import (
 
 type GlobalKeyMap struct {
 	Quit      key.Binding
+	OpenSyncer key.Binding
 }
 
 var GlobalBindings = GlobalKeyMap{
@@ -13,10 +14,15 @@ var GlobalBindings = GlobalKeyMap{
 		key.WithKeys("q", "ctrl+c"),
 		key.WithHelp("q", "quit"),
 	),
+	OpenSyncer: key.NewBinding(
+		key.WithKeys("S"),
+		key.WithHelp("S", "open syncer"),
+	),
 }
 
 func (m *model) GetGlobalBindings() []key.Binding {
 	return []key.Binding{
 		GlobalBindings.Quit,
+		GlobalBindings.OpenSyncer,
 	}
 }

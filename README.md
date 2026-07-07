@@ -2,7 +2,7 @@
 - [x] tui: query filter in the list screen
 - [x] tui: entry single page defulat page for entry with a list of metas
 - [ ] tui: sync page
-- [ ] sync all multithreaded
+- [x] sync all multithreaded
 - [ ] custom metadata handler (probably comunicate via stdin/stdout)
 - [ ] tui: move queries data to components instead of the screen
 - [ ] tui: columns in the list screen

@@ -2,46 +2,37 @@ package toast
 
 import (
 	// "image/color"
-	"strings"
 	lipgloss "charm.land/lipgloss/v2"
+	"strings"
 )
-
-const BoxWidth = 58
 
 func (c *Component) Render() string {
 	border := lipgloss.NewStyle().Foreground(c.Color)
 	text := lipgloss.NewStyle().Foreground(lipgloss.Color("252"))
 
-	innerWidth := BoxWidth - 4
+	boxWidth := lipgloss.Width(c.Content) + 4 // 2 for padding on each side
 
 	// Top border with title.
 	labelPart := "─ " + c.Title + " "
 
-	remaining := (BoxWidth - 2) - len([]rune(labelPart))
+	remaining := (boxWidth) - len([]rune(labelPart))
 
-	if remaining < 1 {
-		remaining = 1
-	}
+	remaining = max(remaining, 1)
 
-	top := border.Render("╭" + labelPart + strings.Repeat("─", remaining) + "╮")
+	topLen := boxWidth - lipgloss.Width(labelPart) - 2 // 2 for the corners
+
+	top := border.Render("╭" + labelPart + strings.Repeat("─", topLen) + "╮")
 
 	inputContent := text.Render(c.Content)
 
-	contentW := lipgloss.Width(inputContent)
-	pad := innerWidth - contentW
+	pad := boxWidth - lipgloss.Width(inputContent) - 4
 
-	if pad < 0 {
-		pad = 0
-	}
+	pad = max(pad, 0)
 
-	row := border.Render("│") + " " + inputContent + strings.Repeat(" ", pad) + " " + border.Render("│")
+	row := border.Render("│") + " " + inputContent + strings.Repeat(".", pad) + " " + border.Render("│")
 
-	// Bottom border with hint.
-	if remaining < 1 {
-		remaining = 1
-	}
-
-	bottom := border.Render("╰" + strings.Repeat("─", BoxWidth - 2) + "╯")
+	bottomLen := lipgloss.Width(inputContent) + 2 // 2 for the corners
+	bottom := border.Render("╰" + strings.Repeat("─", bottomLen) + "╯")
 
 	return lipgloss.JoinVertical(lipgloss.Left, top, row, bottom)
 }
