@@ -5,7 +5,7 @@ import (
 )
 
 func (s *Screen) GetUserKeymapBindings() []key.Binding {
-	keymaps := s.App.Config().GetKeymapsByGroup("entry_single")
+	keymaps := s.GetUserKeymaps()
 
 	bindings := []key.Binding{}
 

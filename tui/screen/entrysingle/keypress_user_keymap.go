@@ -15,7 +15,7 @@ func (s *Screen) HandleUserKeyMaps(mgs tea.Msg) tea.Cmd {
 		return nil
 	}
 
-	keymaps := s.App.Config().GetKeymapsByGroup("entry_single")
+	keymaps := s.GetUserKeymaps()
 
 	ctx := map[string]any{}
 	entry := s.Entry
