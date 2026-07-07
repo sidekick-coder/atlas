@@ -1,18 +1,24 @@
 package syncer
 
 import (
-	"fmt"
+	"time"
 
 	"github.com/sidekick-coder/atlas/internal/sync/v2"
-	"github.com/sidekick-coder/atlas/tui/messages"
 )
 
 func (s *Screen) Sync() {
 	s.Running = true
+	s.Completed = false
 	s.Entries = []Entry{}
 
 	go func() {
+		startTime := time.Now()
+
 		onSuccess := func(path string, metas map[string]string) {
+			if !s.ViewList {
+				return
+			}
+
 			e := Entry{
 				Path:    path,
 				Success: true,
@@ -20,9 +26,15 @@ func (s *Screen) Sync() {
 			}
 
 			s.Program.Send(EntryAdd{AddEntry: e})
+
+			s.Time = time.Since(startTime)
 		}
 
 		onError := func(path string, err error) {
+			if !s.ViewList {
+				return
+			}
+
 			e := Entry{
 				Path:    path,
 				Success: false,
@@ -30,14 +42,17 @@ func (s *Screen) Sync() {
 			}
 
 			s.Program.Send(EntryAdd{AddEntry: e})
+			s.Time = time.Since(startTime)
 		}
 
 		onComplete := func(result sync.AllResult) {
 			s.Running = false
+			s.Time = time.Since(startTime)
 
-			message := fmt.Sprintf("Sync completed: %d entries, %d batches, %d errors, %.2fs", result.TotalEntries, result.TotalBatches, result.TotalEntriesErrors, result.Time.Seconds()*1000)
-
-			s.Program.Send(messages.ToastSuccessMessage(message))
+			s.Program.Send(Completed{
+				TotalEntries: result.TotalEntries,
+				Time:         s.Time,
+			})
 		}
 
 		s.Running = true

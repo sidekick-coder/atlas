@@ -12,9 +12,21 @@ func (s *Screen) HandleScreenKeymaps(msg tea.Msg) tea.Cmd {
 		return nil
 	}
 
-	if key.Matches(km, ScreenBindings.Enter) {
+	if key.Matches(km, ScreenBindings.Execute) {
+		s.ViewList = false
 		s.Sync()
 		return nil
+	}
+	if key.Matches(km, ScreenBindings.ExecuteWithList) {
+		s.ViewList = true
+		s.Sync()
+		return nil
+	}
+
+	if key.Matches(km, ScreenBindings.Clear) {
+		return func() tea.Msg {
+			return EntryClear{}
+		}
 	}
 
 	return nil

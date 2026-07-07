@@ -3,6 +3,7 @@ package sync
 import (
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/sidekick-coder/atlas/internal/metadata"
@@ -195,6 +196,10 @@ func (s *Sync) AllCleanup() error {
 }
 
 func (s *Sync) All(payload ...AllPayload) (AllResult, error) {
+	s.TotalEntries = atomic.Int64{}
+	s.TotalEntriesErrors = atomic.Int64{}
+	s.TotalBatches = atomic.Int64{}
+	s.TotalBatchesErrors = atomic.Int64{}
 
 	p := AllPayload{}
 

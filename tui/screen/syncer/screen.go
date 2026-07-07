@@ -1,6 +1,8 @@
 package syncer
 
 import (
+	"time"
+
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/internal/sync/v2"
@@ -15,25 +17,31 @@ type Entry struct {
 }
 
 type Screen struct {
-	App     *app.App
-	Program *tea.Program
-	Width   int
-	Height  int
-	Running bool
-	Entries []Entry
-	Syncer  *sync.Sync
+	App      *app.App
+	Program  *tea.Program
+	Width    int
+	Height   int
+	Running  bool
+	ViewList bool
+	Entries  []Entry
+	Syncer   *sync.Sync
+
+	Completed    bool
+	TotalEntries int
+	Time         time.Duration
 }
 
 func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 	syncer := p.App.Syncer()
 
 	s := &Screen{
-		App:     p.App,
-		Syncer:  syncer,
-		Program: p.Program,
-		Width:   100,
-		Height:  100,
-		Running: false,
+		App:       p.App,
+		Syncer:    syncer,
+		Program:   p.Program,
+		Width:     100,
+		Height:    100,
+		Running:   false,
+		Completed: false,
 	}
 
 	return s, nil
@@ -74,13 +82,22 @@ func (s *Screen) SetSize(width, height int) {
 }
 
 func (s *Screen) Render() string {
-	if len(s.Entries) > 0 {
+	if s.ViewList && len(s.Entries) > 0 {
 		return s.RenderEntries()
 	}
+
+	if (s.Running || s.Completed){
+		return s.RenderSummary()
+	}
+
+	content := ""
+
+	content += "[e] to start syncing entries\n"
+	content += "[E] to start syncing detailed view\n"
 
 	return empty.Placeholder(empty.PlaceholderPayload{
 		Width:  s.Width,
 		Height: s.Height,
-		Text:   "Press 'enter' to start syncing all entries.",
+		Text:   content,
 	})
 }

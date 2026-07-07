@@ -1,8 +1,8 @@
 package syncer
 
 import (
+	"fmt"
 	"strings"
-
 	lipgloss "charm.land/lipgloss/v2"
 )
 
@@ -47,7 +47,7 @@ func (s *Screen) RenderEntries() string {
 		items = append(items, row)
 	}
 
-	maxLines := s.Height - 6
+	maxLines := s.Height - 7
 	totalLines := len(items)
 	visibleItems := items
 
@@ -56,6 +56,18 @@ func (s *Screen) RenderEntries() string {
 		endIndex := totalLines
 		visibleItems = items[startIndex:endIndex]
 	}
+
+	pad := maxLines - len(visibleItems)
+
+	for _ = range pad {
+		visibleItems = append(visibleItems, strings.Repeat(" ", s.Width-4))
+	}
+
+	footer := lipgloss.NewStyle().Foreground(lipgloss.Color("240")).Render(
+		fmt.Sprintf("Total: %d | Time %.2f s", len(s.Entries), s.Time.Seconds()),
+	)
+
+	visibleItems = append(visibleItems, footer)
 
 	content := lipgloss.JoinVertical(lipgloss.Left, visibleItems...)
 
