@@ -17,7 +17,9 @@ func (m *model) HandleGlobalKeyMap(msg tea.Msg) tea.Cmd {
 	}
 
 	if key.Matches(km, GlobalBindings.OpenSyncer) {
-		return m.AddScreen("syncer", nil)
+		return m.AddScreen("syncer", map[string]any{
+			"immediate": true,
+		})
 	}
 
 	return nil

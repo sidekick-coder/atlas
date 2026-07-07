@@ -44,6 +44,10 @@ func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 		Completed: false,
 	}
 
+	if i, ok := p.Options["immediate"].(bool); ok && i {
+		s.Sync()
+	}
+
 	return s, nil
 }
 
