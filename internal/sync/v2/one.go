@@ -1,16 +1,11 @@
 package sync
 
 import (
-	"strings"
-
 	"github.com/sidekick-coder/atlas/internal/metadata"
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 
 func (s *Sync) OneByInfo(info *models.EntryInfo) error {
-	smtmt := []string{}
-	params := []any{}
-
 	m, err := metadata.Create(info)
 
 	if err != nil {
@@ -29,16 +24,14 @@ func (s *Sync) OneByInfo(info *models.EntryInfo) error {
 		return err
 	}
 
-	is, ip := s.entryMetaRepo.InsertManySql(entry.ID, data)
+	err = s.entryMetaRepo.DeleteByEntryID(entry.ID)
 
-	smtmt = append(smtmt, is)
-	params = append(params, ip...)
+	if err != nil {
+		return err
+	}
 
-	finalSmtmt := strings.Join(smtmt, ";\n")
+	_, err = s.entryMetaRepo.UpsertMany(entry.ID, data)
 
-	_, err = s.Database.Exec(finalSmtmt, params...)
-
-	println(finalSmtmt)
 
 	if err != nil {
 		return err
