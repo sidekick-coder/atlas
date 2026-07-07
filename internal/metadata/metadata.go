@@ -1,14 +1,19 @@
 package metadata
 
 import (
-	"strings"
 	"fmt"
+	"slices"
+	"strings"
+
+	"github.com/sidekick-coder/atlas/internal/metadata/json"
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 
 type Meta struct {
 	info     *models.EntryInfo
 }
+
+var SytemMetaNames = []string{"basename", "type", "ext", "handlers"}
 
 func Create(info *models.EntryInfo) (*Meta, error) {
 	meta := &Meta{
@@ -27,6 +32,10 @@ func (m *Meta) GetHandlers() []Handler {
 
 	if (m.info.Ext == ".md") {
 		handlers = append(handlers, MarkdownHandler{})
+	}
+
+	if (m.info.Ext == ".json") {
+		handlers = append(handlers, json.Handler{})
 	}
 
 	return handlers
@@ -82,3 +91,26 @@ func (m *Meta) Extract() ([]models.EntryMeta, error) {
 	return result, nil
 }
 
+
+func (m *Meta) Set(name string, value string) (bool, error) {
+	if slices.Contains(SytemMetaNames, name) {
+		return false, fmt.Errorf("cannot set system field: %s", name)
+	}
+
+	handlers := m.GetHandlers()
+	info := m.info
+
+	for _, handler := range handlers {
+		updated, err := handler.Set(info, name, value)
+
+		if err != nil {
+			return false, err
+		}
+
+		if updated {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}

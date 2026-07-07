@@ -1,7 +1,9 @@
 package metadata
 
 import (
+	"maps"
 	"strings"
+
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 
@@ -19,15 +21,12 @@ func Extract(info *models.EntryInfo, handlers []Handler) (map[string]string, err
 			return nil, err
 		}
 
-		for key, value := range data {
-			metadata[key] = value
-		}
+		maps.Copy(metadata, data)
 	}
 
 	metadata["basename"] = info.BaseName
 	metadata["type"] = info.Type
 	metadata["ext"] = strings.TrimPrefix(info.Ext, ".")
-	metadata["handlers"] = strings.Join(ids, ",")
 
 	return metadata, nil
 }
