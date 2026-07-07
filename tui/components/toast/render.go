@@ -11,27 +11,26 @@ func (c *Component) Render() string {
 	text := lipgloss.NewStyle().Foreground(lipgloss.Color("252"))
 
 	boxWidth := lipgloss.Width(c.Content) + 4 // 2 for padding on each side
+	boxWidth = max(boxWidth, lipgloss.Width(c.Title)+6, 50) // 2 for corners, 4 for padding
 
 	// Top border with title.
 	labelPart := "─ " + c.Title + " "
 
-	remaining := (boxWidth) - len([]rune(labelPart))
-
-	remaining = max(remaining, 1)
-
 	topLen := boxWidth - lipgloss.Width(labelPart) - 2 // 2 for the corners
-
+	topLen = max(topLen, 0)
 	top := border.Render("╭" + labelPart + strings.Repeat("─", topLen) + "╮")
 
 	inputContent := text.Render(c.Content)
 
-	pad := boxWidth - lipgloss.Width(inputContent) - 4
+	pad := max(boxWidth-lipgloss.Width(inputContent)-4) // 4 for the corners and padding
 
-	pad = max(pad, 0)
+	if (pad < 0) {
+		pad = 0
+	}
 
-	row := border.Render("│") + " " + inputContent + strings.Repeat(".", pad) + " " + border.Render("│")
+	row := border.Render("│") + " " + inputContent + strings.Repeat(" ", pad) + " " + border.Render("│")
 
-	bottomLen := lipgloss.Width(inputContent) + 2 // 2 for the corners
+	bottomLen := max(boxWidth-2, 0) // 2 for the corners
 	bottom := border.Render("╰" + strings.Repeat("─", bottomLen) + "╯")
 
 	return lipgloss.JoinVertical(lipgloss.Left, top, row, bottom)
