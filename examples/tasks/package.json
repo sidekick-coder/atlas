@@ -1,0 +1,14 @@
+{
+  "author": "Henrique aloha",
+  "dependencies": {
+    "@faker-js/faker": "^10.5.0"
+  },
+  "description": "up we go",
+  "license": "ISC",
+  "name": "atlas-tests",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error\""
+  },
+  "version": "1.0.0"
+}

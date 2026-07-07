@@ -1,0 +1,3 @@
+node_modules
+tasks/*.md
+.atlas/database.sqlite*

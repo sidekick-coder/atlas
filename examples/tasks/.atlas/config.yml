@@ -1,0 +1,10 @@
+actions:
+    - id: open-markdown
+      type: shell
+      command: tmux popup -E -h 90% -w 90% -x C -y C "vi {{ .EntryAbsolutePath }}"
+
+keymaps:
+    - keys: [o]
+      action: open-markdown
+      description: Open
+      groups: [ext=md,ext=json]
