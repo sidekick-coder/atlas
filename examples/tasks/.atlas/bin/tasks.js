@@ -1,8 +1,10 @@
+#!/usr/bin/env node
+
 import fs from "fs";
 import path from "path";
 import { faker } from "@faker-js/faker";
 
-const OUTPUT_DIR = path.resolve(__dirname, "tasks");
+const OUTPUT_DIR = path.resolve(import.meta.dirname, "..", "..", "tasks");
 const TOTAL_TASKS = Number(process.argv[2]) || 10;
 
 fs.rmSync(OUTPUT_DIR, { recursive: true, force: true });

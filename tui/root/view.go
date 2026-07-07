@@ -1,6 +1,8 @@
 package root
 
 import (
+	"fmt"
+
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/tui/components"
@@ -39,7 +41,7 @@ func (m model) View() tea.View {
 	body := empty.Placeholder(empty.PlaceholderPayload{
 		Width:  m.width,
 		Height: m.screenHeight,
-		Text:  "No screens available. Press 'a' to add a new screen.",
+		Text: fmt.Sprintf("No screens available. Press [%s] to add a new screen.", ScreenBindings.Add.Help().Key),
 	})
 
 	if s, ok := m.GetCurrentScreen(); ok {

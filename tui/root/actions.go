@@ -39,10 +39,12 @@ func (m *model) HandleActions(msg tea.Msg) tea.Cmd {
 
     am := m.app.ActionManager()
 
-	err := am.Execute(a.Name, a.Context)
+	ctx := am.CreateContext()
+
+	err := am.Execute(a.Name, ctx)
 
 	if (err != nil) {
-		return messages.ToastErrorCmd("Error executing action: " + err.Error(), 3 * 1000)
+		return messages.ToastErrorCmd("Error executing action: " + err.Error())
 	}
 
 	return  nil

@@ -13,7 +13,7 @@ type ScreenManagerKeyMap struct {
 
 var ScreenBindings = ScreenManagerKeyMap{
 	Add: key.NewBinding(
-		key.WithKeys("A"),
+		key.WithKeys("A", "<leader>a"),
 		key.WithHelp("A", "add screen"),
 	),
 	Close: key.NewBinding(

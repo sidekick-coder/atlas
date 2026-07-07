@@ -5,6 +5,6 @@
 Generate dummy tasks in tasks folder
 
 ```sh
-node bin/tasks.js 10
+node .atlas/bin/tasks.js 10
 ```
 

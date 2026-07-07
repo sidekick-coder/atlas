@@ -28,6 +28,11 @@
 - - define x,y,width,height and render in the screen area
 - - scroll support for each component
 
+- action handlers: type of actions to execute actions in the app 
+- - toast: show a toast message 
+- - open-screen: open a screen with a set of options
+- - action-group: execute a set of actions in order
+
 
 ## Open 
 

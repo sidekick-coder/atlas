@@ -2,9 +2,18 @@ actions:
     - id: open-markdown
       type: shell
       command: tmux popup -E -h 90% -w 90% -x C -y C "vi {{ .EntryAbsolutePath }}"
+    - id: generate-tasks
+      type: shell
+      command: "{{ .AtlasPath }}/bin/tasks.js 100"
+      # command: tmux popup -E -h 90% -w 90% -x C -y C "cat {{ .AtlasPath }}/bin/tasks.js; exec $SHELL"
 
 keymaps:
+    - keys: [g]
+      action: generate-tasks
+      description: Generate tasks
+      groups: [global]
+
     - keys: [o]
       action: open-markdown
       description: Open
-      groups: [ext=md,ext=json]
+      groups: [ext=md, ext=json]
