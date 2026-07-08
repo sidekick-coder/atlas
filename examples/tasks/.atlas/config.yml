@@ -1,11 +1,28 @@
+handlers:
+    - id: content
+      type: content
+      patterns:
+          - "*.md"
+          - "*.json"
+
+    - id: md
+      type: markdown
+      patterns: ["*.md"]
+      prefix: "md"
+
+    - id: custom
+      type: custom
+      bin: "{{ .AtlasPath }}/handlers/custom.js"
+      patterns: ["*.md"]
+
 actions:
-    - id: open-markdown
+    - id: vi
       type: shell
       command: tmux popup -E -h 90% -w 90% -x C -y C "vi {{ .EntryAbsolutePath }}"
+
     - id: generate-tasks
       type: shell
       command: "{{ .AtlasPath }}/bin/tasks.js 100"
-      # command: tmux popup -E -h 90% -w 90% -x C -y C "cat {{ .AtlasPath }}/bin/tasks.js; exec $SHELL"
 
 keymaps:
     - keys: [g]
@@ -14,6 +31,6 @@ keymaps:
       groups: [global]
 
     - keys: [o]
-      action: open-markdown
+      action: vi
       description: Open
       groups: [ext=md, ext=json]

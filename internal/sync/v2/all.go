@@ -45,6 +45,8 @@ func (s *Sync) AllWorkerExtract(e models.EntryInfo, bache SyncBatch, bacheCount 
 		return err
 	}
 
+	// m.SetHandlersFromConfig(s.config)
+
 	id := int(s.NextID.Add(1))
 
 	metas, err := m.ExtractMap()

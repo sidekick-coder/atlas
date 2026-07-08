@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"slices"
 	"strings"
-
-	"github.com/sidekick-coder/atlas/internal/metadata/json"
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 
 type Meta struct {
 	info *models.EntryInfo
+	Handlers []Handler
 }
 
 var SytemMetaNames = []string{"basename", "type", "ext", "handlers"}
@@ -18,28 +17,12 @@ var SytemMetaNames = []string{"basename", "type", "ext", "handlers"}
 func Create(info *models.EntryInfo) (*Meta, error) {
 	meta := &Meta{
 		info: info,
+		Handlers: []Handler{},
 	}
 
 	return meta, nil
 }
 
-func (m *Meta) GetHandlers() []Handler {
-	handlers := []Handler{}
-
-	if m.info.Type == "directory" {
-		// return handlers
-	}
-
-	if m.info.Ext == ".md" {
-		handlers = append(handlers, MarkdownHandler{})
-	}
-
-	if m.info.Ext == ".json" {
-		handlers = append(handlers, json.Handler{})
-	}
-
-	return handlers
-}
 
 func (m *Meta) ExtractMap() (map[string]string, error) {
 	handlers := m.GetHandlers()

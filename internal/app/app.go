@@ -86,6 +86,10 @@ func (a *App) Config() *config.Config {
 	return a.config
 }
 
+func (a *App) Database() *database.Database {
+	return a.database
+}
+
 func (a *App) Drive() *drive.Drive {
 	return a.drive
 }

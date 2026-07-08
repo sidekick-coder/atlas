@@ -5,7 +5,7 @@ import (
 
 	"charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
-	"github.com/sidekick-coder/atlas/internal/sync/v2"
+	"github.com/sidekick-coder/atlas/internal/syncer"
 	"github.com/spf13/cobra"
 )
 
@@ -22,12 +22,10 @@ var syncAllCmd = &cobra.Command{
 			return
 		}
 
-		syncer := app.Syncer()
-
 		green := lipgloss.NewStyle().Foreground(lipgloss.Color("10"))
 		red := lipgloss.NewStyle().Foreground(lipgloss.Color("9"))
 
-		onSuccess := func(path string, metas map[string]string) {
+		onSuccess := func(path string) {
 			fmt.Printf("%s\n", green.Render(path))
 		}
 
@@ -36,24 +34,24 @@ var syncAllCmd = &cobra.Command{
 			fmt.Printf("Error: %v\n", err)
 		}
 
-		payload := sync.AllPayload{
-			Concurrency: concurrency,
-			OnSuccess:   onSuccess,
-			OnError:     onError,
+		onComplete := func(result syncer.Result) {
+			fmt.Printf("\n")
+			fmt.Printf("Scanned: %d\n", result.Scanned)
+			fmt.Printf("Extracted: %d\n", result.Extracted)
+			fmt.Printf("Written: %d\n", result.Written)
+			fmt.Printf("Time: %.3f s\n", result.Time.Seconds())
+			fmt.Printf("Concurrency: %d\n", concurrency)
 		}
 
-		result, err := syncer.All(payload)
-
-		if err != nil {
-			fmt.Printf("Error syncing entries: %v\n", err)
-			return
-		}
-
-		fmt.Printf("\n")
-		fmt.Printf("Total Entries: %d\n", result.TotalEntries)
-		fmt.Printf("Total Batches: %d\n", result.TotalBatches)
-		fmt.Printf("Time: %.2f\n", result.Time.Seconds())
-		fmt.Printf("Concurrency: %d\n", result.Concurrency)
+		syncer.Create().
+			SetConfig(app.Config()).
+			SetDatabase(app.Database()).
+			SetDrive(app.Drive()).
+			SetConcurrency(concurrency).
+			OnSuccess(onSuccess).
+			OnError(onError).
+			OnComplete(onComplete).
+			All()
 	},
 }
 
