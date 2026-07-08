@@ -1,7 +1,6 @@
 package extractor
 
 import (
-	"fmt"
 	"sync"
 	"sync/atomic"
 
@@ -14,6 +13,9 @@ type Worker struct {
 	config *config.Config
 	nextId atomic.Int32
 	count  atomic.Int32
+	onError func(e models.EntryInfo, err error)
+	onSuccess func(e ExtractEntry)
+	onComplete func(count int32)
 }
 
 type ExtractEntry struct {
@@ -26,6 +28,21 @@ func Create() *Worker {
 	return &Worker{
 		nextId: atomic.Int32{},
 	}
+}
+
+func (w *Worker) OnError(cb func(e models.EntryInfo, err error)) *Worker {
+	w.onError = cb
+	return w
+}
+
+func (w *Worker) OnSuccess(cb func(e ExtractEntry)) *Worker {
+	w.onSuccess = cb
+	return w
+}
+
+func (w *Worker) OnComplete(cb func(count int32)) *Worker {
+	w.onComplete = cb
+	return w
 }
 
 func (w *Worker) GetCount() int32 {
@@ -44,7 +61,11 @@ func (w *Worker) Extract(e models.EntryInfo) (ExtractEntry, error) {
 		return ExtractEntry{}, err
 	}
 
-	m.SetHandlersFromConfig(w.config)
+	err = m.SetHandlersFromConfig(w.config)
+
+	if err != nil {
+		return ExtractEntry{}, err
+	}
 
 	id := int(w.nextId.Add(1))
 
@@ -70,15 +91,26 @@ func (w *Worker) Proccess(in <-chan models.EntryInfo, out chan<- ExtractEntry) {
 
 		ee, err := w.Extract(e)
 
+		if err != nil && w.onError != nil {
+			w.onError(e, err)
+		}
+
+		if err == nil && w.onSuccess != nil {
+			w.onSuccess(ee)
+		}
+
 		if err != nil {
-			fmt.Println("error extracting metadata for path:", e.Path, "error:", err)
+			continue
 		}
 
 		out <- ee
-
 	}
 
 	close(out)
+
+	if (w.onComplete != nil) {
+		w.onComplete(w.count.Load())
+	}
 }
 
 func (w *Worker) Run(in <-chan models.EntryInfo, out chan<- ExtractEntry, concurrency int) {

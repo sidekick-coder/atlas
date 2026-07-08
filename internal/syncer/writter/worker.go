@@ -1,7 +1,6 @@
 package writter
 
 import (
-	"fmt"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -162,7 +161,6 @@ func (w *Worker) Process(in <-chan batcher.Batch) {
 		}
 
 		if err != nil {
-			fmt.Printf("Error processing batch %d: %v\n", batch.ID, err)
 			continue
 		}
 	}

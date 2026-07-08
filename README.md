@@ -4,6 +4,7 @@
 - [x] tui: sync page
 - [x] sync all multithreaded
 - [x] bug in single page not able to edit metas
+- [ ] load metadata handlers from config
 - [ ] custom metadata handler (probably comunicate via stdin/stdout)
 - [ ] tui: move queries data to components instead of the screen
 - [ ] tui: columns in the list screen

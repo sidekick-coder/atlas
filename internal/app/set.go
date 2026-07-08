@@ -19,16 +19,26 @@ func (a *App) SetEntryMeta(path string, name string, value string) error {
 		return err
 	}
 
-	handlers := metadata.GetHandlers(info)
+	m, err := metadata.Create(info)
 
-	success, err := metadata.Set(info, name, value, handlers)
+	if err != nil {
+		return err
+	}
+
+	err = m.SetHandlersFromConfig(a.config)
+
+	if err != nil {
+		return err
+	}
+
+	success, err := m.Set(name, value)
 
 	if err != nil {
 		return err
 	}
 
 	if !success {
-		return fmt.Errorf("could not set value: %s", name)
+		return fmt.Errorf("no handler to set set value: %s", name)
 	}
 
 	err = a.syncer.One(path)
@@ -53,9 +63,19 @@ func (a *App) UnsetEntryMeta(path string, name string) error {
 		return err
 	}
 
-	handlers := metadata.GetHandlers(info)
+	m, err := metadata.Create(info)
 
-	success, err := metadata.Unset(info, name, handlers)
+	if err != nil {
+		return err
+	}
+
+	err = m.SetHandlersFromConfig(a.config)
+
+	if err != nil {
+		return err
+	}
+
+	success, err := m.Unset(name)
 
 	if err != nil {
 		return err

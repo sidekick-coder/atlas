@@ -9,6 +9,7 @@ require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/adrg/frontmatter v0.2.0 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
+	github.com/bmatcuk/doublestar/v4 v4.10.0 // indirect
 	github.com/charmbracelet/bubbles v1.0.0 // indirect
 	github.com/charmbracelet/colorprofile v0.4.3 // indirect
 	github.com/charmbracelet/ultraviolet v0.0.0-20260703014108-f5a850f9c2b7 // indirect

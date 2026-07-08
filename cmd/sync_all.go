@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"fmt"
 	"charm.land/lipgloss/v2"
+	"fmt"
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/internal/syncer"
 	"github.com/spf13/cobra"
@@ -35,8 +35,8 @@ var syncAllCmd = &cobra.Command{
 			return
 		}
 
-		green := lipgloss.NewStyle().Foreground(lipgloss.Color("10"))
-		red := lipgloss.NewStyle().Foreground(lipgloss.Color("9"))
+		green := lipgloss.NewStyle().Foreground(lipgloss.Green)
+		red := lipgloss.NewStyle().Foreground(lipgloss.Red)
 
 		onComplete := func(result syncer.Result) {
 			fmt.Printf("\n")
@@ -58,6 +58,11 @@ var syncAllCmd = &cobra.Command{
 
 		s.OnComplete(onComplete)
 
+		s.OnError(func(path string, err error) {
+			fmt.Printf("%s\n", red.Render(path))
+			fmt.Printf("Error: %v\n", err)
+		})
+
 		if !detail {
 			fmt.Printf("Starting sync with concurrency %d and batch size %d\n", concurrency, batchSize)
 		}
@@ -65,11 +70,6 @@ var syncAllCmd = &cobra.Command{
 		if detail {
 			s.OnSuccess(func(path string) {
 				fmt.Printf("%s\n", green.Render(path))
-			})
-
-			s.OnError(func(path string, err error) {
-				fmt.Printf("%s\n", red.Render(path))
-				fmt.Printf("Error: %v\n", err)
 			})
 		}
 

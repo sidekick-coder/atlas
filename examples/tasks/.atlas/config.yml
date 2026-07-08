@@ -1,19 +1,24 @@
 handlers:
-    - id: content
-      type: content
-      patterns:
-          - "*.md"
-          - "*.json"
+    # - id: content
+    #   type: content
+    #   patterns:
+    #       - "*.md"
+    #       - "*.json"
 
     - id: md
       type: markdown
-      patterns: ["*.md"]
+      patterns: ["**/*.md"]
       prefix: "md"
 
-    - id: custom
-      type: custom
-      bin: "{{ .AtlasPath }}/handlers/custom.js"
-      patterns: ["*.md"]
+    - id: json
+      type: json
+      patterns: ["**/*.json"]
+      prefix: "json"
+
+    # - id: custom
+    #   type: custom
+    #   bin: "{{ .AtlasPath }}/handlers/custom.js"
+    #   patterns: ["*.md"]
 
 actions:
     - id: vi
@@ -32,5 +37,5 @@ keymaps:
 
     - keys: [o]
       action: vi
-      description: Open
+      description: open
       groups: [ext=md, ext=json]

@@ -1,4 +1,4 @@
-package metadata 
+package markdown
 
 import (
 	"os"
@@ -11,9 +11,35 @@ import (
 	"github.com/adrg/frontmatter"
 )
 
-type MarkdownHandler struct {}
+type Handler struct {
+	id string
+	prefix string
+	options map[string]any
+}
 
-func ExtractFromContent(content string) (string, map[string]any, error) {
+func Create(payload models.MetaHandlerPayload) models.MetaHandler {
+	prefix := "frontmatter."
+
+	if p, ok := payload.Options["prefix"]; ok { 
+		prefix = p.(string)
+	}
+
+	return Handler{
+		id: payload.ID,
+		options: payload.Options,
+		prefix: prefix,
+	}
+}
+
+func(m Handler) GetID() string {
+	return m.id
+}
+
+func(m Handler) GetTypeID() string {
+	return "markdown"
+}
+
+func (h Handler) ExtractFromContent(content string) (string, map[string]any, error) {
 	result := map[string]any{}
 
 	bodyRaw, err := frontmatter.Parse(strings.NewReader(content), result)
@@ -24,7 +50,7 @@ func ExtractFromContent(content string) (string, map[string]any, error) {
 		return "", nil, err
 	}
 
-	flat := utils.FlattenMap(result, "frontmatter")
+	flat := utils.FlattenMap(result, h.prefix)
 
 	return body, flat, nil
 }
@@ -43,18 +69,14 @@ func Marshal(body string, frontmatter map[string]any) (string, error) {
 	return result, nil
 }
 
-func (m MarkdownHandler) ID() string {
-	return "markdown"
-}
-
-func (m MarkdownHandler) Extract(info *models.EntryInfo) (map[string]string, error) {
+func (h Handler) Extract(info *models.EntryInfo) (map[string]string, error) {
 	contents, err := os.ReadFile(filepath.Join(info.AbsolutePath))
 
 	if err != nil {
 		return nil, err
 	}
 
-	body, flat, err := ExtractFromContent(string(contents))
+	body, flat, err := h.ExtractFromContent(string(contents))
 
 	if err != nil {
 		return nil, err
@@ -67,8 +89,8 @@ func (m MarkdownHandler) Extract(info *models.EntryInfo) (map[string]string, err
 	return result, nil
 }
 
-func (m MarkdownHandler) Set(info *models.EntryInfo, name string, value string) (bool, error) {
-	isFrontmatterField := strings.HasPrefix(name, "frontmatter.")
+func (h Handler) Set(info *models.EntryInfo, name string, value string) (bool, error) {
+	isFrontmatterField := strings.HasPrefix(name, h.prefix)
 
 	if !isFrontmatterField {
 		return false, nil
@@ -82,7 +104,7 @@ func (m MarkdownHandler) Set(info *models.EntryInfo, name string, value string) 
 		return false, err
 	}
 
-	body, metas, err := ExtractFromContent(data)
+	body, metas, err := h.ExtractFromContent(data)
 
 	if err != nil {
 		return false, err
@@ -107,8 +129,8 @@ func (m MarkdownHandler) Set(info *models.EntryInfo, name string, value string) 
 	return true, nil
 }
 
-func (m MarkdownHandler) Unset(info *models.EntryInfo, name string) error {
-	isFrontmatterField := strings.HasPrefix(name, "frontmatter.")
+func (h Handler) Unset(info *models.EntryInfo, name string) error {
+	isFrontmatterField := strings.HasPrefix(name, h.prefix)
 
 	if !isFrontmatterField {
 		return nil
@@ -122,7 +144,7 @@ func (m MarkdownHandler) Unset(info *models.EntryInfo, name string) error {
 		return err
 	}
 
-	body, metas, err := ExtractFromContent(data)
+	body, metas, err := h.ExtractFromContent(data)
 
 	if err != nil {
 		return err
@@ -132,7 +154,7 @@ func (m MarkdownHandler) Unset(info *models.EntryInfo, name string) error {
 
 	unflattened := utils.Unflatten(metas)
 
-	newContents, err := Marshal(body, unflattened["frontmatter"].(map[string]any))
+	newContents, err := Marshal(body, unflattened[h.prefix].(map[string]any))
 
 	if err != nil {
 		return err
@@ -146,3 +168,4 @@ func (m MarkdownHandler) Unset(info *models.EntryInfo, name string) error {
 
 	return nil
 }
+

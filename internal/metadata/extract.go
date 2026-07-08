@@ -1,32 +1,50 @@
 package metadata
 
 import (
+	"fmt"
 	"maps"
 	"strings"
-
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 
-func Extract(info *models.EntryInfo, handlers []Handler) (map[string]string, error) {
-	metadata := make(map[string]string)
+func (m *Meta) ExtractMap() (map[string]string, error) {
+	result := make(map[string]string)
 
-	ids := []string{}
-
-	for _, handler := range handlers {
-		data, err := handler.Extract(info)
-
-		ids = append(ids, handler.ID())
+	for _, handler := range m.handlers {
+		data, err := handler.Extract(m.info)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to extract metadata from handler %s(%s): %w", handler.GetID(), handler.GetTypeID(), err)
 		}
 
-		maps.Copy(metadata, data)
+		maps.Copy(result, data)
 	}
 
-	metadata["basename"] = info.BaseName
-	metadata["type"] = info.Type
-	metadata["ext"] = strings.TrimPrefix(info.Ext, ".")
+	result["basename"] = m.info.BaseName
+	result["type"] = m.info.Type
+	result["ext"] = strings.TrimPrefix(m.info.Ext, ".")
 
-	return metadata, nil
+	return result, nil
 }
+
+func (m *Meta) Extract() ([]models.EntryMeta, error) {
+	metas, err := m.ExtractMap()
+
+	if err != nil {
+		return nil, err
+	}
+
+	result := []models.EntryMeta{}
+
+	for key, value := range metas {
+		meta := models.EntryMeta{
+			Name:  key,
+			Value: value,
+		}
+
+		result = append(result, meta)
+	}
+
+	return result, nil
+}
+

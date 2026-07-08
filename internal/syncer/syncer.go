@@ -6,10 +6,11 @@ import (
 	"github.com/sidekick-coder/atlas/internal/config"
 	"github.com/sidekick-coder/atlas/internal/database"
 	"github.com/sidekick-coder/atlas/internal/drive/v2"
+	"github.com/sidekick-coder/atlas/internal/models"
+	"github.com/sidekick-coder/atlas/internal/syncer/batcher"
 	"github.com/sidekick-coder/atlas/internal/syncer/extractor"
 	"github.com/sidekick-coder/atlas/internal/syncer/scanner"
 	"github.com/sidekick-coder/atlas/internal/syncer/writter"
-	"github.com/sidekick-coder/atlas/internal/syncer/batcher"
 )
 
 type Result struct {
@@ -34,8 +35,6 @@ type Syncer struct {
 	batcher *batcher.Worker
 	writter *writter.Worker
 
-	onSuccess func(path string)
-	onError   func(path string, err error)
 	onComplete func(result Result)
 }
 
@@ -81,12 +80,21 @@ func (s *Syncer) SetDatabase(db *database.Database) *Syncer {
 }
 
 func (s *Syncer) OnSuccess(f func(path string)) *Syncer {
-	s.onSuccess = f
+	s.writter.OnSuccess(func(e extractor.ExtractEntry) {
+		f(e.Path)
+	})
 	return s
 }
 
 func (s *Syncer) OnError(f func(path string, err error)) *Syncer {
-	s.onError = f
+	s.writter.OnError(func(e extractor.ExtractEntry, err error) {
+		f(e.Path, err)
+	})
+
+	s.extractor.OnError(func(e models.EntryInfo, err error) {
+		f(e.Path, err)
+	})
+
 	return s
 }
 

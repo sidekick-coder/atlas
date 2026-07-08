@@ -9,7 +9,25 @@ import (
 	"github.com/sidekick-coder/atlas/internal/utils"
 )
 
-type Handler struct {}
+type Handler struct {
+	id string
+	options map[string]any
+}
+
+func Create(payload models.MetaHandlerPayload) models.MetaHandler {
+	return Handler{
+		id: payload.ID,
+		options: payload.Options,
+	}
+}
+
+func (m Handler) GetID() string {
+	return m.id
+}
+
+func (m Handler) GetTypeID() string {
+	return "json"
+}
 
 func UnmarshalFromBytes(content []byte) (map[string]any, error) {
 	result := map[string]any{}

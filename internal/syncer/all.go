@@ -22,14 +22,6 @@ func (s *Syncer) All() {
 	s.extractor.SetConfig(s.config)
 	s.writter.SetDatabase(s.database)
 
-	if s.onSuccess != nil {
-		s.writter.OnSuccessPath(s.onSuccess)
-	}
-
-	if s.onError != nil {
-		s.writter.OnErrorPath(s.onError)
-	}
-
 	err := s.database.Cleanup()
 
 	if err != nil {
