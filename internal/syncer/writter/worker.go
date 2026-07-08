@@ -1,33 +1,28 @@
 package writter
 
 import (
+	"fmt"
 	"strings"
 	"sync"
 	"sync/atomic"
 
 	"github.com/sidekick-coder/atlas/internal/database"
+	"github.com/sidekick-coder/atlas/internal/syncer/batcher"
 	"github.com/sidekick-coder/atlas/internal/syncer/extractor"
 )
 
 type Worker struct {
 	database  *database.Database
 	processed atomic.Int32
-	batchSize int
 	count	 atomic.Int32
-	nextID    atomic.Int32
 	onSuccess func(e extractor.ExtractEntry)
+	onBatchComplete func(batch batcher.Batch)
 	onError   func(e extractor.ExtractEntry, err error)
-}
-
-type Batch struct {
-	ID      int32
-	Entries []extractor.ExtractEntry
 }
 
 func Create() *Worker {
 	return &Worker{
-		batchSize: 10,
-		nextID:    atomic.Int32{},
+		count:    atomic.Int32{},
 	}
 }
 
@@ -37,11 +32,6 @@ func (w *Worker) GetCount() int32 {
 
 func (w *Worker) SetDatabase(db *database.Database) *Worker {
 	w.database = db
-	return w
-}
-
-func (w *Worker) SetBatchSize(size int) *Worker {
-	w.batchSize = size
 	return w
 }
 
@@ -69,52 +59,16 @@ func (w *Worker) OnErrorPath(cb func(p string, err error)) *Worker {
 	return w
 }
 
+func (w *Worker) OnBatchComplete(cb func(batch batcher.Batch)) *Worker {
+	w.onBatchComplete = cb
+	return w
+}
+
 func (w *Worker) GetProcessedCount() int32 {
 	return w.processed.Load()
 }
 
-func (w *Worker) Batcher(in <-chan extractor.ExtractEntry, out chan<- Batch) {
-	id := w.nextID.Add(1)
-
-	batch := Batch{
-		ID:      id,
-		Entries: make([]extractor.ExtractEntry, 0, w.batchSize),
-	}
-
-	for e := range in {
-		batch.Entries = append(batch.Entries, e)
-
-		if len(batch.Entries) >= w.batchSize {
-			out <- batch
-
-			id := w.nextID.Add(1)
-
-			batch = Batch{
-				ID:      id,
-				Entries: make([]extractor.ExtractEntry, 0, w.batchSize),
-			}
-		}
-	}
-
-	if len(batch.Entries) > 0 {
-		out <- batch
-	}
-
-}
-
-func (w *Worker) BatcherRun(in <-chan extractor.ExtractEntry, out chan<- Batch, concurrency int) {
-	var wg sync.WaitGroup
-
-	for range concurrency {
-		wg.Go(func() {
-			w.Batcher(in, out)
-		})
-	}
-
-	wg.Wait()
-}
-
-func (w *Worker) ExecuteBatch(batch Batch) error {
+func (w *Worker) Execute(batch batcher.Batch) error {
 	tx, err := w.database.Connection.Begin()
 
 	if err != nil {
@@ -169,7 +123,7 @@ func (w *Worker) ExecuteBatch(batch Batch) error {
 	return tx.Commit()
 }
 
-func (w *Worker) emitSuccess(batch Batch) {
+func (w *Worker) emitSuccess(batch batcher.Batch) {
 	if w.onSuccess != nil {
 		for _, e := range batch.Entries {
 			w.processed.Add(1)
@@ -178,7 +132,7 @@ func (w *Worker) emitSuccess(batch Batch) {
 	}
 }
 
-func (w *Worker) emitError(batch Batch, err error) {
+func (w *Worker) emitError(batch batcher.Batch, err error) {
 	if w.onError != nil {
 		for _, e := range batch.Entries {
 			w.onError(e, err)
@@ -187,9 +141,13 @@ func (w *Worker) emitError(batch Batch, err error) {
 	}
 }
 
-func (w *Worker) Process(in <-chan Batch) {
+func (w *Worker) Process(in <-chan batcher.Batch) {
 	for batch := range in {
-		err := w.ExecuteBatch(batch)
+		err := w.Execute(batch)
+
+		if w.onBatchComplete != nil {
+			w.onBatchComplete(batch)
+		}
 
 		if w.onSuccess != nil && err == nil {
 			w.emitSuccess(batch)
@@ -204,13 +162,13 @@ func (w *Worker) Process(in <-chan Batch) {
 		}
 
 		if err != nil {
+			fmt.Printf("Error processing batch %d: %v\n", batch.ID, err)
 			continue
 		}
-
 	}
 }
 
-func (w *Worker) Run(in <-chan Batch, concurrency int) {
+func (w *Worker) Run(in <-chan batcher.Batch, concurrency int) {
 	var wg sync.WaitGroup
 
 	for range concurrency {

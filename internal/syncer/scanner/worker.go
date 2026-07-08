@@ -1,6 +1,7 @@
 package scanner
 
 import (
+	"fmt"
 	"sync"
 	"sync/atomic"
 
@@ -9,14 +10,20 @@ import (
 )
 
 type Worker struct {
-	drive *drive.Drive
-	count atomic.Int32
+	drive      *drive.Drive
+	count      atomic.Int32
+	onComplete func(count int32)
 }
 
 func Create() *Worker {
 	return &Worker{
 		count: atomic.Int32{},
 	}
+}
+
+func (w *Worker) OnComplete(cb func(count int32)) *Worker {
+	w.onComplete = cb
+	return w
 }
 
 func (w *Worker) GetCount() int32 {
@@ -29,13 +36,23 @@ func (w *Worker) SetDrive(d *drive.Drive) *Worker {
 }
 
 func (w *Worker) Process(out chan<- models.EntryInfo) {
-	w.drive.ScanStream(func(e models.EntryInfo) error {
-		w.count.Add(1)
+	entries, err := w.drive.Scan()
 
+	if err != nil {
+		fmt.Println("error scanning drive:", err)
+	}
+
+	for _, e := range entries {
 		out <- e
+	}
 
-		return nil
-	})
+	w.count.Store(int32(len(entries)))
+
+	if w.onComplete != nil {
+		w.onComplete(w.count.Load())
+	}
+
+	close(out)
 }
 
 func (w *Worker) Run(out chan<- models.EntryInfo, concurrency int) {

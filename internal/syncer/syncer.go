@@ -9,13 +9,17 @@ import (
 	"github.com/sidekick-coder/atlas/internal/syncer/extractor"
 	"github.com/sidekick-coder/atlas/internal/syncer/scanner"
 	"github.com/sidekick-coder/atlas/internal/syncer/writter"
+	"github.com/sidekick-coder/atlas/internal/syncer/batcher"
 )
 
 type Result struct {
+	Concurrency int 
+	BatchSize int
 	Time time.Duration
 	Scanned int32
 	Extracted int32
 	Written int32
+	Batches int32
 }
 
 type Syncer struct {
@@ -27,6 +31,7 @@ type Syncer struct {
 
 	scanner *scanner.Worker
 	extractor *extractor.Worker
+	batcher *batcher.Worker
 	writter *writter.Worker
 
 	onSuccess func(path string)
@@ -37,18 +42,25 @@ type Syncer struct {
 func Create() *Syncer {
 	s := scanner.Create()
 	e := extractor.Create()
+	b := batcher.Create()
 	w := writter.Create()
 
 
 	return &Syncer{
 		scanner: s,
 		extractor: e,
+		batcher: b,
 		writter: w,
 	}
 }
 
 func (s *Syncer) SetConcurrency(c int) *Syncer {
 	s.concurrency = c
+	return s
+}
+
+func (s *Syncer) SetBatchSize(b int) *Syncer {
+	s.batcher.SetBatchSize(b)
 	return s
 }
 
@@ -80,5 +92,15 @@ func (s *Syncer) OnError(f func(path string, err error)) *Syncer {
 
 func (s *Syncer) OnComplete(f func(result Result)) *Syncer {
 	s.onComplete = f
+	return s
+}
+
+func (s *Syncer) OnBatchComplete(f func(batch batcher.Batch)) *Syncer {
+	s.writter.OnBatchComplete(f)
+	return s
+}
+
+func (s *Syncer) OnScanComplete(f func(count int32)) *Syncer {
+	s.scanner.OnComplete(f)
 	return s
 }

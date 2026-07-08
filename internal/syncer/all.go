@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/sidekick-coder/atlas/internal/models"
+	"github.com/sidekick-coder/atlas/internal/syncer/batcher"
 	"github.com/sidekick-coder/atlas/internal/syncer/extractor"
-	"github.com/sidekick-coder/atlas/internal/syncer/writter"
 )
 
 func (s *Syncer) AllWorker(wg *sync.WaitGroup) {
@@ -38,22 +38,30 @@ func (s *Syncer) All() {
 
 	infos := make(chan models.EntryInfo)
 	extractions := make(chan extractor.ExtractEntry)
-	batches := make(chan writter.Batch)
+	batches := make(chan batcher.Batch)
+	done := make(chan struct{})
 
-	go s.writter.Run(batches, concurrency)
-	go s.writter.BatcherRun(extractions, batches, concurrency)
+	go func(){
+		s.writter.Run(batches, concurrency)
+		close(done)
+	}()
+
+	go s.batcher.Run(extractions, batches, concurrency)
 	go s.extractor.Run(infos, extractions, concurrency)
 
 	s.scanner.Run(infos, concurrency)
 
-	timeTaken := time.Since(start)
+	<-done
 
 	if s.onComplete != nil {
 		s.onComplete(Result{
-			Time: timeTaken,
+			Concurrency: concurrency,
+			BatchSize:  s.batcher.GetBatchSize(),
+			Time:      time.Since(start),
 			Scanned:   s.scanner.GetCount(),
 			Extracted: s.extractor.GetCount(),
 			Written:   s.writter.GetCount(),
+			Batches:   s.batcher.GetCount(),
 		})
 	}
 }

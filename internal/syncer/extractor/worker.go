@@ -1,6 +1,7 @@
 package extractor
 
 import (
+	"fmt"
 	"sync"
 	"sync/atomic"
 
@@ -65,16 +66,19 @@ func (w *Worker) Extract(e models.EntryInfo) (ExtractEntry, error) {
 func (w *Worker) Proccess(in <-chan models.EntryInfo, out chan<- ExtractEntry) {
 
 	for e := range in {
+		w.count.Add(1)
+
 		ee, err := w.Extract(e)
 
 		if err != nil {
-			continue
+			fmt.Println("error extracting metadata for path:", e.Path, "error:", err)
 		}
 
 		out <- ee
 
-		w.count.Add(1)
 	}
+
+	close(out)
 }
 
 func (w *Worker) Run(in <-chan models.EntryInfo, out chan<- ExtractEntry, concurrency int) {
@@ -87,4 +91,5 @@ func (w *Worker) Run(in <-chan models.EntryInfo, out chan<- ExtractEntry, concur
 	}
 
 	wg.Wait()
+
 }
