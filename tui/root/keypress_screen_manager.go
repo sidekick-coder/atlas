@@ -28,9 +28,7 @@ func (m *model) HandleScreeManagerKeypress(msg tea.Msg) tea.Cmd {
 	}
 
 	if key.Matches(km, ScreenBindings.Add) {
-		m.AddScreen("empty", nil)
-
-		return nil
+		return m.AddScreenEmpty()
 	}
 
 	if key.Matches(km, ScreenBindings.Close) {

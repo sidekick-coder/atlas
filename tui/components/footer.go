@@ -82,3 +82,11 @@ func (f *Footer) Render() string {
 func (f *Footer) View() string {
 	return f.Render()
 }
+
+func (f *Footer) GetHeight() int {
+	return lipgloss.Height(f.Render())
+}
+
+func (f *Footer) GetWidth() int {
+	return lipgloss.Width(f.Render())
+}

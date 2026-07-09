@@ -2988,3 +2988,481 @@ debug 2026/07/09 05:09:25 Pending keys: [up]
 debug 2026/07/09 05:09:26 Pending keys: [ctrl+s]
 debug 2026/07/09 05:09:29 Pending keys: [alt+a]
 debug 2026/07/09 05:11:09 Pending keys: [q]
+debug 2026/07/09 06:12:12 container: width=10, height=10, contentHeight=%!d(MISSING)
+debug 2026/07/09 06:12:12 container: width=274, height=38, contentHeight=%!d(MISSING)
+debug 2026/07/09 06:12:12 root: width=274, height=42, contentHeight=39
+debug 2026/07/09 06:12:37 container: width=10, height=10
+debug 2026/07/09 06:12:37 container: width=274, height=38
+debug 2026/07/09 06:12:37 root: width=274, height=42, contentHeight=39
+debug 2026/07/09 06:12:41 container: width=10, height=10
+debug 2026/07/09 06:12:41 container: width=270, height=10
+debug 2026/07/09 06:13:51 container: width=10, height=10
+debug 2026/07/09 06:13:51 container: width=274, height=38
+debug 2026/07/09 06:13:51 root: width=274, height=42, contentHeight=39
+debug 2026/07/09 06:13:55 container: width=10, height=10
+debug 2026/07/09 06:13:55 container: width=270, height=39
+debug 2026/07/09 06:13:55 screen: width=274, height=39
+debug 2026/07/09 06:14:23 container: width=274, height=38
+debug 2026/07/09 06:14:23 root: width=274, height=42, contentHeight=39
+debug 2026/07/09 06:14:26 container: width=270, height=39
+debug 2026/07/09 06:14:26 screen: width=274, height=39
+debug 2026/07/09 06:15:11 container: width=274, height=38
+debug 2026/07/09 06:15:11 root: width=274, height=42, contentHeight=39
+debug 2026/07/09 06:15:12 container: width=270, height=39
+debug 2026/07/09 06:15:12 screen: width=274, height=39
+debug 2026/07/09 06:16:11 container: width=274, height=38
+debug 2026/07/09 06:16:11 root: width=274, height=42, contentHeight=39
+debug 2026/07/09 06:16:14 container: width=270, height=39
+debug 2026/07/09 06:16:14 screen: width=274, height=39
+debug 2026/07/09 06:17:10 container: width=274, height=38
+debug 2026/07/09 06:17:10 root: width=274, height=42, contentHeight=39
+debug 2026/07/09 06:17:11 container: width=270, height=39
+debug 2026/07/09 06:17:11 screen: width=274, height=39
+debug 2026/07/09 06:17:32 container: width=274, height=38
+debug 2026/07/09 06:17:32 root: width=274, height=42, contentHeight=39
+debug 2026/07/09 06:17:33 container: width=270, height=35
+debug 2026/07/09 06:17:33 screen: width=274, height=39
+debug 2026/07/09 06:18:01 container: width=274, height=38
+debug 2026/07/09 06:18:01 root: width=274, height=42, contentHeight=39
+debug 2026/07/09 06:18:11 container: width=274, height=38
+debug 2026/07/09 06:18:11 root: width=274, height=42, contentHeight=39
+debug 2026/07/09 06:18:39 container: width=274, height=37
+debug 2026/07/09 06:18:39 root: width=274, height=42, contentHeight=39
+debug 2026/07/09 06:20:36 root: toolbar width=77, tabBar width=6, footer width=141, total width=224
+debug 2026/07/09 06:20:36 root: toolbar width=77, tabBar width=6, footer width=141, total width=224
+debug 2026/07/09 06:20:36 container: width=274, height=37
+debug 2026/07/09 06:20:36 root: width=274, height=42, contentHeight=39
+debug 2026/07/09 06:20:36 root: toolbar width=274, tabBar width=276, footer width=274, total width=824
+debug 2026/07/09 06:20:36 root: toolbar width=274, tabBar width=276, footer width=274, total width=824
+debug 2026/07/09 06:20:49 root: toolbar width=274, tabBar width=276, footer width=274, total width=824
+debug 2026/07/09 06:20:49 root: toolbar width=274, tabBar width=276, footer width=274, total width=824
+debug 2026/07/09 06:21:24 root: toolbarHeight=3, tabBarHeight=1, footerHeight=3, screenHeight=7
+debug 2026/07/09 06:21:24 root: toolbarHeight=3, tabBarHeight=1, footerHeight=3, screenHeight=7
+debug 2026/07/09 06:21:24 container: width=274, height=37
+debug 2026/07/09 06:21:24 root: width=274, height=42, contentHeight=39
+debug 2026/07/09 06:21:24 root: toolbarHeight=3, tabBarHeight=1, footerHeight=3, screenHeight=7
+debug 2026/07/09 06:21:24 root: toolbarHeight=3, tabBarHeight=1, footerHeight=3, screenHeight=7
+debug 2026/07/09 06:21:25 root: toolbarHeight=3, tabBarHeight=1, footerHeight=3, screenHeight=7
+debug 2026/07/09 06:21:40 root: toolbarHeight=3, tabBarHeight=1, footerHeight=3, screenHeight=7
+debug 2026/07/09 06:21:40 root: toolbarHeight=3, tabBarHeight=1, footerHeight=3, screenHeight=7
+debug 2026/07/09 06:22:20 root: toolbarHeight=3, tabBarHeight=1, footerHeight=3, screenHeight=-7
+debug 2026/07/09 06:22:20 root: toolbarHeight=3, tabBarHeight=1, footerHeight=3, screenHeight=-7
+debug 2026/07/09 06:22:20 container: width=274, height=37
+debug 2026/07/09 06:22:20 root: width=274, height=42, contentHeight=39
+debug 2026/07/09 06:22:20 root: toolbarHeight=3, tabBarHeight=1, footerHeight=3, screenHeight=35
+debug 2026/07/09 06:22:20 root: toolbarHeight=3, tabBarHeight=1, footerHeight=3, screenHeight=35
+debug 2026/07/09 06:22:24 root: toolbarHeight=3, tabBarHeight=1, footerHeight=3, screenHeight=35
+debug 2026/07/09 06:22:24 root: toolbarHeight=3, tabBarHeight=1, footerHeight=3, screenHeight=35
+debug 2026/07/09 06:22:44 container: width=0, height=-7
+debug 2026/07/09 06:22:44 container: width=0, height=-7
+debug 2026/07/09 06:22:44 container: width=274, height=37
+debug 2026/07/09 06:22:44 root: width=274, height=42, contentHeight=39
+debug 2026/07/09 06:22:44 container: width=274, height=35
+debug 2026/07/09 06:22:44 container: width=274, height=35
+debug 2026/07/09 06:22:46 container: width=274, height=35
+debug 2026/07/09 06:22:46 container: width=274, height=35
+debug 2026/07/09 06:22:47 container: width=274, height=35
+debug 2026/07/09 06:22:47 container: width=274, height=35
+debug 2026/07/09 06:22:47 container: width=274, height=35
+debug 2026/07/09 06:22:47 container: width=274, height=35
+debug 2026/07/09 06:22:48 container: width=274, height=35
+debug 2026/07/09 06:22:48 container: width=274, height=35
+debug 2026/07/09 06:28:27 container: width=274, height=37
+debug 2026/07/09 06:29:06 container: width=274, height=35
+debug 2026/07/09 06:29:24 container: width=274, height=35
+debug 2026/07/09 06:29:30 container: width=270, height=31
+debug 2026/07/09 06:29:30 screen: width=274, height=35
+debug 2026/07/09 06:30:24 container: width=274, height=35
+debug 2026/07/09 06:30:27 container: width=270, height=31
+debug 2026/07/09 06:30:27 screen: width=274, height=35
+debug 2026/07/09 06:31:41 container: width=274, height=35
+debug 2026/07/09 06:31:43 container: width=270, height=35
+debug 2026/07/09 06:31:43 screen: width=274, height=35
+debug 2026/07/09 06:31:52 container: width=274, height=35
+debug 2026/07/09 06:31:53 container: width=274, height=35
+debug 2026/07/09 06:31:53 screen: width=274, height=35
+debug 2026/07/09 06:33:04 container: width=274, height=35
+debug 2026/07/09 06:34:19 container: width=274, height=35
+debug 2026/07/09 06:34:47 container: width=274, height=35
+debug 2026/07/09 06:35:22 container: width=274, height=35
+debug 2026/07/09 06:36:20 container: width=274, height=35
+debug 2026/07/09 06:40:30 container: width=274, height=35
+debug 2026/07/09 06:40:30 container: width=274, height=35
+debug 2026/07/09 06:40:59 container: width=274, height=35
+debug 2026/07/09 06:40:59 container: width=274, height=35
+debug 2026/07/09 06:41:02 container: width=274, height=35
+debug 2026/07/09 06:41:02 screen: width=274, height=35
+debug 2026/07/09 06:41:29 container: width=274, height=35
+debug 2026/07/09 06:41:29 container: width=274, height=35
+debug 2026/07/09 06:42:39 container: width=274, height=35
+debug 2026/07/09 06:42:39 container: width=274, height=35
+debug 2026/07/09 06:42:40 container: width=274, height=35
+debug 2026/07/09 06:42:40 screen: width=274, height=35
+debug 2026/07/09 06:44:28 container: width=274, height=35
+debug 2026/07/09 06:44:28 container: width=274, height=35
+debug 2026/07/09 06:44:46 container: width=274, height=35
+debug 2026/07/09 06:44:46 container: width=274, height=35
+debug 2026/07/09 06:45:05 container: width=274, height=35
+debug 2026/07/09 06:45:05 container: width=274, height=35
+debug 2026/07/09 06:45:20 container: width=274, height=35
+debug 2026/07/09 06:45:20 container: width=274, height=35
+debug 2026/07/09 06:45:29 container: width=274, height=35
+debug 2026/07/09 06:45:29 container: width=274, height=35
+debug 2026/07/09 06:47:57 screen: width=274, height=35
+debug 2026/07/09 06:48:55 screen: width=274, height=35
+debug 2026/07/09 06:50:13 screen: width=274, height=35
+debug 2026/07/09 06:51:07 screen: width=274, height=35
+debug 2026/07/09 06:51:20 screen: width=274, height=35
+debug 2026/07/09 06:55:14 colw: 91, width: 274, columns: 3
+debug 2026/07/09 06:57:00 colw: 91, width: 274, columns: 3
+debug 2026/07/09 06:57:00 colw: 91, width: 274, columns: 3
+debug 2026/07/09 06:57:00 colw: 91, width: 274, columns: 3
+debug 2026/07/09 07:01:31 Column label: ID                                                                                          Width: 91
+debug 2026/07/09 07:01:31 Column label: Name                                                                                        Width: 91
+debug 2026/07/09 07:01:31 Column label: Description                                                                                 Width: 91
+debug 2026/07/09 07:01:43 Column label: ID                                                                                          Width: 91
+debug 2026/07/09 07:01:43 Column label: Name                                                                                        Width: 91
+debug 2026/07/09 07:01:43 Column label: Description                                                                                 Width: 91
+debug 2026/07/09 07:01:43 Column label: ID                                                                                          Width: 91
+debug 2026/07/09 07:01:43 Column label: Name                                                                                        Width: 91
+debug 2026/07/09 07:01:43 Column label: Description                                                                                 Width: 91
+debug 2026/07/09 07:01:55 Column label: ID                                                                                          Width: 91
+debug 2026/07/09 07:01:55 Column label: Name                                                                                        Width: 91
+debug 2026/07/09 07:01:55 Column label: Description                                                                                 Width: 91
+debug 2026/07/09 07:01:56 Column label: ID                                                                                          Width: 91
+debug 2026/07/09 07:01:56 Column label: Name                                                                                        Width: 91
+debug 2026/07/09 07:01:56 Column label: Description                                                                                 Width: 91
+debug 2026/07/09 07:01:56 Column label: ID                                                                                          Width: 91
+debug 2026/07/09 07:01:56 Column label: Name                                                                                        Width: 91
+debug 2026/07/09 07:01:56 Column label: Description                                                                                 Width: 91
+debug 2026/07/09 07:02:20 colw: 91, label: ID-----------------------------------------------------------------------------------------, len(label): 91
+debug 2026/07/09 07:02:20 colw: 91, label: Name---------------------------------------------------------------------------------------, len(label): 91
+debug 2026/07/09 07:02:20 colw: 91, label: Description--------------------------------------------------------------------------------, len(label): 91
+debug 2026/07/09 07:02:28 colw: 91, label: ID-----------------------------------------------------------------------------------------, len(label): 91
+debug 2026/07/09 07:02:28 colw: 91, label: Name---------------------------------------------------------------------------------------, len(label): 91
+debug 2026/07/09 07:02:28 colw: 91, label: Description--------------------------------------------------------------------------------, len(label): 91
+debug 2026/07/09 07:02:28 colw: 91, label: ID-----------------------------------------------------------------------------------------, len(label): 91
+debug 2026/07/09 07:02:28 colw: 91, label: Name---------------------------------------------------------------------------------------, len(label): 91
+debug 2026/07/09 07:02:28 colw: 91, label: Description--------------------------------------------------------------------------------, len(label): 91
+debug 2026/07/09 07:02:41 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:02:41 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:02:41 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:02:46 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:02:46 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:02:46 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:02:46 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:02:46 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:02:46 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:03:00 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:03:00 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:03:00 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:03:02 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:03:02 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:03:02 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:03:02 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:03:02 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:03:02 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:03:12 colw: 91, label: ID........................................................................................., len(label): 91
+debug 2026/07/09 07:03:12 colw: 91, label: Name......................................................................................., len(label): 91
+debug 2026/07/09 07:03:12 colw: 91, label: Description................................................................................, len(label): 91
+debug 2026/07/09 07:04:51 colw: 91, label: ID........................................................................................., len(label): 91
+debug 2026/07/09 07:04:51 colw: 91, label: Name......................................................................................., len(label): 91
+debug 2026/07/09 07:04:51 colw: 91, label: Description................................................................................, len(label): 91
+debug 2026/07/09 07:04:51 colw: 91, label: ID........................................................................................., len(label): 91
+debug 2026/07/09 07:04:51 colw: 91, label: Name......................................................................................., len(label): 91
+debug 2026/07/09 07:04:51 colw: 91, label: Description................................................................................, len(label): 91
+debug 2026/07/09 07:04:51 colw: 91, label: ID........................................................................................., len(label): 91
+debug 2026/07/09 07:04:51 colw: 91, label: Name......................................................................................., len(label): 91
+debug 2026/07/09 07:04:51 colw: 91, label: Description................................................................................, len(label): 91
+debug 2026/07/09 07:04:53 colw: 91, label: ID........................................................................................., len(label): 91
+debug 2026/07/09 07:04:53 colw: 91, label: ID........................................................................................., len(label): 91
+debug 2026/07/09 07:04:53 colw: 91, label: Name......................................................................................., len(label): 91
+debug 2026/07/09 07:04:53 colw: 91, label: Name......................................................................................., len(label): 91
+debug 2026/07/09 07:04:53 colw: 91, label: Description................................................................................, len(label): 91
+debug 2026/07/09 07:04:53 colw: 91, label: Description................................................................................, len(label): 91
+debug 2026/07/09 07:04:54 colw: 91, label: ID........................................................................................., len(label): 91
+debug 2026/07/09 07:04:54 colw: 91, label: ID........................................................................................., len(label): 91
+debug 2026/07/09 07:04:54 colw: 91, label: Name......................................................................................., len(label): 91
+debug 2026/07/09 07:04:54 colw: 91, label: Name......................................................................................., len(label): 91
+debug 2026/07/09 07:04:54 colw: 91, label: Description................................................................................, len(label): 91
+debug 2026/07/09 07:04:54 colw: 91, label: Description................................................................................, len(label): 91
+debug 2026/07/09 07:04:54 colw: 91, label: ID........................................................................................., len(label): 91
+debug 2026/07/09 07:04:54 colw: 91, label: ID........................................................................................., len(label): 91
+debug 2026/07/09 07:04:54 colw: 91, label: Name......................................................................................., len(label): 91
+debug 2026/07/09 07:04:54 colw: 91, label: Name......................................................................................., len(label): 91
+debug 2026/07/09 07:04:54 colw: 91, label: Description................................................................................, len(label): 91
+debug 2026/07/09 07:04:54 colw: 91, label: Description................................................................................, len(label): 91
+debug 2026/07/09 07:05:03 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:05:03 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:05:03 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:05:03 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:05:03 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:05:03 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:05:04 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:05:04 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:05:04 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:05:04 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:05:04 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:05:04 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:05:04 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:05:04 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:05:04 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:05:04 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:05:04 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:05:04 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:05:31 colw: 91, label: ID........................................................................................., len(label): 91
+debug 2026/07/09 07:05:31 colw: 91, label: ID........................................................................................., len(label): 91
+debug 2026/07/09 07:05:31 colw: 91, label: Name......................................................................................., len(label): 91
+debug 2026/07/09 07:05:31 colw: 91, label: Name......................................................................................., len(label): 91
+debug 2026/07/09 07:05:31 colw: 91, label: Description................................................................................, len(label): 91
+debug 2026/07/09 07:05:31 colw: 91, label: Description................................................................................, len(label): 91
+debug 2026/07/09 07:05:33 colw: 91, label: ID........................................................................................., len(label): 91
+debug 2026/07/09 07:05:33 colw: 91, label: ID........................................................................................., len(label): 91
+debug 2026/07/09 07:05:33 colw: 91, label: Name......................................................................................., len(label): 91
+debug 2026/07/09 07:05:33 colw: 91, label: Name......................................................................................., len(label): 91
+debug 2026/07/09 07:05:33 colw: 91, label: Description................................................................................, len(label): 91
+debug 2026/07/09 07:05:33 colw: 91, label: Description................................................................................, len(label): 91
+debug 2026/07/09 07:05:33 colw: 91, label: ID........................................................................................., len(label): 91
+debug 2026/07/09 07:05:33 colw: 91, label: ID........................................................................................., len(label): 91
+debug 2026/07/09 07:05:33 colw: 91, label: Name......................................................................................., len(label): 91
+debug 2026/07/09 07:05:33 colw: 91, label: Name......................................................................................., len(label): 91
+debug 2026/07/09 07:05:33 colw: 91, label: Description................................................................................, len(label): 91
+debug 2026/07/09 07:05:33 colw: 91, label: Description................................................................................, len(label): 91
+debug 2026/07/09 07:05:41 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:05:41 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:05:41 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:05:41 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:05:41 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:05:41 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:05:43 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:05:43 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:05:43 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:05:43 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:05:43 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:05:43 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:05:43 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:05:43 colw: 91, label: ID                                                                                         , len(label): 91
+debug 2026/07/09 07:05:43 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:05:43 colw: 91, label: Name                                                                                       , len(label): 91
+debug 2026/07/09 07:05:43 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:05:43 colw: 91, label: Description                                                                                , len(label): 91
+debug 2026/07/09 07:10:58 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:11:55 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:11:57 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:13:06 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:13:06 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:13:09 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:13:09 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:13:40 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:13:40 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:14:05 Window size changed: width=274, height=42
+debug 2026/07/09 07:14:05 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:14:11 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:15:03 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:15:17 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:15:17 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:15:34 Window size changed: width=274, height=42
+debug 2026/07/09 07:15:34 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:15:35 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:15:45 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:15:45 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:17:12 Window size changed: width=274, height=42
+debug 2026/07/09 07:17:12 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:17:13 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:17:23 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:17:23 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:19:56 Window size changed: width=274, height=42
+debug 2026/07/09 07:19:56 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:19:56 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:19:58 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:19:58 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:20:45 Window size changed: width=274, height=42
+debug 2026/07/09 07:20:45 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:22:23 Window size changed: width=274, height=42
+debug 2026/07/09 07:22:23 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:22:29 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:23:02 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:23:02 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:23:44 Window size changed: width=274, height=42
+debug 2026/07/09 07:23:44 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:23:48 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:23:50 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:23:50 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:24:40 Window size changed: width=274, height=42
+debug 2026/07/09 07:24:40 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:24:42 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:24:46 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:24:46 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:25:16 Window size changed: width=274, height=42
+debug 2026/07/09 07:25:16 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:25:19 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:25:24 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:25:24 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:26:14 Window size changed: width=274, height=42
+debug 2026/07/09 07:26:14 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:27:03 Window size changed: width=274, height=42
+debug 2026/07/09 07:27:03 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:27:03 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:30:37 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:30:37 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:32:52 Window size changed: width=274, height=42
+debug 2026/07/09 07:32:52 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:33:01 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:33:01 "\x1b[30;104mID\x1b[m\x1b[104m                                                                                         \x1b[m\x1b[30;104mName\x1b[m\x1b[104m                                                                                       \x1b[m\x1b[30;104mDescription\x1b[m\x1b[104m                                                                                \x1b[m"
+debug 2026/07/09 07:33:01 273
+debug 2026/07/09 07:33:01 "\x1b[30;104mID\x1b[m\x1b[104m                                                                                         \x1b[m\x1b[30;104mName\x1b[m\x1b[104m                                                                                       \x1b[m\x1b[30;104mDescription\x1b[m\x1b[104m                                                                                \x1b[m"
+debug 2026/07/09 07:33:01 273
+debug 2026/07/09 07:33:01 "  \x1b[94m┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐\x1b[m  \n  \x1b[94m│\x1b[m\x1b[30;104mID\x1b[m\x1b[104m                                                                                         \x1b[m\x1b[30;104mName\x1b[m\x1b[104m                                                                                       \x1b[m\x1b[30;104mDescription\x1b[m\x1b[104m\x1b[m                                                                           \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\x1b[m  "
+debug 2026/07/09 07:33:01 274
+debug 2026/07/09 07:35:36 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:35:36 "\x1b[30;104mID\x1b[m\x1b[104m                                                                                         \x1b[m\x1b[30;104mName\x1b[m\x1b[104m                                                                                       \x1b[m\x1b[30;104mDescription\x1b[m\x1b[104m                                                                                \x1b[m"
+debug 2026/07/09 07:35:36 273
+debug 2026/07/09 07:35:36 "\x1b[30;104mID\x1b[m\x1b[104m                                                                                         \x1b[m\x1b[30;104mName\x1b[m\x1b[104m                                                                                       \x1b[m\x1b[30;104mDescription\x1b[m\x1b[104m                                                                                \x1b[m"
+debug 2026/07/09 07:35:36 273
+debug 2026/07/09 07:35:36 "  \x1b[94m┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐\x1b[m  \n  \x1b[94m│\x1b[m\x1b[30;104mID\x1b[m\x1b[104m                                                                                         \x1b[m\x1b[30;104mName\x1b[m\x1b[104m                                                                                       \x1b[m\x1b[30;104mDescription\x1b[m\x1b[104m\x1b[m                                                                           \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\x1b[m  "
+debug 2026/07/09 07:35:36 274
+debug 2026/07/09 07:35:36 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:35:36 "\x1b[30;104mID\x1b[m\x1b[104m                                                                                         \x1b[m\x1b[30;104mName\x1b[m\x1b[104m                                                                                       \x1b[m\x1b[30;104mDescription\x1b[m\x1b[104m                                                                                \x1b[m"
+debug 2026/07/09 07:35:36 273
+debug 2026/07/09 07:35:36 "\x1b[30;104mID\x1b[m\x1b[104m                                                                                         \x1b[m\x1b[30;104mName\x1b[m\x1b[104m                                                                                       \x1b[m\x1b[30;104mDescription\x1b[m\x1b[104m                                                                                \x1b[m"
+debug 2026/07/09 07:35:36 273
+debug 2026/07/09 07:35:36 "  \x1b[94m┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐\x1b[m  \n  \x1b[94m│\x1b[m\x1b[30;104mID\x1b[m\x1b[104m                                                                                         \x1b[m\x1b[30;104mName\x1b[m\x1b[104m                                                                                       \x1b[m\x1b[30;104mDescription\x1b[m\x1b[104m\x1b[m                                                                           \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\x1b[m  "
+debug 2026/07/09 07:35:36 274
+debug 2026/07/09 07:35:36 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:35:36 "\x1b[30;104mID\x1b[m\x1b[104m                                                                                         \x1b[m\x1b[30;104mName\x1b[m\x1b[104m                                                                                       \x1b[m\x1b[30;104mDescription\x1b[m\x1b[104m                                                                                \x1b[m"
+debug 2026/07/09 07:35:36 273
+debug 2026/07/09 07:35:36 "\x1b[30;104mID\x1b[m\x1b[104m                                                                                         \x1b[m\x1b[30;104mName\x1b[m\x1b[104m                                                                                       \x1b[m\x1b[30;104mDescription\x1b[m\x1b[104m                                                                                \x1b[m"
+debug 2026/07/09 07:35:36 273
+debug 2026/07/09 07:35:36 "  \x1b[94m┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐\x1b[m  \n  \x1b[94m│\x1b[m\x1b[30;104mID\x1b[m\x1b[104m                                                                                         \x1b[m\x1b[30;104mName\x1b[m\x1b[104m                                                                                       \x1b[m\x1b[30;104mDescription\x1b[m\x1b[104m\x1b[m                                                                           \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m│\x1b[m                                                                                                                                                                                                                                                                            \x1b[94m│\x1b[m  \n  \x1b[94m└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\x1b[m  "
+debug 2026/07/09 07:35:36 274
+debug 2026/07/09 07:35:37 Window size changed: width=274, height=42
+debug 2026/07/09 07:35:37 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:35:38 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:35:45 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:35:45 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:36:10 Window size changed: width=274, height=42
+debug 2026/07/09 07:36:10 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:36:11 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:36:12 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:36:12 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:42:16 Window size changed: width=274, height=42
+debug 2026/07/09 07:42:16 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:42:17 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:42:25 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:42:25 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:43:49 Window size changed: width=274, height=42
+debug 2026/07/09 07:43:49 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:43:49 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:43:52 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:43:52 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:43:53 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:43:53 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:43:53 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:43:53 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:43:54 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:43:54 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:44:19 Window size changed: width=274, height=42
+debug 2026/07/09 07:44:19 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:44:20 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:44:39 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:44:39 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:44:56 Window size changed: width=274, height=42
+debug 2026/07/09 07:44:56 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:44:56 table.Render: width=270, height=35, colw=90, columns=3
+debug 2026/07/09 07:45:10 table.Render: width=270, height=35, colw=90, columns=3
+debug 2026/07/09 07:45:10 table.Render: width=270, height=35, colw=90, columns=3
+debug 2026/07/09 07:46:51 Window size changed: width=274, height=42
+debug 2026/07/09 07:46:51 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:46:55 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:46:56 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:46:56 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:47:28 Window size changed: width=274, height=42
+debug 2026/07/09 07:47:28 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:47:29 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:47:33 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:47:33 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:47:49 Window size changed: width=274, height=42
+debug 2026/07/09 07:47:49 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:48:08 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:48:13 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:48:14 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:48:14 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:48:38 Window size changed: width=274, height=42
+debug 2026/07/09 07:48:38 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:48:39 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:48:39 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:48:40 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:57:56 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:57:56 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:57:56 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:57:58 Window size changed: width=274, height=42
+debug 2026/07/09 07:57:58 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:58:01 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:58:03 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:58:03 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:58:34 Window size changed: width=274, height=42
+debug 2026/07/09 07:58:34 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 07:58:36 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:58:41 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 07:58:41 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:02:43 Window size changed: width=274, height=42
+debug 2026/07/09 08:02:43 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 08:02:44 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:02:59 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:02:59 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:03:42 Window size changed: width=274, height=42
+debug 2026/07/09 08:03:42 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 08:03:43 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:03:47 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:03:47 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:04:13 Window size changed: width=274, height=42
+debug 2026/07/09 08:04:13 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 08:04:14 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:04:15 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:04:15 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:06:12 Window size changed: width=274, height=42
+debug 2026/07/09 08:06:12 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 08:06:13 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:06:14 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:06:14 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:06:27 Window size changed: width=274, height=42
+debug 2026/07/09 08:06:27 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 08:06:28 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:06:29 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:06:29 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:07:50 Window size changed: width=274, height=42
+debug 2026/07/09 08:07:50 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 08:07:50 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:07:51 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:07:51 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:07:51 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:09:46 Window size changed: width=274, height=42
+debug 2026/07/09 08:09:46 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 08:09:46 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:09:47 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:09:47 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:09:58 Window size changed: width=274, height=42
+debug 2026/07/09 08:09:58 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 08:09:59 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:10:11 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:10:11 table.Render: width=274, height=35, colw=91, columns=3
+debug 2026/07/09 08:12:40 Window size changed: width=274, height=42
+debug 2026/07/09 08:12:40 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 08:13:09 Window size changed: width=274, height=42
+debug 2026/07/09 08:13:09 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 08:21:21 Window size changed: width=274, height=42
+debug 2026/07/09 08:21:21 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 08:21:43 Window size changed: width=274, height=42
+debug 2026/07/09 08:21:43 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 08:23:23 Window size changed: width=274, height=42
+debug 2026/07/09 08:23:23 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 08:24:18 Window size changed: width=274, height=42
+debug 2026/07/09 08:24:18 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 08:24:57 Window size changed: width=274, height=42
+debug 2026/07/09 08:24:57 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 08:25:18 Window size changed: width=274, height=42
+debug 2026/07/09 08:25:18 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 08:25:30 Window size changed: width=274, height=42
+debug 2026/07/09 08:25:30 SetSize: width=274, height=42, screenHeight=35
+debug 2026/07/09 08:25:52 Window size changed: width=274, height=42
+debug 2026/07/09 08:25:52 SetSize: width=274, height=42, screenHeight=35

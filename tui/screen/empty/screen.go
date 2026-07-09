@@ -2,6 +2,7 @@ package empty
 
 import (
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/components/container"
 	"github.com/sidekick-coder/atlas/tui/components/list"
 	"github.com/sidekick-coder/atlas/tui/messages"
 	"github.com/sidekick-coder/atlas/tui/models"
@@ -18,6 +19,7 @@ type Screen struct {
 	Entries []Entry
 
 	list list.Component
+	container container.Component
 }
 
 func (s *Screen) HandleSelection(index int) tea.Cmd {
@@ -48,11 +50,10 @@ func Create(p models.ScreenPayload) (models.Screen, error) {
 		Width:   100,
 		Height:  100,
 		Entries: entries,
+		list:    *list.Create(),
+		container: *container.Create(),
 	}
 
-	l := list.Create().OnSelect(s.HandleSelection)
-
-	s.list = *l
 
 	return s, nil
 }
@@ -69,14 +70,9 @@ func (s *Screen) Init() tea.Cmd {
 	}
 
 	s.list.SetItems(items)
+	s.list.OnSelect(s.HandleSelection)
 
 	return nil
 }
 
-func (s *Screen) SetSize(width, height int) {
-	s.Width = width
-	s.Height = height
-
-	s.list.SetSize(width, height)
-}
 

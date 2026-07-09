@@ -60,3 +60,12 @@ func (t *TabBar) Render() string {
 
 	return container.Render(row)
 }
+
+func (t *TabBar) GetHeight() int {
+	return lipgloss.Height(t.Render())
+}
+
+func (t *TabBar) GetWidth() int {
+	return lipgloss.Width(t.Render())
+}
+

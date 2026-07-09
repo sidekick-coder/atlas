@@ -4,8 +4,10 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/tui/components"
+	"github.com/sidekick-coder/atlas/tui/components/container"
 	"github.com/sidekick-coder/atlas/tui/components/input"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
+	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/models"
 )
 
@@ -26,6 +28,7 @@ type model struct {
 	toolbar *components.Toolbar
 	footer  *components.Footer
 
+	screenContainer *container.Component
 	input  *input.Input
 	toaster *toast.Component
 }
@@ -41,9 +44,6 @@ func New(a *app.App) model {
 
 	footer := components.NewFooter()
 
-	input := input.New()
-	toaster := toast.New()
-
 	m := model{
 		app:          a,
 		currentIndex: 0,
@@ -53,8 +53,9 @@ func New(a *app.App) model {
 		toolbar: toolbar,
 		footer:  footer,
 
-		input:   input,
-		toaster: toaster,
+		input:   input.New(),
+		toaster: toast.New(),
+		screenContainer: container.Create(),
 
 		availableScreens: availableScreens,
 	}
@@ -63,13 +64,5 @@ func New(a *app.App) model {
 }
 
 func (m model) Init() tea.Cmd {
-	m.LoadBindings()
-
-	cmd := m.LoadScreenRegistry()
-
-	if cmd != nil {
-		return cmd
-	}
-
-	return nil
+	return  chain.Init(m.LoadBindings, m.LoadScreenRegistry)
 }

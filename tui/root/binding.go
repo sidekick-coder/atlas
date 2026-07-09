@@ -2,6 +2,7 @@ package root
 
 import (
 	"charm.land/bubbles/v2/key"
+	tea "charm.land/bubbletea/v2"
 )
 
 
@@ -22,9 +23,11 @@ func (m *model) GetBindings() []key.Binding {
 	return bindings
 }
 
-func (m *model) LoadBindings() {
+func (m *model) LoadBindings() tea.Cmd {
 	bindings := m.GetBindings()
 
 	m.footer.SetBindings(bindings...)
+
+	return nil
 }
 

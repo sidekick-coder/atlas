@@ -2,10 +2,10 @@ package root
 
 import (
 	"fmt"
+	"log"
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
-	"github.com/sidekick-coder/atlas/tui/components"
 	"github.com/sidekick-coder/atlas/tui/screen/empty"
 )
 
@@ -14,9 +14,6 @@ func (m *model) SetSize(width int, height int) {
 	m.width = width
 	m.height = height
 
-	components.GlobalInput.SetSize(width, height)
-	components.GlobalToast.SetSize(width, height)
-
 	m.tabBar.SetWidth(width)
 	m.toolbar.SetWidth(width)
 	m.footer.SetWidth(width)
@@ -24,23 +21,22 @@ func (m *model) SetSize(width int, height int) {
 	m.input.SetScreenSize(width, height)
 	m.toaster.SetScreenSize(width, height)
 
-	toolbarHeight := 1
-	tabBarHeight := 1
-	footerHeight := 1
-	contentHeight := height - toolbarHeight - tabBarHeight - footerHeight
-	m.screenHeight = contentHeight
+	sh := height - m.toolbar.GetHeight() - m.tabBar.GetHeight() - m.footer.GetHeight()
+
+	m.screenContainer.SetSize(width, sh)
+	m.screenHeight = sh
+
+	log.Printf("SetSize: width=%d, height=%d, screenHeight=%d", width, height, sh)
 
 	for _, s := range m.screens {
-		s.SetSize(width, contentHeight)
+		s.SetSize(width, sh)
 	}
 }
 
 func (m model) View() tea.View {
-	m.LoadBindings()
-
 	body := empty.Placeholder(empty.PlaceholderPayload{
 		Width:  m.width,
-		Height: m.screenHeight,
+		Height: m.screenContainer.GetHeight(),
 		Text: fmt.Sprintf("No screens available. Press [%s] to add a new screen.", ScreenBindings.Add.Help().Key),
 	})
 

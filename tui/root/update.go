@@ -1,6 +1,8 @@
 package root
 
 import (
+	"log"
+
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/key"
@@ -8,6 +10,7 @@ import (
 
 func (m *model) HandleWindow(msg tea.Msg) tea.Cmd {
 	if wm, ok := msg.(tea.WindowSizeMsg); ok {
+		log.Printf("Window size changed: width=%d, height=%d", wm.Width, wm.Height)
 		m.SetSize(wm.Width, wm.Height)
 		return m.AddScreenEmpty()
 	}

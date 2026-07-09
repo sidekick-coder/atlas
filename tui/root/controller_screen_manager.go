@@ -76,9 +76,10 @@ func (m *model) SetCurrentScreen(index int) tea.Cmd {
 	m.LoadBindings()
 	m.LoadTabs()
 
-	m.SetSize(m.width, m.height)
 
 	s := m.screens[index]
+
+	s.SetSize(m.width, m.screenHeight)
 
 	return s.Init()
 }

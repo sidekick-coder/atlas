@@ -3,30 +3,36 @@ package entrytable
 import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
+	"github.com/sidekick-coder/atlas/tui/components/container"
+	"github.com/sidekick-coder/atlas/tui/components/table"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	tuimodels "github.com/sidekick-coder/atlas/tui/models"
 )
 
 type Screen struct {
-	App    *app.App
-	Width  int
-	Height int
-	Limit  int
-	Query  string
+	app    *app.App
+	width  int
+	height int
+	limit  int
+	query  string
+	table  table.Component
+	container container.Component
 }
 
 func Create(payload tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 	s := &Screen{
-		App:    payload.App,
-		Width:  100,
-		Height: 100,
-		Limit:  30,
-		Query:  "",
+		app:    payload.App,
+		width:  100,
+		height: 100,
+		limit:  30,
+		query:  "",
+		table:  *table.Create(),
+		container: *container.Create(),
 	}
 
 	if payload.Options["query"] != nil {
 		if query, ok := payload.Options["query"].(string); ok {
-			s.Query = query
+			s.query = query
 		}
 	}
 
@@ -38,16 +44,7 @@ func (s *Screen) Title() string {
 }
 
 func (s *Screen) Init() tea.Cmd {
-	return chain.Init(s.RegisterBindings)
-}
-
-func (s *Screen) SetSize(width, height int) {
-	s.Width = width
-	s.Height = height
-}
-
-func (s *Screen) Render() string {
-	return ""
+	return chain.Init(s.RegisterBindings, s.LoadColumns)
 }
 
 func (s *Screen) Update(msg tea.Msg) tea.Cmd {

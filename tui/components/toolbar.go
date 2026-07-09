@@ -34,3 +34,13 @@ func (t *Toolbar) Render() string {
 
 	return border.Render(row)
 }
+
+func (t *Toolbar) GetHeight() int {
+	return lipgloss.Height(t.Render())
+}
+
+func (t *Toolbar) GetWidth() int {
+	return lipgloss.Width(t.Render())
+}
+
+
