@@ -26,6 +26,28 @@ func New(path string) (*Drive, error) {
 	return &Drive{path: path}, nil
 }
 
+func CreateFromConfig(config *config.Config) (*Drive, error) {
+	path, ok := config.Get("workspace.path")
+
+	if !ok {
+		return nil, os.ErrInvalid
+	}
+
+	if path == "" {
+		return nil, os.ErrInvalid
+	}
+
+	d, err := New(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	d.SetConfig(config)
+
+	return d, nil
+}
+
 func (d *Drive) SetConfig(config *config.Config) *Drive {
 	d.config = config
 	return d

@@ -44,9 +44,17 @@ func (s *Screen) Title() string {
 }
 
 func (s *Screen) Init() tea.Cmd {
-	return chain.Init(s.RegisterBindings, s.LoadColumns)
+	return chain.Init(
+		s.RegisterBindings,
+		s.LoadColumns,
+		s.table.Init,
+	)
 }
 
 func (s *Screen) Update(msg tea.Msg) tea.Cmd {
-	return chain.Update(msg, s.HandleKeypress)
+	return chain.Update(
+		msg,
+		s.table.Update,
+		s.HandleKeypress,
+	)
 }

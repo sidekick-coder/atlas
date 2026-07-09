@@ -14,10 +14,14 @@ func (c *Component) SetSize(w, h int) {
 func (c *Component) Render() string {
 	colw := c.width / len(c.columns)
 
-	var colstyle = lipgloss.NewStyle().
-		Width(colw).
+	colstyle := lipgloss.NewStyle().
 		Background(lipgloss.Color("12")).
 		Foreground(lipgloss.Color("0"))
+
+	colFocusStyle := lipgloss.NewStyle().
+		Background(lipgloss.Color("32")).
+		Foreground(lipgloss.Color("0")).
+		Bold(true)
 
 	normal := lipgloss.NewStyle()
 
@@ -29,7 +33,7 @@ func (c *Component) Render() string {
 	var rows []string
 	var columns []string
 
-	for _, column := range c.columns {
+	for index, column := range c.columns {
 		label := column.Label
 
 		if len(label) > colw {
@@ -39,6 +43,11 @@ func (c *Component) Render() string {
 		if len(label) < colw {
 			padding := colw - len(label)
 			label = label + strings.Repeat("\u00A0", padding)
+		}
+
+		if c.columnSelection.IsSelected(index) {
+			columns = append(columns, colFocusStyle.Render(label))
+			continue
 		}
 
 		columns = append(columns, colstyle.Render(label))

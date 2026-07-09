@@ -29,7 +29,7 @@ func Create() (*App, error) {
 		return nil, err
 	}
 
-	drive, err := drive.New(config.Get("workspace.path"))
+	drive, err := drive.CreateFromConfig(config)
 
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func Create() (*App, error) {
 
 	drive.SetConfig(config)
 
-	database, err := database.Create(config.Get("workspace.database_path"))
+	database, err := database.CreateFromConfig(config)
 
 	if err != nil {
 		return nil, err
@@ -73,7 +73,13 @@ func Create() (*App, error) {
 }
 
 func (a *App) WorkspacePath() string {
-	return a.config.Get("workspace.path")
+	wp, ok := a.config.Get("workspace.path")
+
+	if !ok {
+		return ""
+	}
+
+	return wp
 }
 
 func (a *App) ActionManager() *actionmanager.ActionManager {

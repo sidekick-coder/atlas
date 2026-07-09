@@ -6,6 +6,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/config"
+	"github.com/sidekick-coder/atlas/tui/features/key"
 	"github.com/sidekick-coder/atlas/tui/messages"
 	"github.com/sidekick-coder/atlas/tui/models"
 	"github.com/sidekick-coder/atlas/tui/screen/empty"
@@ -76,10 +77,11 @@ func (m *model) SetCurrentScreen(index int) tea.Cmd {
 	m.LoadBindings()
 	m.LoadTabs()
 
-
 	s := m.screens[index]
 
 	s.SetSize(m.width, m.screenHeight)
+
+	key.ClearBindings()
 
 	return s.Init()
 }
@@ -135,9 +137,7 @@ func (m *model) AddScreen(name string, args ...map[string]any) tea.Cmd {
 
 	m.screens = append(m.screens, s)
 	index := len(m.screens) - 1
-	m.SetCurrentScreen(index)
-
-	return s.Init()
+	return m.SetCurrentScreen(index)
 }
 
 func (m *model) ReplaceScreen(index int, name string, options map[string]any) tea.Cmd {
@@ -153,9 +153,7 @@ func (m *model) ReplaceScreen(index int, name string, options map[string]any) te
 	}
 
 	m.screens[index] = s
-	m.SetCurrentScreen(index)
-
-	return s.Init()
+	return m.SetCurrentScreen(index)
 }
 
 func (m *model) RemoveScreen(index int) error {

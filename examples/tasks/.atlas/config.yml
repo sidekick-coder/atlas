@@ -46,6 +46,9 @@ keymaps:
       description: open
       groups: [ext=md, ext=json]
 
+tui:
+    home_screen: entry_table
+
 screens:
     - id: task_table
       type: entry_table

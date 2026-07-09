@@ -22,7 +22,12 @@ var initCmd = &cobra.Command{
 		}
 
 
-		dir := config.Get("workspace.atlas_path")
+		dir, ok := config.Get("workspace.atlas_path")
+
+		if !ok {
+			fmt.Println("Error getting .atlas path from config")
+			return nil
+		}
 
 		info, err := os.Stat(dir)
 
@@ -37,7 +42,7 @@ var initCmd = &cobra.Command{
 			return err
 		}
 
-		database, err := database.Create(config.Get("workspace.database_path"))
+		database, err := database.CreateFromConfig(config)
 
 		if err != nil {
 			fmt.Println("Error creating database:", err)

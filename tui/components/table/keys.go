@@ -1,50 +1,52 @@
 package table
 
 import (
-	"charm.land/bubbles/v2/key"
+	"log"
+
+	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/features/key"
+	"github.com/sidekick-coder/atlas/tui/messages"
 )
 
 type Keymap struct {
 	Up    key.Binding
 	Down  key.Binding
 	Enter key.Binding
-	Next  key.Binding
-	Prev  key.Binding
+	Right  key.Binding
+	Left  key.Binding
 }
 
 var Binding = Keymap{
-	Up: key.NewBinding(
-		key.WithKeys("k", "up"),
-		key.WithHelp("k/up", "up"),
-	),
-	Down: key.NewBinding(
-		key.WithKeys("j", "down"),
-		key.WithHelp("j/down", "down"),
-	),
-	Next: key.NewBinding(
-		key.WithKeys("l", "right"),
-		key.WithHelp("l/right", "next"),
-	),
-	Prev: key.NewBinding(
-		key.WithKeys("h", "left"),
-		key.WithHelp("h/left", "prev"),
-	),
-	Enter: key.NewBinding(
-		key.WithKeys("enter"),
-		key.WithHelp("enter", "select"),
-	),
+	Up:    key.CreateBinding("k", "up").SetHelp("k/up").SetDescription("Move up"),
+	Down:  key.CreateBinding("j", "down").SetHelp("j/down").SetDescription("Move down"),
+	Enter: key.CreateBinding("enter", "enter").SetHelp("enter").SetDescription("Select item"),
+	Right:  key.CreateBinding("l", "next").SetHelp("l/next").SetDescription("Next column"),
+	Left:  key.CreateBinding("h", "prev").SetHelp("h/prev").SetDescription("Previous column"),
 }
 
-func (c *Component) GetBindigs() []key.Binding {
-	bindings := []key.Binding{}
-
-	bindings = append(bindings,
+func (c *Component) LoadBindings() tea.Cmd {
+	key.Register(
 		Binding.Up,
 		Binding.Down,
-		Binding.Next,
-		Binding.Prev,
 		Binding.Enter,
+		Binding.Right,
+		Binding.Left,
 	)
 
-	return bindings
+	return nil
+}
+
+func (c *Component) HandleBindings(msg tea.Msg) tea.Cmd {
+	if key.Matches(Binding.Left) {
+		c.columnSelection.Prev()
+	}
+
+	if key.Matches(Binding.Right) {
+		log.Println("Next column")
+		c.columnSelection.Next()
+
+		return  messages.SkipCmd()
+	}
+
+	return nil
 }

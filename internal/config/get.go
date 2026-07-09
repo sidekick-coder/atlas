@@ -10,8 +10,14 @@ func (c *Config) GetAll() map[string]string {
 	return c.entries
 }
 
-func (c *Config) Get(key string) string {
-	return c.entries[key]
+func (c *Config) Get(key string) (string, bool) {
+	v, ok := c.entries[key]
+
+	if !ok {
+		return "", false
+	}
+
+	return v, true
 }
 
 

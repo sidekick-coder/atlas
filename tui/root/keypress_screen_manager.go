@@ -14,17 +14,12 @@ func (m *model) HandleScreeManagerKeypress(msg tea.Msg) tea.Cmd {
 
 	if key.Matches(km, ScreenBindings.Next) {
 		nextIndex := (m.currentIndex + 1) % len(m.screens)
-		m.currentIndex = nextIndex
-		m.tabBar.SetCurrent(nextIndex)
-		return nil
+		return m.SetCurrentScreen(nextIndex)
 	}
 
 	if key.Matches(km, ScreenBindings.Prev) {
 		prevIndex := (m.currentIndex - 1 + len(m.screens)) % len(m.screens)
-		m.currentIndex = prevIndex
-		m.tabBar.SetCurrent(prevIndex)
-
-		return nil
+		return m.SetCurrentScreen(prevIndex)
 	}
 
 	if key.Matches(km, ScreenBindings.Add) {
