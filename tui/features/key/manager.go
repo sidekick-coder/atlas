@@ -72,15 +72,14 @@ func MatchBiningKey(k BindingKey) bool {
 }
 
 func Matches(b Binding) bool {
-	for _, k := range b.keys {
-		if !MatchBiningKey(k) {
-			return false
-		}
+	mached := slices.ContainsFunc(b.keys, MatchBiningKey)
+
+	if mached {
+		manager.pending = nil
+		return true
 	}
 
-	manager.pending = nil
-
-	return true
+	return false
 }
 
 func (m *Manager) HandleKeypress(msg tea.Msg) tea.Cmd {
@@ -96,11 +95,17 @@ func (m *Manager) HandleKeypress(msg tea.Msg) tea.Cmd {
 
 	hasPossibleMatch := manager.hasPossibleMatch()
 
-
 	if !hasPossibleMatch {
 		manager.pending = nil
 	}
 
-
 	return nil
+}
+
+func (m *Manager) GetBindings() []Binding {
+	return m.registered
+}
+
+func (m *Manager) ClearBindings() {
+	m.registered = []Binding{}
 }

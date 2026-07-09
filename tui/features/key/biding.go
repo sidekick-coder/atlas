@@ -7,6 +7,7 @@ import (
 type Binding struct {
 	keys []BindingKey
 	help string
+	desc string
 }
 
 type BindingKey struct {
@@ -94,4 +95,22 @@ func CreateBinding(keys ...string) Binding {
 	return Binding{
 		keys: bkeys,
 	}
+}
+
+func (b Binding) SetHelp(help string) Binding {
+	b.help = help
+	return b
+}
+
+func (b Binding) SetDescription(desc string) Binding {
+	b.desc = desc
+	return b
+}
+
+func (b Binding) GetHelp() string {
+	return b.help
+}
+
+func (b Binding) GetDescription() string {
+	return b.desc
 }

@@ -11,3 +11,11 @@ func Register(bindings ...Binding) {
 func HandleKeypress(msg tea.Msg) tea.Cmd {
 	return manager.HandleKeypress(msg)
 }
+
+func GetBindings() []Binding {
+	return manager.GetBindings()
+}
+
+func ClearBindings() {
+	manager.ClearBindings()
+}

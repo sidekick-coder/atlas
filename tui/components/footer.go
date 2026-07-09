@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	lipgloss "charm.land/lipgloss/v2"
 	"charm.land/bubbles/v2/key"
+	lipgloss "charm.land/lipgloss/v2"
+	tkey "github.com/sidekick-coder/atlas/tui/features/key"
 )
 
 var (
@@ -38,7 +39,7 @@ func (f *Footer) SetBindings(bindings ...key.Binding) {
 func (f *Footer) Render() string {
 	container := lipgloss.NewStyle().
 		BorderStyle(lipgloss.NormalBorder()).
-		Width(f.width - 4).
+		Width(f.width-4).
 		Margin(0, 2).
 		Padding(0, 2).
 		BorderForeground(lipgloss.Color("12"))
@@ -51,6 +52,25 @@ func (f *Footer) Render() string {
 			continue
 		}
 		parts = append(parts, fmt.Sprintf("%s %s", footerKeyStyle.Render(h.Key), footerStyle.Render(h.Desc)))
+	}
+
+	for _, b := range tkey.GetBindings() {
+		k := b.GetHelp()
+		d := b.GetDescription()
+
+		if k == "" || d == "" {
+			continue
+		}
+
+		parts = append(parts, fmt.Sprintf("%s %s", footerKeyStyle.Render(k), footerStyle.Render(d)))
+	}
+
+	maxParts := 12
+
+	if len(parts) > maxParts {
+		remaning := len(parts) - maxParts
+		parts = parts[:maxParts]
+		parts = append(parts, footerStyle.Render(fmt.Sprintf("... and %d more", remaning)))
 	}
 
 	sep := footerStyle.Render("  ·  ")

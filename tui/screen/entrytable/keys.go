@@ -19,13 +19,13 @@ type Keymap struct {
 }
 
 var Bindings = Keymap{
-	Up:       key.CreateBinding("<up>"),
-	CtrlS:    key.CreateBinding("<C-s>"),
-	AltA:     key.CreateBinding("<A-a>"),
-	LeaderA:  key.CreateBinding("<leader>a"),
-	LeaderBA: key.CreateBinding("<leader>ba"),
-	AA:       key.CreateBinding("aa"),
-	Down:     key.CreateBinding("down"),
+	Up:       key.CreateBinding("<Up>", "k").SetHelp("↑/k").SetDescription("Move up"),
+	CtrlS:    key.CreateBinding("<C-s>").SetHelp("Ctrl+S").SetDescription("Save"),
+	AltA:     key.CreateBinding("<A-a>").SetHelp("Alt+A").SetDescription("Alt A action"),
+	LeaderA:  key.CreateBinding("<leader>a").SetHelp("Leader+A").SetDescription("Leader A action"),
+	LeaderBA: key.CreateBinding("<leader>ba").SetHelp("Leader+BA").SetDescription("Leader BA action"),
+	AA:       key.CreateBinding("aa").SetHelp("AA").SetDescription("AA action"),
+	Down:     key.CreateBinding("down").SetHelp("↓").SetDescription("Move down"),
 }
 
 func (s *Screen) GetBindings() []tkey.Binding {
