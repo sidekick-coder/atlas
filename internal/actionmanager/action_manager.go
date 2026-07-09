@@ -13,7 +13,7 @@ type ActionManager struct {
 }
 
 func New(c *config.Config) (*ActionManager, error) {
-	configActions := c.GetAsArray("actions")
+	configActions := c.GetArray("actions")
 	actions := make(map[string]Action)
 
 	for _, action := range configActions {

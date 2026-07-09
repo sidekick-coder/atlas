@@ -1,13 +1,33 @@
-package drive 
+package drive
 
-type Entry struct {
-	Path  string
-	Name  string
-	IsDir bool
+import (
+	"os"
+
+	"github.com/sidekick-coder/atlas/internal/config"
+	"github.com/sidekick-coder/atlas/internal/utils"
+)
+
+type Drive struct {
+	path string
+	config   *config.Config
 }
 
-type EntryInfo struct {
-	Path	 string 
-	Type	 string 
-	Ext 	 string
+func New(path string) (*Drive, error) {
+	isDir, err := utils.IsDirectory(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !isDir {
+		return nil, os.ErrInvalid
+	}
+
+	return &Drive{path: path}, nil
 }
+
+func (d *Drive) SetConfig(config *config.Config) *Drive {
+	d.config = config
+	return d
+}
+

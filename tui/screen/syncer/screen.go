@@ -5,7 +5,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
-	"github.com/sidekick-coder/atlas/internal/sync/v2"
+	"github.com/sidekick-coder/atlas/internal/syncer"
 	tuimodels "github.com/sidekick-coder/atlas/tui/models"
 	"github.com/sidekick-coder/atlas/tui/screen/empty"
 )
@@ -24,7 +24,7 @@ type Screen struct {
 	Running  bool
 	ViewList bool
 	Entries  []Entry
-	Syncer   *sync.Sync
+	Syncer   *syncer.Syncer
 
 	Completed    bool
 	TotalEntries int
@@ -32,11 +32,10 @@ type Screen struct {
 }
 
 func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
-	syncer := p.App.Syncer()
 
 	s := &Screen{
 		App:       p.App,
-		Syncer:    syncer,
+		Syncer:    p.App.Syncer(),
 		Program:   p.Program,
 		Width:     100,
 		Height:    100,

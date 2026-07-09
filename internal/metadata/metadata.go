@@ -17,13 +17,18 @@ var SytemMetaNames = []string{
 	"ext",
 }
 
-func Create(info *models.EntryInfo) (*Meta, error) {
+func Handler(info *models.EntryInfo) (*Meta, error) {
 	meta := &Meta{
 		info: info,
 		handlers: []models.MetaHandler{},
 	}
 
 	return meta, nil
+}
+
+// Deprecated: Create is deprecated, use Handler instead. It will be removed in future versions.
+func Create(info *models.EntryInfo) (*Meta, error) {
+	return Handler(info)
 }
 
 

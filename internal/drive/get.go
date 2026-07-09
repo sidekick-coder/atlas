@@ -7,13 +7,13 @@ import (
 )
 
 func (d *Drive) Get(path string) (*models.EntryInfo, error) {
-	info, err := fs.Stat(fs.FS(os.DirFS(d.RootPath)), path)
+	info, err := fs.Stat(fs.FS(os.DirFS(d.path)), path)
 
 	if err != nil {
 		return nil, err
 	}
 
-	entryInfo := models.NewEntryInfoFromFileInfo(d.RootPath, path, info)
+	entryInfo := models.NewEntryInfoFromFileInfo(d.path, path, info)
 
 	return &entryInfo, nil
 }

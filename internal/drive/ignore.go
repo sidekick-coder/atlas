@@ -2,6 +2,8 @@ package drive
 
 import (
 	"path/filepath"
+
+	"github.com/sidekick-coder/atlas/internal/fs"
 )
 
 var requiredIgnores = []string{
@@ -10,6 +12,7 @@ var requiredIgnores = []string{
 
 var defaultIgnores = []string{
 	"node_modules",
+	"package-lock.json",
 	"vendor",
 	".git",
 	".DS_Store",
@@ -39,5 +42,42 @@ func ShouldIgnore(path string, patterns []string) bool {
 			return true
 		}
 	}
+
 	return false
 }
+
+func (d *Drive) Ignore(path string, ignores ...string) (bool, error) {
+	patterns := CreateIgnorePatterns(ignores...)
+
+	patterns = append(patterns, d.config.GetArrayString("scan.exclude")...)
+
+	exclude, err := fs.MatchAny(path, patterns)
+
+	if err != nil {
+		return false, err
+	}
+
+	if exclude {
+		return true, nil
+	}
+
+	pi := d.config.GetArrayString("scan.include")
+
+	if len(pi) == 0 {
+		return false, nil
+	}
+
+	include, err := fs.MatchAny(path, pi)
+
+	if err != nil {
+		return false, err
+	}
+
+	if !include {
+		return true, nil
+	}
+
+	return false, nil
+
+}
+

@@ -7,7 +7,7 @@ import (
 	"github.com/sidekick-coder/atlas/internal/config"
 	"github.com/sidekick-coder/atlas/internal/utils"
 	"github.com/sidekick-coder/atlas/internal/metadata"
-	"github.com/sidekick-coder/atlas/internal/drive/v2"
+	"github.com/sidekick-coder/atlas/internal/drive"
 )
 
 var entryExtractCmd = &cobra.Command{
@@ -36,14 +36,14 @@ var entryExtractCmd = &cobra.Command{
 			return
 		}
 
-		meta, err := metadata.Create(entry)
+		h, err := metadata.Handler(entry)
 
 		if err != nil {
 			fmt.Println("Error creating metadata:", err)
 			return
 		}
 
-		data, err := meta.Extract()
+		metas, err := h.Extract()
 
 		if err != nil {
 			fmt.Println("Error extracting metadata:", err)
@@ -52,7 +52,7 @@ var entryExtractCmd = &cobra.Command{
 
 		fmt.Printf("%s\n", entry.Path)
 
-		utils.PrintMetas(data)
+		utils.PrintMetas(metas)
 
 	},
 }

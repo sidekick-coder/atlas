@@ -4,7 +4,7 @@ import (
 	"slices"
 )
 
-type ConfigKeymap struct {
+type Keymap struct {
 	Description string   `json:"description"`
 	Keys        []string `json:"keys"`
 	Action      string   `json:"action"`
@@ -27,7 +27,7 @@ func toStringSlice(v any) []string {
 	return out
 }
 
-func ConfigKeymapFromMap(m map[string]any) ConfigKeymap {
+func ConfigKeymapFromMap(m map[string]any) Keymap {
 	keys := []string{}
 	action := ""
 	groups := []string{}
@@ -48,7 +48,7 @@ func ConfigKeymapFromMap(m map[string]any) ConfigKeymap {
 		description = d
 	}
 
-	return ConfigKeymap{
+	return Keymap{
 		Description: description,
 		Keys:        keys,
 		Action:      action,
@@ -56,9 +56,9 @@ func ConfigKeymapFromMap(m map[string]any) ConfigKeymap {
 	}
 }
 
-func (c *Config) GetKeymaps() []ConfigKeymap {
-	entries := c.GetAsArray("keymaps")
-	keymaps := make([]ConfigKeymap, 0)
+func (c *Config) GetKeymaps() []Keymap {
+	entries := c.GetArray("keymaps")
+	keymaps := make([]Keymap, 0)
 
 	for _, v := range entries {
 		vm, ok := v.(map[string]any)
@@ -75,10 +75,10 @@ func (c *Config) GetKeymaps() []ConfigKeymap {
 	return keymaps
 }
 
-func (c *Config) GetKeymapsByGroup(group string) []ConfigKeymap {
+func (c *Config) GetKeymapsByGroup(group string) []Keymap {
 	all := c.GetKeymaps()
 
-	filtered := make([]ConfigKeymap, 0)
+	filtered := make([]Keymap, 0)
 
 	for _, keymap := range all {
 		if slices.Contains(keymap.Groups, group) {

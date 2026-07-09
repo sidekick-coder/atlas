@@ -5,7 +5,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/sidekick-coder/atlas/internal/drive/v2"
+	"github.com/sidekick-coder/atlas/internal/drive"
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 

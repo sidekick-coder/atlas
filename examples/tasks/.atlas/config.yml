@@ -1,3 +1,9 @@
+scan:
+    exclude:
+        - "package.json"
+        - "README.md"
+    include:
+        - "tasks/*.md"
 handlers:
     # - id: content
     #   type: content
@@ -8,7 +14,7 @@ handlers:
     - id: md
       type: markdown
       patterns: ["**/*.md"]
-      prefix: "md"
+      prefix: ""
 
     - id: json
       type: json
@@ -39,3 +45,21 @@ keymaps:
       action: vi
       description: open
       groups: [ext=md, ext=json]
+
+screens:
+    - id: task_table
+      type: entry_table
+      title: "Tasks"
+      query: "parent=tasks"
+      description: "List of tasks"
+
+    - id: task_detail
+      type: custom
+      title: "{{ .metas.title }}"
+      components:
+          - type: meta_box
+            x: 0
+            y: 0
+            rows: 1
+            cols: 1
+            content: "{{ .metas.content }}"

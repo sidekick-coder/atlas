@@ -5,7 +5,7 @@ import (
 
 	"github.com/sidekick-coder/atlas/internal/config"
 	"github.com/sidekick-coder/atlas/internal/database"
-	"github.com/sidekick-coder/atlas/internal/drive/v2"
+	"github.com/sidekick-coder/atlas/internal/drive"
 	"github.com/sidekick-coder/atlas/internal/models"
 	"github.com/sidekick-coder/atlas/internal/syncer/batcher"
 	"github.com/sidekick-coder/atlas/internal/syncer/extractor"

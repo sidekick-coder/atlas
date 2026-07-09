@@ -2,17 +2,15 @@ package config
 
 import "fmt"
 
-// "slices"
-
-type ConfigHandler struct {
+type Handler struct {
 	ID      string         `json:"id"`
 	Type    string         `json:"type"`
 	Patterns []string         `json:"patterns"`
 	Options map[string]any `json:"options"`
 }
 
-func ParseConfigHandler(entry map[string]any) (ConfigHandler, error) {
-	handler := ConfigHandler{}
+func ParseHandler(entry map[string]any) (Handler, error) {
+	handler := Handler{}
 
 	if id, ok := entry["id"].(string); ok {
 		handler.ID = id
@@ -45,9 +43,9 @@ func ParseConfigHandler(entry map[string]any) (ConfigHandler, error) {
 	return handler, nil
 }
 
-func (c *Config) GetConfigHandlers() ([]ConfigHandler, error) {
-	entries := c.GetAsArray("handlers")
-	handlers := []ConfigHandler{}
+func (c *Config) GetConfigHandlers() ([]Handler, error) {
+	entries := c.GetArray("handlers")
+	handlers := []Handler{}
 
 	for _, entry := range entries {
 		em , ok := entry.(map[string]any)
@@ -56,7 +54,7 @@ func (c *Config) GetConfigHandlers() ([]ConfigHandler, error) {
 			return nil, fmt.Errorf("invalid handler entry: %v", entry)
 		}
 
-		h, err := ParseConfigHandler(em)
+		h, err := ParseHandler(em)
 
 		if err != nil {
 			return nil, fmt.Errorf("error parsing handler entry: %v", err)

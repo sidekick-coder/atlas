@@ -4,10 +4,10 @@ import (
 	"github.com/sidekick-coder/atlas/internal/actionmanager"
 	"github.com/sidekick-coder/atlas/internal/config"
 	"github.com/sidekick-coder/atlas/internal/database"
-	"github.com/sidekick-coder/atlas/internal/drive/v2"
+	"github.com/sidekick-coder/atlas/internal/drive"
 	"github.com/sidekick-coder/atlas/internal/repository/entry"
 	"github.com/sidekick-coder/atlas/internal/repository/entrymeta"
-	sync "github.com/sidekick-coder/atlas/internal/sync/v2"
+	"github.com/sidekick-coder/atlas/internal/syncer"
 )
 
 type App struct {
@@ -19,7 +19,7 @@ type App struct {
 	entryMetaRepo *entrymeta.Repository
 
 	actionManager *actionmanager.ActionManager
-	syncer        *sync.Sync
+	syncer        *syncer.Syncer
 }
 
 func Create() (*App, error) {
@@ -34,6 +34,8 @@ func Create() (*App, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	drive.SetConfig(config)
 
 	database, err := database.Create(config.Get("workspace.database_path"))
 
@@ -51,12 +53,8 @@ func Create() (*App, error) {
 	entryRepo := entry.New(database)
 	entryMetaRepo := entrymeta.New(database)
 
-	syncer := sync.Create(&sync.SyncPayload{
-		Drive:      drive,
-		Database:  database,
-		EntryRepo: entryRepo,
-		EntryMetaRepo: entryMetaRepo,
-	})
+	s := syncer.Create().SetConfig(config).SetDrive(drive)
+
 
 	app := &App{
 		config:   config,
@@ -68,7 +66,7 @@ func Create() (*App, error) {
 		entryRepo:     entryRepo,
 		entryMetaRepo: entryMetaRepo,
 
-		syncer: syncer,
+		syncer: s,
 	}
 
 	return app, nil
@@ -94,7 +92,7 @@ func (a *App) Drive() *drive.Drive {
 	return a.drive
 }
 
-func (a *App) Syncer() *sync.Sync {
+func (a *App) Syncer() *syncer.Syncer {
 	return a.syncer
 }
 

@@ -3,7 +3,7 @@ package syncer
 import (
 	"time"
 
-	"github.com/sidekick-coder/atlas/internal/sync/v2"
+	"github.com/sidekick-coder/atlas/internal/syncer"
 )
 
 func (s *Screen) Sync() {
@@ -14,7 +14,7 @@ func (s *Screen) Sync() {
 	go func() {
 		startTime := time.Now()
 
-		onSuccess := func(path string, metas map[string]string) {
+		onSuccess := func(path string) {
 			if !s.ViewList {
 				return
 			}
@@ -45,23 +45,23 @@ func (s *Screen) Sync() {
 			s.Time = time.Since(startTime)
 		}
 
-		onComplete := func(result sync.AllResult) {
+		onComplete := func(result syncer.Result) {
 			s.Running = false
 			s.Time = time.Since(startTime)
 
 			s.Program.Send(Completed{
-				TotalEntries: result.TotalEntries,
+				TotalEntries: int(result.Written),
 				Time:         s.Time,
 			})
 		}
 
 		s.Running = true
 
-		s.Syncer.All(sync.AllPayload{
-			Concurrency: 1,
-			OnError:     onError,
-			OnSuccess:   onSuccess,
-			OnComplete:  onComplete,
-		})
+		s := s.App.Syncer()
+
+		s.OnComplete(onComplete).OnSuccess(onSuccess).OnError(onError) 
+
+		s.All()
+
 	}()
 }

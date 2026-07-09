@@ -12,12 +12,12 @@ func (s *Screen) GetEntryKeymapGroups() []string {
 	return groups
 }
 
-func (s *Screen) GetUserKeymaps() []config.ConfigKeymap {
+func (s *Screen) GetUserKeymaps() []config.Keymap {
 	groups := []string{"entry_single"}
 
 	groups = append(groups, s.GetEntryKeymapGroups()...)
 
-	keymaps := []config.ConfigKeymap{}
+	keymaps := []config.Keymap{}
 
 	for _, group := range groups {
 		keymaps = append(keymaps, s.App.Config().GetKeymapsByGroup(group)...)
