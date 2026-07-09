@@ -56,10 +56,6 @@ func (m model) View() tea.View {
 		m.footer.Render(),
 	)
 
-	if components.GlobalToast.Active() {
-		content = components.PlaceOverlay(components.GlobalToast.Box(), content, m.width, m.height)
-	}
-
 	layers := []*lipgloss.Layer{
 		lipgloss.NewLayer(content),
 	}

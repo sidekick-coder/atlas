@@ -21,6 +21,15 @@ var tuiCmd = &cobra.Command{
 			panic(fmt.Sprintf("Error creating app: %v", err))
 		}
 
+		f, err := tea.LogToFile("tui.log", "debug")
+
+		if err != nil {
+			fmt.Println("Error creating log file:", err)
+			os.Exit(1)
+		}
+
+		defer f.Close()
+
 		root := tui.New(a)
 
 		p := tea.NewProgram(root)

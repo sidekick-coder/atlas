@@ -11,6 +11,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/screen/empty"
 	"github.com/sidekick-coder/atlas/tui/screen/entry"
 	"github.com/sidekick-coder/atlas/tui/screen/entrysingle"
+	"github.com/sidekick-coder/atlas/tui/screen/entrytable"
 	"github.com/sidekick-coder/atlas/tui/screen/syncer"
 )
 
@@ -34,7 +35,7 @@ func (m *model) LoadUserScreen(screen config.Screen) (models.ScreenFactory, erro
 func (m model) LoadScreenRegistry() tea.Cmd {
 	m.availableScreens["empty"] = empty.Create
 	m.availableScreens["entry_list"] = entry.Create
-	m.availableScreens["entry_table"] = entry.Create
+	m.availableScreens["entry_table"] = entrytable.Create
 	m.availableScreens["entry_single"] = entrysingle.Create
 	m.availableScreens["syncer"] = syncer.Create
 
@@ -65,9 +66,9 @@ func (m *model) GetCurrentScreen() (models.Screen, bool) {
 	return m.screens[m.currentIndex], true
 }
 
-func (m *model) SetCurrentScreen(index int) {
+func (m *model) SetCurrentScreen(index int) tea.Cmd {
 	if index < 0 || index >= len(m.screens) {
-		return
+		return nil
 	}
 
 	m.currentIndex = index
@@ -79,7 +80,7 @@ func (m *model) SetCurrentScreen(index int) {
 
 	s := m.screens[index]
 
-	s.Init()
+	return s.Init()
 }
 
 func (m *model) LoadTabs() {
@@ -134,9 +135,8 @@ func (m *model) AddScreen(name string, args ...map[string]any) tea.Cmd {
 	m.screens = append(m.screens, s)
 	index := len(m.screens) - 1
 	m.SetCurrentScreen(index)
-	m.LoadTabs()
 
-	return nil
+	return s.Init()
 }
 
 func (m *model) ReplaceScreen(index int, name string, options map[string]any) tea.Cmd {
@@ -153,9 +153,8 @@ func (m *model) ReplaceScreen(index int, name string, options map[string]any) te
 
 	m.screens[index] = s
 	m.SetCurrentScreen(index)
-	m.LoadTabs()
 
-	return nil
+	return s.Init()
 }
 
 func (m *model) RemoveScreen(index int) error {
@@ -168,8 +167,6 @@ func (m *model) RemoveScreen(index int) error {
 	if m.currentIndex >= len(m.screens) {
 		m.currentIndex = len(m.screens) - 1
 	}
-
-	m.LoadTabs()
 
 	if len(m.screens) > 0 {
 		m.SetCurrentScreen(m.currentIndex)
@@ -185,6 +182,11 @@ func (m *model) AddScreenEmpty() tea.Cmd {
 
 	entries = append(entries, empty.Entry{
 		ID:      "entry_list",
+		Options: map[string]any{},
+	})
+
+	entries = append(entries, empty.Entry{
+		ID:      "entry_table",
 		Options: map[string]any{},
 	})
 

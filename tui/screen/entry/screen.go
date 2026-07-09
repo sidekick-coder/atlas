@@ -43,6 +43,12 @@ func Create(payload tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 		SelectedEntryMetas: map[string]string{},
 	}
 
+	if (payload.Options["query"] != nil) {
+		if query, ok := payload.Options["query"].(string); ok {
+			s.Query = query
+		}
+	}
+
 	return s, nil
 }
 
