@@ -63,7 +63,13 @@ func New(a *app.App) model {
 }
 
 func (m model) Init() tea.Cmd {
-	m.LoadScreenRegistry()
 	m.LoadBindings()
+
+	cmd := m.LoadScreenRegistry()
+
+	if cmd != nil {
+		return cmd
+	}
+
 	return nil
 }

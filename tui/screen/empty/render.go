@@ -29,9 +29,5 @@ func Placeholder(p PlaceholderPayload) string {
 }
 
 func (s *Screen) Render() string {
-	return Placeholder(PlaceholderPayload{
-		Width:  s.Width,
-		Height: s.Height,
-		Text:  "Press 'e' to view the entry list. Press 'q' to quit.",
-	})
+	return s.list.Render()
 }

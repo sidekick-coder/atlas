@@ -2,19 +2,57 @@ package empty
 
 import (
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/components/list"
+	"github.com/sidekick-coder/atlas/tui/messages"
 	"github.com/sidekick-coder/atlas/tui/models"
 )
 
-type Screen struct {
-	Width  int
-	Height int
+type Entry struct {
+	ID      string
+	Options map[string]any
 }
 
-func Create(payload models.ScreenPayload) (models.Screen, error) {
-	s := &Screen{
-		Width:  100,
-		Height: 100,
+type Screen struct {
+	Width   int
+	Height  int
+	Entries []Entry
+
+	list list.Component
+}
+
+func (s *Screen) HandleSelection(index int) tea.Cmd {
+	if index < 0 || index >= len(s.Entries) {
+		return nil
 	}
+
+	entry := s.Entries[index]
+
+	if entry.Options == nil {
+		return nil
+	}
+
+	return messages.ReplaceScreenCmd(messages.ReplaceCurrentScreen{
+		Name:   entry.ID,
+		Options: entry.Options,
+	})
+}
+
+func Create(p models.ScreenPayload) (models.Screen, error) {
+	entries := []Entry{}
+
+	if e, ok := p.Options["entries"].([]Entry); ok {
+		entries = e
+	}
+
+	s := &Screen{
+		Width:   100,
+		Height:  100,
+		Entries: entries,
+	}
+
+	l := list.Create().OnSelect(s.HandleSelection)
+
+	s.list = *l
 
 	return s, nil
 }
@@ -24,29 +62,21 @@ func (s *Screen) Title() string {
 }
 
 func (s *Screen) Init() tea.Cmd {
-	// Initialization logic for the Entry Screen
+	items := []string{}
+
+	for _, entry := range s.Entries {
+		items = append(items, entry.ID)
+	}
+
+	s.list.SetItems(items)
+
 	return nil
 }
 
 func (s *Screen) SetSize(width, height int) {
 	s.Width = width
 	s.Height = height
+
+	s.list.SetSize(width, height)
 }
 
-func (s *Screen) Update(msg tea.Msg) tea.Cmd {
-	handlers := []func(tea.Msg) tea.Cmd{}
-
-	handlers = append(handlers,
-		s.HandleKeyPress,
-	)
-
-	for _, handler := range handlers {
-		cmd := handler(msg)
-
-		if cmd != nil {
-			return cmd
-		}
-	}
-
-	return nil
-}

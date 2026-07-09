@@ -33,7 +33,7 @@ func ParseScreen(entry map[string]any) (Screen, error) {
 }
 
 func (c *Config) GetScreens() ([]Screen, error) {
-	entries := c.GetArray("handlers")
+	entries := c.GetArray("screens")
 	screens := []Screen{}
 
 	for _, entry := range entries {

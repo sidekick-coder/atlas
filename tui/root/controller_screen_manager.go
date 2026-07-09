@@ -2,8 +2,10 @@ package root
 
 import (
 	"fmt"
+	"maps"
 
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/internal/config"
 	"github.com/sidekick-coder/atlas/tui/messages"
 	"github.com/sidekick-coder/atlas/tui/models"
 	"github.com/sidekick-coder/atlas/tui/screen/empty"
@@ -12,11 +14,45 @@ import (
 	"github.com/sidekick-coder/atlas/tui/screen/syncer"
 )
 
+func (m *model) LoadUserScreen(screen config.Screen) (models.ScreenFactory, error) {
+	original := m.availableScreens[screen.Type]
+
+	if original == nil {
+		return nil, fmt.Errorf("invalid screen type: %s", screen.Type)
+	}
+
+	fac := func(p models.ScreenPayload) (models.Screen, error) {
+		maps.Copy(p.Options, screen.Options)
+
+		return original(p)
+	}
+
+	return fac, nil
+
+}
+
 func (m model) LoadScreenRegistry() tea.Cmd {
 	m.availableScreens["empty"] = empty.Create
 	m.availableScreens["entry_list"] = entry.Create
+	m.availableScreens["entry_table"] = entry.Create
 	m.availableScreens["entry_single"] = entrysingle.Create
 	m.availableScreens["syncer"] = syncer.Create
+
+	us, err := m.app.Config().GetScreens()
+
+	if err != nil {
+		return messages.ToastErrorCmd(fmt.Sprintf("Failed to load screens from config: %v", err), 3*1000)
+	}
+
+	for _, s := range us {
+		fac, err := m.LoadUserScreen(s)
+
+		if err != nil {
+			return messages.ToastErrorCmd(err.Error())
+		}
+
+		m.availableScreens[s.ID] = fac
+	}
 
 	return nil
 }
@@ -68,7 +104,7 @@ func (m *model) CreateScreenInstance(name string, options map[string]any) (model
 	}
 
 	p := models.ScreenPayload{
-		App: m.app,
+		App:     m.app,
 		Options: options,
 		Program: Program,
 	}
@@ -100,7 +136,7 @@ func (m *model) AddScreen(name string, args ...map[string]any) tea.Cmd {
 	m.SetCurrentScreen(index)
 	m.LoadTabs()
 
-	return  nil
+	return nil
 }
 
 func (m *model) ReplaceScreen(index int, name string, options map[string]any) tea.Cmd {
@@ -108,11 +144,11 @@ func (m *model) ReplaceScreen(index int, name string, options map[string]any) te
 	s, err := m.CreateScreenInstance(name, options)
 
 	if err != nil {
-		return messages.ToastErrorCmd(fmt.Sprintf("Failed to create screen: %v", err), 3 * 1000)
+		return messages.ToastErrorCmd(fmt.Sprintf("Failed to create screen: %v", err), 3*1000)
 	}
 
 	if index < 0 || index >= len(m.screens) {
-		return messages.ToastErrorCmd(fmt.Sprintf("Invalid screen index: %d", index), 3 * 1000)
+		return messages.ToastErrorCmd(fmt.Sprintf("Invalid screen index: %d", index), 3*1000)
 	}
 
 	m.screens[index] = s
@@ -121,7 +157,6 @@ func (m *model) ReplaceScreen(index int, name string, options map[string]any) te
 
 	return nil
 }
-
 
 func (m *model) RemoveScreen(index int) error {
 	if index < 0 || index >= len(m.screens) {
@@ -143,4 +178,32 @@ func (m *model) RemoveScreen(index int) error {
 	}
 
 	return nil
+}
+
+func (m *model) AddScreenEmpty() tea.Cmd {
+	entries := []empty.Entry{}
+
+	entries = append(entries, empty.Entry{
+		ID:      "entry_list",
+		Options: map[string]any{},
+	})
+
+	us, err := m.app.Config().GetScreens()
+
+	if err != nil {
+		return messages.ToastErrorCmd(fmt.Sprintf("Failed to load screens from config: %v", err), 3*1000)
+	}
+
+	for _, s := range us {
+		entries = append(entries, empty.Entry{
+			ID:      s.ID,
+			Options: s.Options,
+		})
+	}
+
+	options := map[string]any{
+		"entries": entries,
+	}
+
+	return m.AddScreen("empty", options)
 }

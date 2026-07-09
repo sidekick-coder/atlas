@@ -53,13 +53,13 @@ screens:
       query: "parent=tasks"
       description: "List of tasks"
 
-    - id: task_detail
-      type: custom
-      title: "{{ .metas.title }}"
-      components:
-          - type: meta_box
-            x: 0
-            y: 0
-            rows: 1
-            cols: 1
-            content: "{{ .metas.content }}"
+    # - id: task_detail
+    #   type: custom
+    #   title: "{{ .metas.title }}"
+    #   components:
+    #       - type: meta_box
+    #         x: 0
+    #         y: 0
+    #         rows: 1
+    #         cols: 1
+    #         content: "{{ .metas.content }}"

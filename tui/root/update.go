@@ -33,7 +33,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.SetSize(msg.Width, msg.Height)
-		return m, m.AddScreen("entry_list")
+		return m, m.AddScreenEmpty()
 	case components.ToastExpiredMsg:
 		components.GlobalToast.Hide()
 		return m, nil
