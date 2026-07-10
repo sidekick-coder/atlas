@@ -2,15 +2,17 @@ package root
 
 import (
 	"fmt"
-	"log"
-
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
+	"github.com/sidekick-coder/atlas/tui/features/layer"
 	"github.com/sidekick-coder/atlas/tui/screen/empty"
 )
 
 
 func (m *model) SetSize(width int, height int) {
+	layer.ScreenHeight = height 
+	layer.ScreenWidth = width 
+
 	m.width = width
 	m.height = height
 
@@ -25,8 +27,6 @@ func (m *model) SetSize(width int, height int) {
 
 	m.screenContainer.SetSize(width, sh)
 	m.screenHeight = sh
-
-	log.Printf("SetSize: width=%d, height=%d, screenHeight=%d", width, height, sh)
 
 	for _, s := range m.screens {
 		s.SetSize(width, sh)
@@ -55,6 +55,8 @@ func (m model) View() tea.View {
 	layers := []*lipgloss.Layer{
 		lipgloss.NewLayer(content),
 	}
+
+	layers = append(layers, layer.GetLipglossLayers()...)
 
 	if (m.input.Active) {
 		layers = append(layers, m.input.RenderLayer())

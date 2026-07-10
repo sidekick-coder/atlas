@@ -23,5 +23,11 @@ func (c *Component) Render() string {
 		return ""
 	}
 
-	return c.style.Render(c.content)
+	if c.onRender != nil {
+		return c.style.Render(c.onRender())
+	}
+
+	return c.style.
+		Align(lipgloss.Center,lipgloss.Center).
+		Render("No render function provided")
 }

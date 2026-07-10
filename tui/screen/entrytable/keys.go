@@ -24,6 +24,6 @@ func (s *Screen) RegisterBindings() tea.Cmd {
 	return nil
 }
 
-func (s *Screen) HandleKeypress(msg tea.Msg) tea.Cmd {
+func (s *Screen) HandleKeypress(msg tea.KeyMsg) tea.Cmd {
 	return nil
 }

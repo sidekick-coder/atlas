@@ -5,7 +5,13 @@ import (
 	"encoding/hex"
 )
 
-func CreateID(length int) (string, error) {
+func CreateID(args ...int) (string, error) {
+	length := 16 // Default length
+
+	if len(args) > 0 {
+		length = args[0]
+	}
+
 	bytes := make([]byte, length)
 
 	if _, err := rand.Read(bytes); err != nil {

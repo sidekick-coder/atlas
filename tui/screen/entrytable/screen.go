@@ -56,10 +56,16 @@ func (s *Screen) Init() tea.Cmd {
 	)
 }
 
+func (s *Screen) Dispose() tea.Cmd {
+	return chain.Dispose(
+		s.table.Dispose,
+	)
+}
+
 func (s *Screen) Update(msg tea.Msg) tea.Cmd {
 	return chain.Update(
 		msg,
 		s.table.Update,
-		s.HandleKeypress,
+		chain.OnKey(s.HandleKeypress),
 	)
 }

@@ -16,7 +16,7 @@ func Create() *Component {
 		content: "",
 		height: 10,
 		width: 10,
-		color: theme.Current.Primary,
+		color: theme.Current.Muted,
 	}
 }
 
@@ -45,5 +45,14 @@ func (c *Component) GetContent() string {
 
 func (c *Component) SetContent(content string) *Component {
 	c.content = content
+	return c
+}
+
+func (c *Component) GetColor() string {
+	return c.color
+}
+
+func (c *Component) SetColor(color string) *Component {
+	c.color = color
 	return c
 }

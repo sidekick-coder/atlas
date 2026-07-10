@@ -10,7 +10,8 @@ type Component struct {
 	open bool 
 	width int 
 	height int
-	content string
+
+	onRender func() string
 
 	style lipgloss.Style
 	layer *layer.Layer
@@ -21,7 +22,6 @@ func Create() *Component {
 		open: false,
 		width: 100,
 		height: 100,
-		content: "",
 
 		layer: layer.Create(),
 		style: lipgloss.NewStyle().Border(lipgloss.NormalBorder()).Padding(1, 2),
@@ -37,8 +37,8 @@ func (c *Component) SetSize(width, height int) {
 	c.height = height
 }
 
-func (c *Component) SetContent(content string) {
-	c.content = content
+func (c *Component) OnRender(f func() string) {
+	c.onRender = f
 }
 
 func (c *Component) Open() {

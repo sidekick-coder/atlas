@@ -1,6 +1,8 @@
-package table
+package columnlist
 
 import (
+	"log"
+
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/features/key"
 )
@@ -9,20 +11,14 @@ type Keymap struct {
 	Up    key.Binding
 	Down  key.Binding
 	Enter key.Binding
-	Right  key.Binding
-	Left  key.Binding
 	Close  key.Binding
-	EditColumns key.Binding
 }
 
 var Binding = Keymap{
 	Up:    key.CreateBinding("k", "<Up>").SetHelp("k/up").SetDescription("Move up"),
 	Down:  key.CreateBinding("j", "<Down>").SetHelp("j/down").SetDescription("Move down"),
 	Enter: key.CreateBinding("enter").SetHelp("enter").SetDescription("Select item"),
-	Right:  key.CreateBinding("l", "<Right>").SetHelp("l/next").SetDescription("Next column"),
-	Left:  key.CreateBinding("h", "<Left>").SetHelp("h/prev").SetDescription("Previous column"),
 	Close:  key.CreateBinding("<Esc>").SetHelp("esc").SetDescription("Close table"),
-	EditColumns: key.CreateBinding("<leader>ec").SetHelp("<leader>ec").SetDescription("Edit columns"),
 }
 
 func (c *Component) LoadBindings() tea.Cmd {
@@ -30,9 +26,6 @@ func (c *Component) LoadBindings() tea.Cmd {
 		Binding.Up,
 		Binding.Down,
 		Binding.Enter,
-		Binding.Right,
-		Binding.Left,
-		Binding.EditColumns,
 		Binding.Close,
 	)
 
@@ -40,28 +33,17 @@ func (c *Component) LoadBindings() tea.Cmd {
 }
 
 func (c *Component) HandleBindings(msg tea.Msg) tea.Cmd {
-	if key.Matches(Binding.Left) {
+	log.Println("Handling bindings in columnlist")
+	if key.Matches(Binding.Up) {
 		c.column.Selection.Prev()
 	}
 
-	if key.Matches(Binding.Right) {
+	if key.Matches(Binding.Down) {
 		c.column.Selection.Next()
 	}
 
-	if key.Matches(Binding.Up) {
-		c.itemSelection.Prev()
-	}
-
-	if key.Matches(Binding.Down) {
-		c.itemSelection.Next()
-	}
-
-	if key.Matches(Binding.EditColumns) {
-		c.columnList.Open()
-	}
-
-	if c.columnList.IsOpen() && key.Matches(Binding.Close) {
-		c.columnList.Close()
+	if key.Matches(Binding.Close) {
+		c.Close()
 	}
 
 	return nil

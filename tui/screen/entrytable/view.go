@@ -1,7 +1,6 @@
 package entrytable
 
 import (
-	"log"
 	"maps"
 	"strconv"
 
@@ -13,16 +12,18 @@ import (
 func (s *Screen) SetSize(width, height int) {
 	s.width = width
 	s.height = height
-	s.table.SetSize(width-10, height)
-	s.container.SetSize(width-4, height).SetMargin(0, 2, 0, 2).SetBorder(theme.Current.Primary).SetPadding(0, 2, 0, 2)
+	s.table.SetSize(width-8, height)
+	s.container.SetSize(width-6, height).SetMargin(0, 2, 0, 2).SetBorder(theme.Current.Primary)
 }
 
 func (s *Screen) LoadColumns() tea.Cmd {
-	s.table.SetColumns([]table.Column{
-		{Label: "ID", Field: "id", Width: 10},
-		{Label: "Name", Field: "basename", Width: 120},
-		{Label: "Path", Field: "path"},
-	})
+	columns := []*table.Column{}
+
+	columns = append(columns, &table.Column{Label: "ID", Field: "id", Width: 10})
+	columns = append(columns, &table.Column{Label: "Name", Field: "basename", Width: 120})
+	columns = append(columns, &table.Column{Label: "Path", Field: "path"})
+
+	s.table.SetColumns(columns)
 
 	return nil
 }
@@ -38,8 +39,6 @@ func (s *Screen) Render() string {
 
 		values["id"] = strconv.FormatInt(entry.ID, 10)
 		values["path"] = entry.Path
-
-		log.Printf("Rendering entry: %v", entry)
 
 		item := table.Item{
 			Values: values,

@@ -7,5 +7,5 @@ import (
 
 
 func (c *Component) Update(msg tea.Msg) tea.Cmd {
-	return utils.Chain(msg, c.HandleBindings)
+	return utils.Chain(msg, c.columnList.Update, c.HandleBindings)
 }

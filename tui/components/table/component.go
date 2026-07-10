@@ -2,15 +2,13 @@ package table
 
 import (
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/components/table/column"
+	"github.com/sidekick-coder/atlas/tui/components/table/columnlist"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/selection"
 )
 
-type Column struct {
-	Label string 
-	Field string
-	Width int
-}
+type Column = column.Column
 
 type Item struct {
 	Values map[string]string
@@ -23,9 +21,8 @@ type Component struct {
 	onSelect func(cursor int) tea.Cmd
 	items    []Item
 
-	columns  []Column
-	columnSizes []int
-	columnSelection selection.Feature
+	column *column.Feature
+	columnList columnlist.Component
 
 	itemSelection selection.Feature
 }
@@ -37,9 +34,8 @@ func Create() *Component {
 		cursor: 0,
 		items:    []Item{},
 
-		columns:  []Column{},
-		columnSizes: []int{},
-		columnSelection: *selection.Create(),
+		column: column.Create(),
+		columnList: *columnlist.Create(),
 
 		itemSelection: *selection.Create(),
 	}
@@ -50,25 +46,8 @@ func (c *Component) OnSelect(f func(cursor int) tea.Cmd) *Component {
 	return c
 }
 
-func (c *Component) SetColumns(columns []Column) {
-	c.columns = columns
-	c.columnSelection.SetTotal(len(c.columns))
-
-	remaningWidth := c.width
-	c.columnSizes = make([]int, len(columns))
-
-	for i, column := range columns {
-		if column.Width > 0 {
-			c.columnSizes[i] = column.Width
-			remaningWidth -= column.Width
-		}
-	}
-
-	for i, column := range columns {
-		if column.Width == 0 {
-			c.columnSizes[i] = remaningWidth / (len(columns) - i)
-		}
-	}
+func (c *Component) SetColumns(columns []*column.Column) {
+	c.column.SetColumns(columns) 
 }
 
 func (c *Component) SetItems(items []Item) {
@@ -77,6 +56,12 @@ func (c *Component) SetItems(items []Item) {
 }
 
 func (c *Component) Init() tea.Cmd {
-	return chain.Init(c.LoadBindings)
+	c.columnList.SetColumn(c.column)
+	c.columnList.Open()
+	return chain.Init(c.LoadBindings, c.columnList.Init)
+}
+
+func (c *Component) Dispose() tea.Cmd {
+	return chain.Dispose(c.columnList.Dispose)
 }
 

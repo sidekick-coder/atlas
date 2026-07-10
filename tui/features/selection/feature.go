@@ -8,7 +8,7 @@ type Feature struct {
 
 func Create() *Feature {
 	return &Feature{
-		cursor: 0,
+		cursor: -1,
 		total:  0,
 		enabled: true,
 	}
