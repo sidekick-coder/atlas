@@ -74,6 +74,12 @@ func (s *Screen) Init() tea.Cmd {
 
 	s.table.OnSelect(s.OpenEntry)
 
+	q := s.options["query"]
+
+	if q != nil {
+		s.loader.SetQuery([]string{q.(string)})
+	}
+
 	return chain.Init(
 		s.loader.Init,
 		s.LoadBindings,

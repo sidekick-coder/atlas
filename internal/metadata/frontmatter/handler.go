@@ -1,4 +1,4 @@
-package markdown
+package frontmatter
 
 import (
 	"os"
@@ -76,15 +76,13 @@ func (h Handler) Extract(info *models.EntryInfo) (map[string]string, error) {
 		return nil, err
 	}
 
-	body, flat, err := h.ExtractFromContent(string(contents))
+	_, flat, err := h.ExtractFromContent(string(contents))
 
 	if err != nil {
 		return nil, err
 	}
 
 	result := utils.StringifyMap(flat)
-	
-	result["body"] = body
 
 	return result, nil
 }

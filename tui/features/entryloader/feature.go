@@ -2,8 +2,6 @@ package entryloader
 
 import (
 	"fmt"
-	"log"
-
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/models"
 	"github.com/sidekick-coder/atlas/internal/repository/entry"
@@ -67,8 +65,6 @@ func (f *Feature) Load() error {
 
 	f.count = count
 	f.entries = entries
-
-	log.Printf("Loaded %d entries (limit: %d, offset: %d, count: %d)\n", len(entries), f.limit, f.offset, f.count)
 
 	return nil
 }

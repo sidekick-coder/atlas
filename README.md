@@ -6,10 +6,10 @@
 - [x] bug in single page not able to edit metas
 - [x] load metadata handlers from config
 - [x] config option to tell what files scan
-- [ ] config option to tell database filename (usefyul for wsl)
+- [x] tui: move queries data to components instead of the screen
+- [x] tui: columns in the list screen
 - [ ] custom metadata handler (probably comunicate via stdin/stdout)
-- [ ] tui: move queries data to components instead of the screen
-- [ ] tui: columns in the list screen
+- [ ] config option to tell database filename (usefyul for wsl)
 - [ ] tui: custom screens
 
 ## ideas 

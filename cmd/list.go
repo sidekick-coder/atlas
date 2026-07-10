@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/internal/repository/entry"
 	"github.com/sidekick-coder/atlas/internal/utils"
@@ -40,13 +39,8 @@ var listCmd = &cobra.Command{
 			return nil
 		}
 
-		s := lipgloss.
-			NewStyle().
-			Bold(true).
-			Foreground(lipgloss.Blue)
-
 		for _, entry := range entries {
-			fmt.Printf("%s\n", s.Render(entry.Path))
+			fmt.Printf("%s\n", entry.Path)
 
 			if len(showMetas) > 0 {
 				metas, err := entryMetaRepo.ListByEntryID(entry.ID)

@@ -5,11 +5,12 @@ import (
 
 	"github.com/sidekick-coder/atlas/internal/config"
 	"github.com/sidekick-coder/atlas/internal/fs"
-	"github.com/sidekick-coder/atlas/internal/metadata/markdown"
+	"github.com/sidekick-coder/atlas/internal/metadata/content"
+	"github.com/sidekick-coder/atlas/internal/metadata/frontmatter"
 	"github.com/sidekick-coder/atlas/internal/metadata/json"
+	"github.com/sidekick-coder/atlas/internal/metadata/stat"
 	"github.com/sidekick-coder/atlas/internal/models"
 )
-
 
 func (m *Meta) SetHandlersFromConfig(config *config.Config) error {
 	configHandlers, err := config.GetConfigHandlers()
@@ -20,12 +21,12 @@ func (m *Meta) SetHandlersFromConfig(config *config.Config) error {
 	}
 
 	for _, hc := range configHandlers {
-		if hc.Patterns == nil || len(hc.Patterns) == 0 {
+		if len(hc.Patterns) == 0 {
 			return fmt.Errorf("handler %s has no patterns", hc.ID)
 		}
 
 		matched, err := fs.MatchAny(m.info.Path, hc.Patterns)
-		
+
 		if err != nil {
 			return err
 		}
@@ -39,13 +40,23 @@ func (m *Meta) SetHandlersFromConfig(config *config.Config) error {
 			Options: hc.Options,
 		}
 
-		if (hc.Type == "markdown") {
-			handlers = append(handlers, markdown.Create(payload))
+		if hc.Type == "frontmatter" {
+			handlers = append(handlers, frontmatter.Create(payload))
 			continue
 		}
 
-		if (hc.Type == "json") {
+		if hc.Type == "json" {
 			handlers = append(handlers, json.Create(payload))
+			continue
+		}
+
+		if hc.Type == "content" {
+			handlers = append(handlers, content.Create(payload))
+			continue
+		}
+
+		if hc.Type == "stat" {
+			handlers = append(handlers, stat.Create(payload))
 			continue
 		}
 
@@ -56,4 +67,3 @@ func (m *Meta) SetHandlersFromConfig(config *config.Config) error {
 
 	return nil
 }
-

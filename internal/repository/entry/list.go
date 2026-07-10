@@ -28,6 +28,11 @@ func (r *Repository) List(options ...ListOptions) ([]models.Entry, error) {
 			offset = options[0].Offset
 		}
 
+		if len(options[0].Query) > 0 {
+			query = options[0].Query
+		}
+
+
 		loadMetas = options[0].LoadMetas
 	}
 

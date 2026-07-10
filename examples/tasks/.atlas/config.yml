@@ -1,30 +1,20 @@
-scan:
-    exclude:
-        - "package.json"
-        - "README.md"
-    include:
-        - "tasks/*.md"
 handlers:
-    # - id: content
-    #   type: content
-    #   patterns:
-    #       - "*.md"
-    #       - "*.json"
+    - type: content
+      patterns: ["**/*.md", "**/*.json"]
 
-    - id: md
-      type: markdown
+    - type: stat
+      patterns: ["**/*.md", "**/*.json"]
+
+    - type: frontmatter
       patterns: ["**/*.md"]
       prefix: ""
 
-    - id: json
-      type: json
+    - type: json
       patterns: ["**/*.json"]
-      prefix: "json"
 
-    # - id: custom
-    #   type: custom
-    #   bin: "{{ .AtlasPath }}/handlers/custom.js"
-    #   patterns: ["*.md"]
+    - type: custom
+      bin: "{{ .AtlasPath }}/handlers/id.js"
+      patterns: ["**/*.md"]
 
 actions:
     - id: vi
