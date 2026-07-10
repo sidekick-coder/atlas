@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/sidekick-coder/atlas/internal/metadata/handler"
 	"github.com/sidekick-coder/atlas/internal/models"
 	"github.com/sidekick-coder/atlas/internal/utils"
 )
@@ -14,7 +15,7 @@ type Handler struct {
 	options map[string]any
 }
 
-func Create(payload models.MetaHandlerPayload) models.MetaHandler {
+func Create(payload handler.Payload) handler.Handler {
 	return Handler{
 		id: payload.ID,
 		options: payload.Options,

@@ -12,8 +12,8 @@ handlers:
     - type: json
       patterns: ["**/*.json"]
 
-    - type: custom
-      bin: "{{ .AtlasPath }}/handlers/id.js"
+    - type: shell
+      bin: "{{ .workspace.atlas_path }}/handlers/task_id.js"
       patterns: ["**/*.md"]
 
 actions:

@@ -1,14 +1,16 @@
 package frontmatter
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
-	"fmt"
+
+	"github.com/adrg/frontmatter"
 	"github.com/goccy/go-yaml"
+	"github.com/sidekick-coder/atlas/internal/metadata/handler"
 	"github.com/sidekick-coder/atlas/internal/models"
 	"github.com/sidekick-coder/atlas/internal/utils"
-	"github.com/adrg/frontmatter"
 )
 
 type Handler struct {
@@ -17,7 +19,7 @@ type Handler struct {
 	options map[string]any
 }
 
-func Create(payload models.MetaHandlerPayload) models.MetaHandler {
+func Create(payload handler.Payload) handler.Handler {
 	prefix := "frontmatter."
 
 	if p, ok := payload.Options["prefix"]; ok { 

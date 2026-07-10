@@ -5,16 +5,18 @@ import (
 
 	"github.com/sidekick-coder/atlas/internal/config"
 	"github.com/sidekick-coder/atlas/internal/fs"
-	"github.com/sidekick-coder/atlas/internal/metadata/content"
-	"github.com/sidekick-coder/atlas/internal/metadata/frontmatter"
-	"github.com/sidekick-coder/atlas/internal/metadata/json"
-	"github.com/sidekick-coder/atlas/internal/metadata/stat"
-	"github.com/sidekick-coder/atlas/internal/models"
+	"github.com/sidekick-coder/atlas/internal/metadata/handler"
+	"github.com/sidekick-coder/atlas/internal/metadata/handlers/content"
+	"github.com/sidekick-coder/atlas/internal/metadata/handlers/frontmatter"
+	"github.com/sidekick-coder/atlas/internal/metadata/handlers/json"
+	"github.com/sidekick-coder/atlas/internal/metadata/handlers/shell"
+	"github.com/sidekick-coder/atlas/internal/metadata/handlers/stat"
 )
+
 
 func (m *Meta) SetHandlersFromConfig(config *config.Config) error {
 	configHandlers, err := config.GetConfigHandlers()
-	handlers := []models.MetaHandler{}
+	handlers := []handler.Handler{}
 
 	if err != nil {
 		return err
@@ -35,9 +37,10 @@ func (m *Meta) SetHandlersFromConfig(config *config.Config) error {
 			continue
 		}
 
-		payload := models.MetaHandlerPayload{
+		payload := handler.Payload{
 			ID:      hc.ID,
 			Options: hc.Options,
+			Config:  config,
 		}
 
 		if hc.Type == "frontmatter" {
@@ -57,6 +60,11 @@ func (m *Meta) SetHandlersFromConfig(config *config.Config) error {
 
 		if hc.Type == "stat" {
 			handlers = append(handlers, stat.Create(payload))
+			continue
+		}
+
+		if hc.Type == "shell" {
+			handlers = append(handlers, shell.Create(payload))
 			continue
 		}
 

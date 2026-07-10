@@ -3,12 +3,14 @@ package metadata
 import (
 	"fmt"
 	"slices"
+
+	"github.com/sidekick-coder/atlas/internal/metadata/handler"
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 
 type Meta struct {
 	info *models.EntryInfo
-	handlers []models.MetaHandler
+	handlers []handler.Handler
 }
 
 var SytemMetaNames = []string{
@@ -20,7 +22,7 @@ var SytemMetaNames = []string{
 func Handler(info *models.EntryInfo) (*Meta, error) {
 	meta := &Meta{
 		info: info,
-		handlers: []models.MetaHandler{},
+		handlers: []handler.Handler{},
 	}
 
 	return meta, nil

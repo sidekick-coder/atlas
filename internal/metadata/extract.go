@@ -20,10 +20,6 @@ func (m *Meta) ExtractMap() (map[string]string, error) {
 		maps.Copy(result, data)
 	}
 
-	// result["basename"] = m.info.BaseName
-	// result["type"] = m.info.Type
-	// result["ext"] = strings.TrimPrefix(m.info.Ext, ".")
-
 	return result, nil
 }
 

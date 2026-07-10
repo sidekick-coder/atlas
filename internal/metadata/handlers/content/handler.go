@@ -1,11 +1,13 @@
-package stat
+package content
 
 import (
 	"encoding/json"
-	"github.com/sidekick-coder/atlas/internal/models"
-	"github.com/sidekick-coder/atlas/internal/utils"
 	"os"
 	"path/filepath"
+
+	"github.com/sidekick-coder/atlas/internal/metadata/handler"
+	"github.com/sidekick-coder/atlas/internal/models"
+	"github.com/sidekick-coder/atlas/internal/utils"
 )
 
 type Handler struct {
@@ -14,7 +16,7 @@ type Handler struct {
 	options map[string]any
 }
 
-func Create(payload models.MetaHandlerPayload) models.MetaHandler {
+func Create(payload handler.Payload) handler.Handler {
 	key := "content"
 
 	if k, ok := payload.Options["key"]; ok {
@@ -65,20 +67,15 @@ func (m Handler) ID() string {
 }
 
 func (m Handler) Extract(info *models.EntryInfo) (map[string]string, error) {
-	result := map[string]string{}
+	contents, err := os.ReadFile(filepath.Join(info.AbsolutePath))
 
-	result["ext"] = info.Ext
-	result["basename"] = info.BaseName
-	result["type"] = info.Type
-	result["path"] = info.Path
-
-	parent := filepath.Dir(info.Path)
-	
-	if parent == "." {
-		parent = ""
+	if err != nil {
+		return nil, err
 	}
 
-	result["parent"] = parent
+	content := string(contents)
+	result := map[string]string{}
+	result[m.key] = content
 
 	return result, nil
 }
