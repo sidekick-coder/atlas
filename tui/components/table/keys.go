@@ -67,5 +67,11 @@ func (c *Component) HandleBindings(msg tea.KeyMsg) tea.Cmd {
 		c.columnList.Open()
 	}
 
+	if key.Matches(Binding.Enter) {
+		if c.onSelect != nil {
+			return c.onSelect(c.itemSelection.GetCursor())
+		}
+	}
+
 	return nil
 }

@@ -1,6 +1,7 @@
 package entryloader
 
 import (
+	"fmt"
 	"log"
 
 	tea "charm.land/bubbletea/v2"
@@ -32,6 +33,14 @@ func Create(repository entry.Repository) *Feature {
 
 func (f *Feature) GetEntries() []models.Entry {
 	return f.entries
+}
+
+func (f *Feature) GetEntry(index int) (models.Entry, error) {
+	if index < 0 || index >= len(f.entries) {
+		return models.Entry{}, fmt.Errorf("index %d out of bounds for entries (length: %d)", index, len(f.entries))
+	}
+
+	return f.entries[index], nil
 }
 
 func (f *Feature) Load() error {
