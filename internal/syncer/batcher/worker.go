@@ -65,7 +65,6 @@ func (w *Worker) Procces(in <-chan extractor.ExtractEntry, out chan<- Batch) {
 		w.count.Add(1)
 	}
 
-	close(out)
 }
 
 func (w *Worker) Run(in <-chan extractor.ExtractEntry, out chan<- Batch, concurrency int) {
@@ -78,4 +77,5 @@ func (w *Worker) Run(in <-chan extractor.ExtractEntry, out chan<- Batch, concurr
 	}
 
 	wg.Wait()
+	close(out)
 }

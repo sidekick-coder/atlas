@@ -2,7 +2,7 @@ package scanner
 
 import (
 	"fmt"
-	"sync"
+	// "sync"
 	"sync/atomic"
 
 	"github.com/sidekick-coder/atlas/internal/drive"
@@ -51,18 +51,19 @@ func (w *Worker) Process(out chan<- models.EntryInfo) {
 	if w.onComplete != nil {
 		w.onComplete(w.count.Load())
 	}
-
-	close(out)
 }
 
 func (w *Worker) Run(out chan<- models.EntryInfo, concurrency int) {
-	var wg sync.WaitGroup
-
-	for range concurrency {
-		wg.Go(func() {
-			w.Process(out)
-		})
-	}
-
-	wg.Wait()
+	// var wg sync.WaitGroup
+	//
+	// for range concurrency {
+	// 	wg.Go(func() {
+	// 		w.Process(out)
+	// 	})
+	// }
+	//
+	// wg.Wait()
+	// close(out)
+	defer close(out)
+	w.Process(out)
 }

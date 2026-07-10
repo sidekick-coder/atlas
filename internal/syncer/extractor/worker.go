@@ -10,11 +10,11 @@ import (
 )
 
 type Worker struct {
-	config *config.Config
-	nextId atomic.Int32
-	count  atomic.Int32
-	onError func(e models.EntryInfo, err error)
-	onSuccess func(e ExtractEntry)
+	config     *config.Config
+	nextId     atomic.Int32
+	count      atomic.Int32
+	onError    func(e models.EntryInfo, err error)
+	onSuccess  func(e ExtractEntry)
 	onComplete func(count int32)
 }
 
@@ -106,9 +106,7 @@ func (w *Worker) Proccess(in <-chan models.EntryInfo, out chan<- ExtractEntry) {
 		out <- ee
 	}
 
-	close(out)
-
-	if (w.onComplete != nil) {
+	if w.onComplete != nil {
 		w.onComplete(w.count.Load())
 	}
 }
@@ -123,5 +121,6 @@ func (w *Worker) Run(in <-chan models.EntryInfo, out chan<- ExtractEntry, concur
 	}
 
 	wg.Wait()
+	close(out)
 
 }
