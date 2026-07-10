@@ -4,7 +4,6 @@ import (
 	"maps"
 	"strconv"
 
-	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/components/table"
 	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
@@ -12,21 +11,10 @@ import (
 func (s *Screen) SetSize(width, height int) {
 	s.width = width
 	s.height = height
-	s.table.SetSize(width-8, height)
-	s.container.SetSize(width-6, height).SetMargin(0, 2, 0, 2).SetBorder(theme.Current.Primary)
+	s.table.SetSize(width-6, height)
+	s.container.SetSize(width-4, height).SetMargin(0, 2, 0, 2).SetBorder(theme.Current.Primary)
 }
 
-func (s *Screen) LoadColumns() tea.Cmd {
-	columns := []*table.Column{}
-
-	columns = append(columns, &table.Column{Label: "ID", Field: "id", Width: 10})
-	columns = append(columns, &table.Column{Label: "Name", Field: "basename", Width: 120})
-	columns = append(columns, &table.Column{Label: "Path", Field: "path"})
-
-	s.table.SetColumns(columns)
-
-	return nil
-}
 
 func (s *Screen) Render() string {
 

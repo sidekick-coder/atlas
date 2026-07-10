@@ -6,19 +6,22 @@ import (
 )
 
 func (f *Feature) UpdateColumnByIndex(index int, payload Column) error {
-	column, ok := f.GetColumn(index)
+	_, ok := f.GetColumn(index)
 
 	if !ok {
 		return fmt.Errorf("column index %d out of range", index)
 	}
 
+
 	newColumn := &Column{
 		Field: payload.Field,
 		Label: payload.Label,
-		Width: column.Width,
+		Width: payload.Width,
 	}
 
 	f.columns[index] = newColumn
+
+	f.SetColumns(f.columns)
 
 	return nil
 }

@@ -47,14 +47,33 @@ keymaps:
       groups: [ext=md, ext=json]
 
 tui:
-    home_screen: entry_table
+    home_screen: task_table
 
 screens:
     - id: task_table
       type: entry_table
       title: "Tasks"
-      query: "parent=tasks"
       description: "List of tasks"
+      query: "parent=tasks"
+      columns:
+          - id: id
+            label: "ID"
+            field: basename
+            width: 10
+
+          - id: title
+            label: "Title"
+            field: title
+
+          - id: status
+            label: "Status"
+            field: status
+            width: 20
+
+          - id: due_date
+            label: "Due Date"
+            field: due
+            width: 30
 
     # - id: task_detail
     #   type: custom

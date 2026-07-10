@@ -16,7 +16,7 @@ func ToastCmd(mgs Toast) tea.Cmd {
 }
 
 func ToastErrorMessage(message string, seconds ...int) Toast {
-	sec := 3
+	sec := 5
 	color := "196"
 	title := "Error"
 
@@ -33,7 +33,7 @@ func ToastErrorMessage(message string, seconds ...int) Toast {
 }
 
 func ToastSuccessMessage(message string, seconds ...int) Toast {
-	sec := 3
+	sec := 5
 	color := "46"
 	title := "Success"
 

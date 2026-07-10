@@ -74,7 +74,7 @@ func (f *Footer) Render() string {
 		parts = append(parts, footerStyle.Render(fmt.Sprintf("... and %d more", remaning)))
 	}
 
-	sep := footerStyle.Render("  ·  ")
+	sep := footerStyle.Render(" · ")
 	row := strings.Join(parts, sep)
 
 	return container.Render(row)

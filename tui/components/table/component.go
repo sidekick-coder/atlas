@@ -67,7 +67,6 @@ func (c *Component) Init() tea.Cmd {
 	})
 
 	c.LoadBindings()
-	c.columnList.Open()
 
 	return chain.Init(c.columnList.Init)
 }

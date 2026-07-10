@@ -2,6 +2,7 @@ package root
 
 import (
 	"fmt"
+	"log"
 	"maps"
 
 	tea "charm.land/bubbletea/v2"
@@ -56,6 +57,14 @@ func (m model) LoadScreenRegistry() tea.Cmd {
 		m.availableScreens[s.ID] = fac
 	}
 
+	loaded := []string{}
+
+	for k := range m.availableScreens {
+		loaded = append(loaded, k)
+	}
+
+	log.Printf("Loaded screen registry: %v", loaded)
+
 	return nil
 }
 
@@ -98,6 +107,8 @@ func (m *model) LoadTabs() {
 
 func (m *model) CreateScreenInstance(name string, options map[string]any) (models.Screen, error) {
 	fac := m.availableScreens[name]
+
+	log.Printf("Creating screen instance for name: %s, factory: %v", name, fac)
 
 	if fac == nil {
 		return nil, fmt.Errorf("screen factory not found for name: %s", name)

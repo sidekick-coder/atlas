@@ -1,7 +1,6 @@
 package column
 
 import (
-	"log"
 	"strings"
 
 	"github.com/sidekick-coder/atlas/tui/features/selection"
@@ -64,6 +63,10 @@ func (f *Feature) SetColumns(columns []*Column) {
 
 	f.Selection.SetTotal(len(f.columns))
 
+	if (len(f.columns) == 0) {
+		return
+	}
+
 	remaningWidth := f.width
 
 	f.sizes = make([]int, len(columns))
@@ -85,7 +88,6 @@ func (f *Feature) SetColumns(columns []*Column) {
 		}
 	}
 
-	log.Printf("Column sizes: %v", f.sizes)
 }
 
 func (f *Feature) GetColumnIndex(column *Column) int {

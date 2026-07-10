@@ -9,7 +9,6 @@ type Keymap struct {
 	Up          key.Binding
 	Down        key.Binding
 	Enter       key.Binding
-	Close       key.Binding
 	EditColumns key.Binding
 }
 
@@ -28,10 +27,6 @@ var Binding = Keymap{
 		SetHelp("enter").
 		SetTags(tags...).
 		SetDescription("Select item"),
-	Close: key.CreateBinding("<Esc>").
-		SetHelp("esc").
-		SetTags(tags...).
-		SetDescription("Close table"),
 	EditColumns: key.CreateBinding("<leader>ec").
 		SetHelp("<leader>ec").
 		SetTags(tags...).
@@ -43,7 +38,6 @@ func (c *Component) GetBindings() []key.Binding {
 		Binding.Up,
 		Binding.Down,
 		Binding.Enter,
-		Binding.Close,
 		Binding.EditColumns,
 	}
 }
@@ -71,10 +65,6 @@ func (c *Component) HandleBindings(msg tea.KeyMsg) tea.Cmd {
 
 	if key.Matches(Binding.EditColumns) {
 		c.columnList.Open()
-	}
-
-	if c.columnList.IsOpen() && key.Matches(Binding.Close) {
-		c.columnList.Close()
 	}
 
 	return nil
