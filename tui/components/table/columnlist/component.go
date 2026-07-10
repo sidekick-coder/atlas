@@ -52,8 +52,6 @@ func (c *Component) Init() tea.Cmd {
 
 	c.dialog.OnSubmit(func(values map[string]string) {
 		column, err := c.column.ParseMapToColumn(values)
-		log.Println("Submitting values:", values)
-		log.Println("Parsed column:", column)
 
 		if err != nil {
 			log.Println("Error parsing values to column:", err)

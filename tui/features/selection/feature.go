@@ -20,6 +20,10 @@ func (f *Feature) GetTotal() int {
 
 func (f *Feature) SetTotal(total int) {
 	f.total = total
+
+	if f.cursor >= total {
+		f.cursor = total - 1
+	}
 }
 
 func (f *Feature) GetCursor() int {

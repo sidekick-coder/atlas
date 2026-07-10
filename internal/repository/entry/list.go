@@ -61,12 +61,12 @@ func (r *Repository) List(options ...ListOptions) ([]models.Entry, error) {
 
 	if limit > 0 {
 		stmt = append(stmt, "LIMIT ?")
-		params = append(params, options[0].Limit)
+		params = append(params, limit)
 	}
 
 	if offset > 0 {
 		stmt = append(stmt, "OFFSET ?")
-		params = append(params, options[0].Offset)
+		params = append(params, offset)
 	}
 
 	stmtStr := strings.Join(stmt, " ")

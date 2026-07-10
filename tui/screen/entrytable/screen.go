@@ -48,9 +48,15 @@ func (s *Screen) Title() string {
 }
 
 func (s *Screen) Init() tea.Cmd {
+	limit := 10 
+
+	limit = max(limit, s.height-6)
+
+	s.loader.SetLimit(limit)
+
 	return chain.Init(
 		s.loader.Init,
-		s.RegisterBindings,
+		s.LoadBindings,
 		s.LoadColumns,
 		s.table.Init,
 	)
@@ -59,6 +65,7 @@ func (s *Screen) Init() tea.Cmd {
 func (s *Screen) Dispose() tea.Cmd {
 	return chain.Dispose(
 		s.table.Dispose,
+		s.UnloadBindings,
 	)
 }
 
@@ -66,6 +73,6 @@ func (s *Screen) Update(msg tea.Msg) tea.Cmd {
 	return chain.Update(
 		msg,
 		s.table.Update,
-		chain.OnKey(s.HandleKeypress),
+		chain.OnKey(s.HadleBinding),
 	)
 }

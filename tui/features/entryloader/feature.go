@@ -1,6 +1,8 @@
 package entryloader
 
 import (
+	"log"
+
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/models"
 	"github.com/sidekick-coder/atlas/internal/repository/entry"
@@ -46,7 +48,9 @@ func (f *Feature) Load() error {
 		return err
 	}
 
-	count, err := f.repository.Count()
+	count, err := f.repository.Count(entry.CountOptions{
+		Query: f.query,
+	})
 
 	if err != nil {
 		return err
@@ -54,6 +58,8 @@ func (f *Feature) Load() error {
 
 	f.count = count
 	f.entries = entries
+
+	log.Printf("Loaded %d entries (limit: %d, offset: %d, count: %d)\n", len(entries), f.limit, f.offset, f.count)
 
 	return nil
 }
@@ -66,4 +72,42 @@ func (f *Feature) Init() tea.Cmd {
 	}
 
 	return  nil
+}
+
+func (f *Feature) SetLimit(limit int) {
+	f.limit = limit
+}
+
+func (f *Feature) SetOffset(offset int) {
+	f.offset = offset
+}
+
+func (f *Feature) SetQuery(query []string) {
+	f.query = query 
+}
+
+func (f *Feature) GetCount() int {
+	return f.count
+}
+
+func (f *Feature) GetLimit() int {
+	return f.limit
+}
+
+func (f *Feature) GetOffset() int {
+	return f.offset
+}
+
+func (f *Feature) Next() {
+	if f.offset + f.limit < f.count {
+		f.offset += f.limit
+	}
+}
+
+func (f *Feature) Prev() {
+	if f.offset - f.limit >= 0 {
+		f.offset -= f.limit
+	} else {
+		f.offset = 0
+	}
 }

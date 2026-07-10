@@ -55,6 +55,7 @@ screens:
       title: "Tasks"
       description: "List of tasks"
       query: "parent=tasks"
+      limit: 100
       columns:
           - id: id
             label: "ID"
