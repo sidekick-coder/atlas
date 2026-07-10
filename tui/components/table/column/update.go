@@ -72,6 +72,32 @@ func (f *Feature) UpdateSelectedColumn(payload Column) error {
 	return f.UpdateColumnByIndex(index, payload)
 }
 
+func (f *Feature) RemoveColumnByIndex(index int) error {
+	if index < 0 || index >= len(f.columns) {
+		return fmt.Errorf("column index %d out of range", index)
+	}
+
+	newColumns := append(f.columns[:index], f.columns[index+1:]...)
+
+	f.SetColumns(newColumns)
+
+	if f.Selection.GetCursor() >= len(f.columns) {
+		f.Selection.SetCursor(len(f.columns) - 1)
+	}
+
+	return nil
+}
+
+func (f *Feature) RemoveSelectedColumn() error {
+	index := f.Selection.GetCursor()
+
+	if index < 0 || index >= len(f.columns) {
+		return fmt.Errorf("no column selected")
+	}
+
+	return f.RemoveColumnByIndex(index)
+}
+
 func (f *Feature) AddColumn(payload Column) {
 	newColumns := append(f.columns, &payload)
 

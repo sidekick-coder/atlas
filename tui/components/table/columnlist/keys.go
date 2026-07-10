@@ -4,6 +4,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/components/table/column"
 	"github.com/sidekick-coder/atlas/tui/features/key"
+	"github.com/sidekick-coder/atlas/tui/messages"
 )
 
 type Keymap struct {
@@ -11,6 +12,7 @@ type Keymap struct {
 	Down  key.Binding
 	Enter key.Binding
 	Add   key.Binding
+	Remove key.Binding
 	Close key.Binding
 }
 
@@ -33,6 +35,10 @@ var Binding = Keymap{
 		SetHelp("a").
 		SetTags(tags...).
 		SetDescription("Add column"),
+	Remove: key.CreateBinding("d").
+		SetHelp("d").
+		SetTags(tags...).
+		SetDescription("Remove column"),
 	Close: key.CreateBinding("<Esc>").
 		SetHelp("esc").
 		SetTags(tags...).
@@ -45,6 +51,7 @@ func (c *Component) GetBindings() []key.Binding {
 		Binding.Down,
 		Binding.Enter,
 		Binding.Add,
+		Binding.Remove,
 		Binding.Close,
 	}
 }
@@ -86,6 +93,14 @@ func (c *Component) HandleBindings(msg tea.KeyMsg) tea.Cmd {
 			Field: "new_column",
 			Width: 0,
 		})
+	}
+
+	if key.Matches(Binding.Remove) {
+		if len(c.column.GetColumns()) == 1 {
+			return messages.ToastErrorCmd("Cannot remove the last column")
+		}
+
+		c.column.RemoveSelectedColumn()
 	}
 
 	return nil
