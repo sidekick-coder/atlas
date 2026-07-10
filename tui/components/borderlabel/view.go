@@ -10,7 +10,7 @@ func (c *Component) Render() string {
 	border := lipgloss.NewStyle().Foreground(lipgloss.Color(c.color))
 	text := lipgloss.NewStyle().Foreground(lipgloss.Color("252"))
 
-	boxWidth := c.width + 4               // 2 for padding on each side
+	boxWidth := c.width + 4                                 // 2 for padding on each side
 	boxWidth = max(boxWidth, lipgloss.Width(c.label)+6, 50) // 2 for corners, 4 for padding
 
 	// Top border with title.
@@ -22,13 +22,19 @@ func (c *Component) Render() string {
 
 	inputContent := text.Render(c.content)
 
-	pad := max(boxWidth - lipgloss.Width(inputContent) - 4) // 4 for the corners and padding
+	lines := strings.Split(inputContent, "\n")
 
-	if pad < 0 {
-		pad = 0
+	rowParts := make([]string, 0, len(lines))
+
+	for _, line := range lines {
+		pad := max(0, boxWidth - lipgloss.Width(line) - 4) // 4 for the corners and padding
+
+		part := border.Render("│") + " " + line + strings.Repeat(" ", pad) + " " + border.Render("│")
+
+		rowParts = append(rowParts, part)
 	}
 
-	row := border.Render("│") + " " + inputContent + strings.Repeat(" ", pad) + " " + border.Render("│")
+	row := strings.Join(rowParts, "\n")
 
 	bottomLen := max(boxWidth-2, 0) // 2 for the corners
 	bottom := border.Render("╰" + strings.Repeat("─", bottomLen) + "╯")
