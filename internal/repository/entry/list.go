@@ -2,52 +2,72 @@ package entry
 
 import (
 	"strings"
+
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 
 type ListOptions struct {
-	Query []string
-	Limit int 
-	Offset int
-	SortBy string
+	Query     []string
+	Limit     int
+	Offset    int
+	LoadMetas bool
 }
 
 func (r *Repository) List(options ...ListOptions) ([]models.Entry, error) {
+	limit := 100
+	offset := 0
+	query := []string{}
+	loadMetas := true
+
+	if len(options) > 0 {
+		if options[0].Limit > 0 {
+			limit = options[0].Limit
+		}
+
+		if options[0].Offset > 0 {
+			offset = options[0].Offset
+		}
+
+		loadMetas = options[0].LoadMetas
+	}
+
 	stmt := []string{
 		"SELECT entries.id, entries.path",
 		"FROM entries",
 		"WHERE 1=1",
 	}
 
-	params := []interface{}{}
+	params := []any{}
 
-	if len(options) > 0 && len(options[0].Query) > 0 {
-		node, err := ParseQuery(options[0].Query)
+	if len(query) > 0 && query[0] != "" {
+		node, err := ParseQuery(query)
+
 		if err != nil {
 			return nil, err
 		}
 
 		if node != nil {
 			condition, err := BuildSQL(node, &params)
+
 			if err != nil {
 				return nil, err
 			}
+
 			stmt = append(stmt, "AND", condition)
 		}
 	}
 
 	stmt = append(stmt, "ORDER BY entries.path ASC")
 
-	if len(options) > 0 && options[0].Limit > 0 {
+	if limit > 0 {
 		stmt = append(stmt, "LIMIT ?")
 		params = append(params, options[0].Limit)
 	}
 
-	if len(options) > 0 && options[0].Offset > 0 {
+	if offset > 0 {
 		stmt = append(stmt, "OFFSET ?")
 		params = append(params, options[0].Offset)
 	}
-
 
 	stmtStr := strings.Join(stmt, " ")
 
@@ -71,6 +91,20 @@ func (r *Repository) List(options ...ListOptions) ([]models.Entry, error) {
 		}
 
 		entries = append(entries, entry)
+	}
+
+	if loadMetas {
+		entryMetas, err := r.ListMetas(entries...)
+
+		if err != nil {
+			return nil, err
+		}
+
+		for i, entry := range entries {
+			entries[i].Metas = r.GetEntryMetasMap(entryMetas, entry.ID)
+		}
+
+		return entries, nil
 	}
 
 	return entries, nil
