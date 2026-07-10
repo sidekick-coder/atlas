@@ -4,6 +4,7 @@ import (
 	// "strings"
 
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
 
 // TabBar renders a horizontal tab strip.
@@ -45,8 +46,8 @@ func (t *TabBar) Render() string {
 
 	shared := lipgloss.NewStyle().Padding(0, 1)
 
-	normal := shared.Background(lipgloss.Color("0")).Foreground(lipgloss.Color("7"))
-	active := shared.Background(lipgloss.Color("12")).Foreground(lipgloss.Color("0"))
+	normal := shared.Background(lipgloss.Color(theme.Current.Foreground)).Foreground(lipgloss.Color(theme.Current.Background))
+	active := shared.Background(lipgloss.Color(theme.Current.Primary)).Foreground(lipgloss.Color(theme.Current.Background))
 
 	for i, item := range t.Items {
 		if i == t.Current {

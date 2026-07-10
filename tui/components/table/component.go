@@ -12,15 +12,20 @@ type Column struct {
 	Width int
 }
 
+type Item struct {
+	Values map[string]string
+}
+
 type Component struct {
 	width    int
 	height   int
 	cursor int
 	onSelect func(cursor int) tea.Cmd
-	items    []string
+	items    []Item
 
 	columns  []Column
 	columnSelection selection.Feature
+	itemSelection selection.Feature
 }
 
 func Create() *Component {
@@ -28,10 +33,11 @@ func Create() *Component {
 		width:    100,
 		height:   100,
 		cursor: 0,
-		items:    []string{},
+		items:    []Item{},
 
 		columns:  []Column{},
 		columnSelection: *selection.Create(),
+		itemSelection: *selection.Create(),
 	}
 }
 
@@ -42,10 +48,15 @@ func (c *Component) OnSelect(f func(cursor int) tea.Cmd) *Component {
 
 func (c *Component) SetColumns(columns []Column) {
 	c.columns = columns
+	c.columnSelection.SetTotal(len(c.columns))
+}
+
+func (c *Component) SetItems(items []Item) {
+	c.items = items
+	c.itemSelection.SetTotal(len(items))
 }
 
 func (c *Component) Init() tea.Cmd {
-	c.columnSelection.SetTotal(len(c.columns))
 	return chain.Init(c.LoadBindings)
 }
 

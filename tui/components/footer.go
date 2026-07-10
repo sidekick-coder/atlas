@@ -7,14 +7,15 @@ import (
 	"charm.land/bubbles/v2/key"
 	lipgloss "charm.land/lipgloss/v2"
 	tkey "github.com/sidekick-coder/atlas/tui/features/key"
+	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
 
 var (
 	footerStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("240"))
+			Foreground(lipgloss.Color(theme.Current.Muted))
 
 	footerKeyStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("12")).
+			Foreground(lipgloss.Color(theme.Current.Primary)).
 			Bold(true)
 )
 

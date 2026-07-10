@@ -1,11 +1,8 @@
 package table
 
 import (
-	"log"
-
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/features/key"
-	"github.com/sidekick-coder/atlas/tui/messages"
 )
 
 type Keymap struct {
@@ -42,10 +39,15 @@ func (c *Component) HandleBindings(msg tea.Msg) tea.Cmd {
 	}
 
 	if key.Matches(Binding.Right) {
-		log.Println("Next column")
 		c.columnSelection.Next()
+	}
 
-		return  messages.SkipCmd()
+	if key.Matches(Binding.Up) {
+		c.itemSelection.Prev()
+	}
+
+	if key.Matches(Binding.Down) {
+		c.itemSelection.Next()
 	}
 
 	return nil

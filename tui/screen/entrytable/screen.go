@@ -6,45 +6,50 @@ import (
 	"github.com/sidekick-coder/atlas/tui/components/container"
 	"github.com/sidekick-coder/atlas/tui/components/table"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
+	"github.com/sidekick-coder/atlas/tui/features/entryloader"
 	tuimodels "github.com/sidekick-coder/atlas/tui/models"
 )
 
 type Screen struct {
 	app    *app.App
+	options map[string]any
+
 	width  int
 	height int
-	limit  int
-	query  string
+
+	loader entryloader.Feature
 	table  table.Component
 	container container.Component
 }
 
-func Create(payload tuimodels.ScreenPayload) (tuimodels.Screen, error) {
+func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 	s := &Screen{
-		app:    payload.App,
+		app:    p.App,
+		options: p.Options,
 		width:  100,
 		height: 100,
-		limit:  30,
-		query:  "",
+
+		loader: *entryloader.Create(*p.App.EntryRepo()),
 		table:  *table.Create(),
 		container: *container.Create(),
-	}
-
-	if payload.Options["query"] != nil {
-		if query, ok := payload.Options["query"].(string); ok {
-			s.query = query
-		}
 	}
 
 	return s, nil
 }
 
 func (s *Screen) Title() string {
+	pt, ok := s.options["title"].(string)
+
+	if ok {
+		return pt
+	}
+
 	return "tables"
 }
 
 func (s *Screen) Init() tea.Cmd {
 	return chain.Init(
+		s.loader.Init,
 		s.RegisterBindings,
 		s.LoadColumns,
 		s.table.Init,

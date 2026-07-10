@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
 
 func (c *Component) SetSize(w, h int) {
@@ -11,39 +12,43 @@ func (c *Component) SetSize(w, h int) {
 	c.height = h
 }
 
-func (c *Component) Render() string {
+func (c *Component) ParseColumnText(text string) string {
 	colw := c.width / len(c.columns)
+	var result string
 
+	if len(text) > colw {
+		result = text[:colw-3] + "..."
+	}
+
+	if len(text) < colw {
+		padding := colw - len(text)
+		result = text + strings.Repeat("\u00A0", padding)
+	}
+
+	return result
+}
+
+func (c *Component) Render() string {
 	colstyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("12")).
-		Foreground(lipgloss.Color("0"))
+		Foreground(lipgloss.Color(theme.Current.Primary)).
+		Border(lipgloss.NormalBorder(), false, false, true, false).
+		BorderForeground(lipgloss.Color(theme.Current.Primary))
 
 	colFocusStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("32")).
-		Foreground(lipgloss.Color("0")).
+		Foreground(lipgloss.Color(theme.Current.Primary)).
+		Border(lipgloss.NormalBorder(), false, false, true, false).
+		BorderForeground(lipgloss.Color(theme.Current.Primary)).
 		Bold(true)
 
-	normal := lipgloss.NewStyle()
-
-	focus := lipgloss.NewStyle().
-		Background(lipgloss.Color("12")).
-		Width(c.width).
-		Foreground(lipgloss.Color("0"))
+	itemFocusStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Color(theme.Current.Primary)).
+		Bold(true)
 
 	var rows []string
 	var columns []string
 
 	for index, column := range c.columns {
-		label := column.Label
-
-		if len(label) > colw {
-			label = label[:colw-3] + "..."
-		}
-
-		if len(label) < colw {
-			padding := colw - len(label)
-			label = label + strings.Repeat("\u00A0", padding)
-		}
+		label := c.ParseColumnText(column.Label)
 
 		if c.columnSelection.IsSelected(index) {
 			columns = append(columns, colFocusStyle.Render(label))
@@ -56,14 +61,27 @@ func (c *Component) Render() string {
 	rows = append(rows, lipgloss.JoinHorizontal(lipgloss.Left, columns...))
 
 	for index, item := range c.items {
-		if index == c.cursor {
-			result := focus.Render(item)
+		var row []string 
 
-			rows = append(rows, result)
-			continue
+		for _, column := range c.columns {
+			value, ok := item.Values[column.Field]
+
+			if !ok {
+				value = ""
+			}
+
+			value = c.ParseColumnText(value)
+
+			row = append(row, value)
 		}
 
-		rows = append(rows, normal.Render(item))
+		rendered := lipgloss.JoinHorizontal(lipgloss.Left, row...)
+		
+		if c.itemSelection.IsSelected(index) {
+			rendered = itemFocusStyle.Render(rendered)
+		}
+
+		rows = append(rows, rendered)
 	}
 
 	return lipgloss.JoinVertical(lipgloss.Left, rows...)

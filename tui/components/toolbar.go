@@ -2,6 +2,7 @@ package components
 
 import (
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
 
 type Toolbar struct {
@@ -27,7 +28,7 @@ func (t *Toolbar) Render() string {
 		Width(t.Width - 4).
 		Margin(0, 2).
 		Padding(0, 2).
-		BorderForeground(lipgloss.Color("12"))
+		BorderForeground(lipgloss.Color(theme.Current.Primary))
 
 	row := lipgloss.NewStyle().
 		Render(t.Title)
