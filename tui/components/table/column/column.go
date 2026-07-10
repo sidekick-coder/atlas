@@ -40,6 +40,24 @@ func (f *Feature) GetColumns() []*Column {
 	return f.columns
 }
 
+func (f *Feature) GetColumn(index int) (*Column, bool) {
+	if index < 0 || index >= len(f.columns) {
+		return nil, false
+	}
+
+	return f.columns[index], true
+}
+
+func (f *Feature) GetColumnSelected() (*Column, bool) {
+	index := f.Selection.GetCursor()
+
+	if index < 0 || index >= len(f.columns) {
+		return nil, false
+	}
+
+	return f.columns[index], true
+}
+
 func (f *Feature) SetColumns(columns []*Column) {
 	f.columns = columns
 

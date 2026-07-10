@@ -57,8 +57,19 @@ func (c *Component) SetItems(items []Item) {
 
 func (c *Component) Init() tea.Cmd {
 	c.columnList.SetColumn(c.column)
+
+	c.columnList.OnOpen(func() {
+		c.UnloadBindings()
+	})
+
+	c.columnList.OnClose(func() {
+		c.LoadBindings()
+	})
+
+	c.LoadBindings()
 	c.columnList.Open()
-	return chain.Init(c.LoadBindings, c.columnList.Init)
+
+	return chain.Init(c.columnList.Init)
 }
 
 func (c *Component) Dispose() tea.Cmd {

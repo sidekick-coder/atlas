@@ -6,48 +6,61 @@ import (
 )
 
 type Keymap struct {
-	Up    key.Binding
-	Down  key.Binding
-	Enter key.Binding
-	Right  key.Binding
-	Left  key.Binding
-	Close  key.Binding
+	Up          key.Binding
+	Down        key.Binding
+	Enter       key.Binding
+	Close       key.Binding
 	EditColumns key.Binding
 }
 
+var tags = []string{"table", "table view"}
+
 var Binding = Keymap{
-	Up:    key.CreateBinding("k", "<Up>").SetHelp("k/up").SetDescription("Move up"),
-	Down:  key.CreateBinding("j", "<Down>").SetHelp("j/down").SetDescription("Move down"),
-	Enter: key.CreateBinding("enter").SetHelp("enter").SetDescription("Select item"),
-	Right:  key.CreateBinding("l", "<Right>").SetHelp("l/next").SetDescription("Next column"),
-	Left:  key.CreateBinding("h", "<Left>").SetHelp("h/prev").SetDescription("Previous column"),
-	Close:  key.CreateBinding("<Esc>").SetHelp("esc").SetDescription("Close table"),
-	EditColumns: key.CreateBinding("<leader>ec").SetHelp("<leader>ec").SetDescription("Edit columns"),
+	Up: key.CreateBinding("k", "<Up>").
+		SetHelp("k/up").
+		SetTags(tags...).
+		SetDescription("Move up"),
+	Down: key.CreateBinding("j", "<Down>").
+		SetHelp("j/down").
+		SetTags(tags...).
+		SetDescription("Move down"),
+	Enter: key.CreateBinding("<enter>").
+		SetHelp("enter").
+		SetTags(tags...).
+		SetDescription("Select item"),
+	Close: key.CreateBinding("<Esc>").
+		SetHelp("esc").
+		SetTags(tags...).
+		SetDescription("Close table"),
+	EditColumns: key.CreateBinding("<leader>ec").
+		SetHelp("<leader>ec").
+		SetTags(tags...).
+		SetDescription("Edit columns"),
 }
 
-func (c *Component) LoadBindings() tea.Cmd {
-	key.Register(
+func (c *Component) GetBindings() []key.Binding {
+	return []key.Binding{
 		Binding.Up,
 		Binding.Down,
 		Binding.Enter,
-		Binding.Right,
-		Binding.Left,
-		Binding.EditColumns,
 		Binding.Close,
-	)
+		Binding.EditColumns,
+	}
+}
+
+func (c *Component) LoadBindings() tea.Cmd {
+	key.Register(c.GetBindings()...)
 
 	return nil
 }
 
-func (c *Component) HandleBindings(msg tea.Msg) tea.Cmd {
-	if key.Matches(Binding.Left) {
-		c.column.Selection.Prev()
-	}
+func (c *Component) UnloadBindings() tea.Cmd {
+	key.Unregister(c.GetBindings()...)
 
-	if key.Matches(Binding.Right) {
-		c.column.Selection.Next()
-	}
+	return nil
+}
 
+func (c *Component) HandleBindings(msg tea.KeyMsg) tea.Cmd {
 	if key.Matches(Binding.Up) {
 		c.itemSelection.Prev()
 	}

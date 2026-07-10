@@ -1,12 +1,15 @@
 package key
 
 import (
+	"log"
+	"os"
 	"slices"
 
 	tea "charm.land/bubbletea/v2"
 )
 
 type Manager struct {
+	debug	  bool
 	leader     string
 	pending    []string
 	registered []Binding
@@ -14,6 +17,7 @@ type Manager struct {
 
 func NewManager() Manager {
 	return Manager{
+		debug:     os.Getenv("DEBUG") == "true",
 		leader:     "space", // default leader key is space
 		pending:    []string{},
 		registered: []Binding{},
@@ -22,7 +26,33 @@ func NewManager() Manager {
 
 func (m *Manager) Register(bindings ...Binding) {
 	m.registered = append(manager.registered, bindings...)
+
+	if !m.debug {
+		return
+	}
+
+	for _, b := range bindings {
+		for _, k := range b.keys {
+			log.Printf("Register binding: %s -> %s (%v)\n", k.tokens, b.GetDescription(), b.GetTags())
+		}
+	}
 }
+
+func (m *Manager) Unregister(bindings ...Binding) {
+	for _, b := range bindings {
+		for i := range m.registered {
+			if m.registered[i].id == b.id {
+				m.registered = append(m.registered[:i], m.registered[i+1:]...)
+
+				if m.debug {
+					log.Printf("Unregistered binding: %s -> %s (%v)\n", b.keys, b.GetDescription(), b.GetTags())
+				}
+				break
+			}
+		}
+	}
+}
+
 func normalize(km tea.KeyMsg) string {
 	switch km.String() {
 	case manager.leader:
@@ -53,11 +83,18 @@ func (m *Manager) hasPossibleMatchForBinding(b Binding) bool {
 	return slices.ContainsFunc(b.keys, m.hasPossibleMatchForBindingKey)
 }
 
-func (m *Manager) hasPossibleMatch() bool {
-	return slices.ContainsFunc(m.registered, m.hasPossibleMatchForBinding)
+func (m *Manager) hasPossibleMatch() (Binding, bool) {
+	for _, b := range m.registered {
+		if m.hasPossibleMatchForBinding(b) {
+			return b, true
+		}
+	}
+
+	return Binding{}, false
 }
 
 func MatchBiningKey(k BindingKey) bool {
+
 	if len(manager.pending) != len(k.tokens) {
 		return false
 	}
@@ -93,7 +130,11 @@ func (m *Manager) HandleKeypress(msg tea.Msg) tea.Cmd {
 
 	manager.pending = append(manager.pending, normalized)
 
-	hasPossibleMatch := manager.hasPossibleMatch()
+	b, hasPossibleMatch := manager.hasPossibleMatch()
+
+	if m.debug {
+		log.Printf("Key pressed: %s, pending: %v, possible match: %s\n", normalized, manager.pending, b.GetDescription())
+	}
 
 	if !hasPossibleMatch {
 		manager.pending = nil

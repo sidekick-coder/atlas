@@ -2,10 +2,14 @@ package key
 
 import (
 	"strings"
+
+	"github.com/sidekick-coder/atlas/internal/utils"
 )
 
 type Binding struct {
+	id string
 	keys []BindingKey
+	tags []string
 	help string
 	desc string
 }
@@ -92,8 +96,16 @@ func CreateBinding(keys ...string) Binding {
 
 	}
 
+	id, err := utils.CreateID()
+
+	if err != nil {
+		panic(err)
+	}
+
 	return Binding{
+		id: id,
 		keys: bkeys,
+		tags: []string{},
 	}
 }
 
@@ -107,10 +119,23 @@ func (b Binding) SetDescription(desc string) Binding {
 	return b
 }
 
+func (b Binding) GetID() string {
+	return b.id
+}
+
+func (b Binding) SetTags(tags ...string) Binding {
+	b.tags = tags
+	return b
+}
+
 func (b Binding) GetHelp() string {
 	return b.help
 }
 
 func (b Binding) GetDescription() string {
 	return b.desc
+}
+
+func (b Binding) GetTags() []string {
+	return b.tags
 }

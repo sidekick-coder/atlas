@@ -1,56 +1,53 @@
-package columnlist
+package mapeditor
 
 import (
-	"strconv"
+	"log"
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/features/key"
+	"github.com/sidekick-coder/atlas/tui/messages"
 )
 
 type Keymap struct {
 	Up    key.Binding
 	Down  key.Binding
-	Enter key.Binding
 	Close key.Binding
 }
 
-var tags = []string{"columnlist", "column list"}
+var tags = []string{"mapeditor", "map editor"}
 
 var Binding = Keymap{
-	Up: key.CreateBinding("k", "<Up>").
+	Up: key.CreateBinding("<shift+tab>", "<Up>").
 		SetHelp("k/up").
-		SetTags(tags...).
-		SetDescription("Move up"),
-	Down: key.CreateBinding("j", "<Down>").
+		SetDescription("Move up").
+		SetTags(tags...),
+	Down: key.CreateBinding("<tab>", "<Down>").
 		SetHelp("j/down").
 		SetTags(tags...).
 		SetDescription("Move down"),
-	Enter: key.CreateBinding("<enter>").
-		SetHelp("enter").
-		SetTags(tags...).
-		SetDescription("Select column"),
 	Close: key.CreateBinding("<Esc>").
 		SetHelp("esc").
 		SetTags(tags...).
-		SetDescription("Close column list"),
+		SetDescription("Close map editor"),
 }
 
 func (c *Component) GetBindings() []key.Binding {
 	return []key.Binding{
 		Binding.Up,
 		Binding.Down,
-		Binding.Enter,
 		Binding.Close,
 	}
 }
 
 func (c *Component) LoadBindings() tea.Cmd {
 	key.Register(c.GetBindings()...)
+
 	return nil
 }
 
 func (c *Component) UnloadBindings() tea.Cmd {
 	key.Unregister(c.GetBindings()...)
+
 	return nil
 }
 
@@ -59,38 +56,18 @@ func (c *Component) HandleBindings(msg tea.KeyMsg) tea.Cmd {
 		return nil
 	}
 
-	if key.Matches(Binding.Enter) {
-		col, ok := c.column.GetColumnSelected()
-
-		if !ok {
-			return nil
-		}
-
-		width := "auto"
-
-		if col.Width > 0 {
-			width = strconv.Itoa(col.Width)
-		}
-
-		c.dialog.Open()
-		c.dialog.SetValues(map[string]string{
-			"label": col.Label,
-			"field": col.Field,
-			"width": width,
-		})
-	}
-
 	if key.Matches(Binding.Up) {
-		c.column.Selection.Prev()
+		log.Println("Up key pressed")
+		c.selection.Prev()
 	}
 
 	if key.Matches(Binding.Down) {
-		c.column.Selection.Next()
+		c.selection.Next()
 	}
 
 	if key.Matches(Binding.Close) {
 		c.Close()
 	}
 
-	return nil
+	return messages.SkipCmd()
 }

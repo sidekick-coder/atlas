@@ -134,3 +134,17 @@ frontmatter.tags[1]=important
 The metas follow a dot notation, and arrays are represented with square brackets.
 
 This is to help with the search queries, for example you can query `frontmatter.tags[0]=project` or `frontmatter.tags[1]=important`.
+
+## Keybinds 
+
+``` 
+<C-s>        -> ctrl+s
+<C-c>        -> ctrl+c
+<A-x>        -> alt+x
+<S-Tab>      -> shift+tab
+<Esc>        -> esc
+<CR>         -> enter
+<Up>         -> up
+<leader>ff   -> <leader>, f, f
+gg           -> g, g
+```

@@ -12,7 +12,7 @@ func (m *model) GetBindings() []key.Binding {
 
 	bindings = append(bindings, m.GetGlobalBindings()...)
 	bindings = append(bindings, m.GetUserBindings()...)
-	bindings = append(bindings, m.GetScreenManagerBindings()...)
+	// bindings = append(bindings, m.GetScreenManagerBindings()...)
 
 	s, ok := m.GetCurrentScreen()
 

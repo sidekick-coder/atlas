@@ -7,8 +7,8 @@ import (
 type ScreenManagerKeyMap struct {
 	Add  key.Binding
 	Close key.Binding
-	Next key.Binding
-	Prev key.Binding
+	// Next key.Binding
+	// Prev key.Binding
 }
 
 var ScreenBindings = ScreenManagerKeyMap{
@@ -20,21 +20,21 @@ var ScreenBindings = ScreenManagerKeyMap{
 		key.WithKeys("x"),
 		key.WithHelp("x", "close screen"),
 	),
-	Next: key.NewBinding(
-		key.WithKeys("tab"),
-		key.WithHelp("tab", "next screen"),
-	),
-	Prev: key.NewBinding(
-		key.WithKeys("shift+tab"),
-		key.WithHelp("shift+tab", "previous screen"),
-	),
+	// Next: key.NewBinding(
+	// 	key.WithKeys("<leader>tab", "tab"),
+	// 	key.WithHelp("<leader>tab", "next screen"),
+	// ),
+	// Prev: key.NewBinding(
+	// 	key.WithKeys("<leader>shift+tab"),
+	// 	key.WithHelp("<leader>shift+tab", "previous screen"),
+	// ),
 }
 
 func (m *model) GetScreenManagerBindings() []key.Binding {
 	return []key.Binding{
 		ScreenBindings.Add,
-		ScreenBindings.Next,
-		ScreenBindings.Prev,
+		// ScreenBindings.Next,
+		// ScreenBindings.Prev,
 		ScreenBindings.Close,
 	}
 }

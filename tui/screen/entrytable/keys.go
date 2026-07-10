@@ -4,7 +4,6 @@ import (
 	tea "charm.land/bubbletea/v2"
 
 	tkey "charm.land/bubbles/v2/key"
-	"github.com/sidekick-coder/atlas/tui/features/key"
 )
 
 type Keymap struct {
@@ -20,7 +19,6 @@ func (s *Screen) GetBindings() []tkey.Binding {
 }
 
 func (s *Screen) RegisterBindings() tea.Cmd {
-	key.Register()
 	return nil
 }
 
