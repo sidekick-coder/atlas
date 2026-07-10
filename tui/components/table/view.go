@@ -12,8 +12,25 @@ func (c *Component) SetSize(w, h int) {
 	c.height = h
 }
 
-func (c *Component) ParseColumnText(text string) string {
-	colw := c.width / len(c.columns)
+func (c *Component) GetColumnIndex(column Column) int {
+	for i, col := range c.columns {
+		if col.Field == column.Field {
+			return i
+		}
+	}
+
+	return -1
+}
+
+func (c *Component) ParseColumnText(column Column,  text string) string {
+	colIndex := c.GetColumnIndex(column)
+
+	if colIndex == -1 {
+		return text
+	}
+
+	colw := c.columnSizes[colIndex]
+
 	var result string
 
 	if len(text) > colw {
@@ -48,7 +65,7 @@ func (c *Component) Render() string {
 	var columns []string
 
 	for index, column := range c.columns {
-		label := c.ParseColumnText(column.Label)
+		label := c.ParseColumnText(column, column.Label)
 
 		if c.columnSelection.IsSelected(index) {
 			columns = append(columns, colFocusStyle.Render(label))
@@ -70,7 +87,7 @@ func (c *Component) Render() string {
 				value = ""
 			}
 
-			value = c.ParseColumnText(value)
+			value = c.ParseColumnText(column, value)
 
 			row = append(row, value)
 		}

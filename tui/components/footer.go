@@ -43,7 +43,7 @@ func (f *Footer) Render() string {
 		Width(f.width-4).
 		Margin(0, 2).
 		Padding(0, 2).
-		BorderForeground(lipgloss.Color("12"))
+		BorderForeground(lipgloss.Color(theme.Current.Primary))
 
 	var parts []string
 

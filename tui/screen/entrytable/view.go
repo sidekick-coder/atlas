@@ -1,6 +1,10 @@
 package entrytable
 
 import (
+	"log"
+	"maps"
+	"strconv"
+
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/components/table"
 	"github.com/sidekick-coder/atlas/tui/features/theme"
@@ -15,6 +19,8 @@ func (s *Screen) SetSize(width, height int) {
 
 func (s *Screen) LoadColumns() tea.Cmd {
 	s.table.SetColumns([]table.Column{
+		{Label: "ID", Field: "id", Width: 10},
+		{Label: "Name", Field: "basename", Width: 120},
 		{Label: "Path", Field: "path"},
 	})
 
@@ -26,11 +32,20 @@ func (s *Screen) Render() string {
 	var items []table.Item
 
 	for _, entry := range s.loader.GetEntries() {
-		items = append(items, table.Item{
-			Values: map[string]string{
-				"path": entry.Path,
-			},
-		})
+		values := map[string]string{}
+
+		maps.Copy(values, entry.Metas)
+
+		values["id"] = strconv.FormatInt(entry.ID, 10)
+		values["path"] = entry.Path
+
+		log.Printf("Rendering entry: %v", entry)
+
+		item := table.Item{
+			Values: values,
+		}
+
+		items = append(items, item)
 	}
 
 	s.table.SetItems(items)

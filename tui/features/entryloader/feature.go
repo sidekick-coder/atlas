@@ -37,6 +37,7 @@ func (f *Feature) Load() error {
 		Limit:  f.limit,
 		Offset: f.offset,
 		Query:  f.query,
+		LoadMetas: true,
 	}
 
 	entries, err := f.repository.List(options)
