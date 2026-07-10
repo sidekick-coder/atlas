@@ -104,3 +104,8 @@ func (s *Screen) Render() string {
 		Text:   content,
 	})
 }
+
+func (s *Screen) Dispose() tea.Cmd {
+	return nil
+}
+

@@ -95,3 +95,7 @@ func (s *Screen) Update(msg tea.Msg) tea.Cmd {
 
 	return nil
 }
+
+func (s *Screen) Dispose() tea.Cmd {
+	return nil
+}

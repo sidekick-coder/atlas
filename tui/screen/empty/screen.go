@@ -75,4 +75,6 @@ func (s *Screen) Init() tea.Cmd {
 	return nil
 }
 
-
+func (s *Screen) Dispose() tea.Cmd {
+	return nil
+}

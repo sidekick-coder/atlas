@@ -100,3 +100,7 @@ func (s *Screen) Render() string {
 		SetSize(s.Width, s.Height).
 		Render()
 }
+
+func (s *Screen) Dispose() tea.Cmd {
+	return nil
+}

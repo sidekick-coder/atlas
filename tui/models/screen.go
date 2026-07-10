@@ -21,6 +21,7 @@ type Screen interface {
 	Update(msg tea.Msg) tea.Cmd
 	GetBindings() []key.Binding
 	Render() string
+	Dispose() tea.Cmd
 }
 
 
