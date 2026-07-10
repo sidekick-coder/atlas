@@ -1,9 +1,8 @@
 package columnlist
 
 import (
-	"strconv"
-
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/components/table/column"
 	"github.com/sidekick-coder/atlas/tui/features/key"
 )
 
@@ -11,6 +10,7 @@ type Keymap struct {
 	Up    key.Binding
 	Down  key.Binding
 	Enter key.Binding
+	Add   key.Binding
 	Close key.Binding
 }
 
@@ -29,6 +29,10 @@ var Binding = Keymap{
 		SetHelp("enter").
 		SetTags(tags...).
 		SetDescription("Select column"),
+	Add: key.CreateBinding("a").
+		SetHelp("a").
+		SetTags(tags...).
+		SetDescription("Add column"),
 	Close: key.CreateBinding("<Esc>").
 		SetHelp("esc").
 		SetTags(tags...).
@@ -40,6 +44,7 @@ func (c *Component) GetBindings() []key.Binding {
 		Binding.Up,
 		Binding.Down,
 		Binding.Enter,
+		Binding.Add,
 		Binding.Close,
 	}
 }
@@ -60,24 +65,7 @@ func (c *Component) HandleBindings(msg tea.KeyMsg) tea.Cmd {
 	}
 
 	if key.Matches(Binding.Enter) {
-		col, ok := c.column.GetColumnSelected()
-
-		if !ok {
-			return nil
-		}
-
-		width := "auto"
-
-		if col.Width > 0 {
-			width = strconv.Itoa(col.Width)
-		}
-
-		c.dialog.Open()
-		c.dialog.SetValues(map[string]string{
-			"label": col.Label,
-			"field": col.Field,
-			"width": width,
-		})
+		return c.EditCurrent()
 	}
 
 	if key.Matches(Binding.Up) {
@@ -90,6 +78,14 @@ func (c *Component) HandleBindings(msg tea.KeyMsg) tea.Cmd {
 
 	if key.Matches(Binding.Close) {
 		c.Close()
+	}
+
+	if key.Matches(Binding.Add) {
+		c.column.AddColumn(column.Column{
+			Label: "New Column",
+			Field: "new_column",
+			Width: 0,
+		})
 	}
 
 	return nil

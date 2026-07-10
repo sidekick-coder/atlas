@@ -14,6 +14,8 @@ type Component struct {
 	title string
 
 	onRender func() string
+	onClose func()
+	onOpen func()
 
 	style lipgloss.Style
 	layer *layer.Layer
@@ -65,10 +67,28 @@ func (c *Component) OnRender(f func() string) *Component {
 
 func (c *Component) Open() {
 	c.open = true
+
+	if c.onOpen != nil {
+		c.onOpen()
+	}
 }
 
 func (c *Component) Close() {
 	c.open = false
+
+	if c.onClose != nil {
+		c.onClose()
+	}
+}
+
+func (c *Component) OnClose(f func()) *Component {
+	c.onClose = f
+	return c
+}
+
+func (c *Component) OnOpen(f func()) *Component {
+	c.onOpen = f
+	return c
 }
 
 func (c *Component) IsOpen() bool {

@@ -44,14 +44,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.HandleWindow,
 		m.HandleActions,
 		m.actionBindingMessageHandler,
-		m.HandleInput,
 		m.HandleGlobalKeyMap,
 
+		m.HandleScreenUpdate,
 		m.HandleScreeManagerKeypress,
 		m.HandleScreeManagerMessages,
 
 		m.HandleToastMessages,
-		m.HandleScreenUpdate,
 	)
 
 	return m, cmd

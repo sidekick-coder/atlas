@@ -81,5 +81,5 @@ func (h *HelpScreen) View() string {
 
 	box := helpContainerStyle.Width(boxWidth).Height(boxHeight).Render(content)
 
-	return centerBox(box, h.width, h.height)
+	return box
 }

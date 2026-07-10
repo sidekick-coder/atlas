@@ -1,6 +1,8 @@
 package columnlist
 
 import (
+	"log"
+
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/components/mapeditor"
 	"github.com/sidekick-coder/atlas/tui/components/sidepeeck"
@@ -46,6 +48,18 @@ func (c *Component) Init() tea.Cmd {
 
 	c.dialog.OnClose(func() {
 		c.LoadBindings()
+	})
+
+	c.dialog.OnSubmit(func(values map[string]string) {
+		log.Println("Submitting values:", values)
+		column, err := c.column.ParseMapToColumn(values)
+
+		if err != nil {
+			log.Println("Error parsing values to column:", err)
+			return
+		}
+
+		c.column.UpdateSelectedColumn(column)
 	})
 
 	return chain.Init(c.sidepeeck.Init, c.InitView, c.dialog.Init)

@@ -20,7 +20,6 @@ func (m *model) SetSize(width int, height int) {
 	m.toolbar.SetWidth(width)
 	m.footer.SetWidth(width)
 
-	m.input.SetScreenSize(width, height)
 	m.toaster.SetScreenSize(width, height)
 
 	sh := height - m.toolbar.GetHeight() - m.tabBar.GetHeight() - m.footer.GetHeight()
@@ -57,10 +56,6 @@ func (m model) View() tea.View {
 	}
 
 	layers = append(layers, layer.GetLipglossLayers()...)
-
-	if (m.input.Active) {
-		layers = append(layers, m.input.RenderLayer())
-	}
 
 	if m.toaster.Active {
 		layers = append(layers, m.toaster.RenderLayer())

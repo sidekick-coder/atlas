@@ -16,14 +16,10 @@ func (c *Component) InitRender() tea.Cmd {
 func (c *Component) Render() string {
 	var lines []string
 
-	for index, f := range c.fields {
-		content := ""
+	for index, i := range c.inputs {
+		f := c.fields[index]
 
-		value, ok := c.values[f.FielName]
-
-		if ok {
-			content = value
-		}
+		content := i.Render()
 
 		field := c.fieldBorder.SetLabel(f.Label).SetContent(content).Render()
 

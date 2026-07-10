@@ -6,6 +6,10 @@ type ReturnCommand func() tea.Cmd
 type ReceiveMessageReturnCommand func(msg tea.Msg) tea.Cmd
 type ReceiveKeyReturnCommand func(msg tea.KeyMsg) tea.Cmd
 
+type WithUpdate interface {
+	Update(msg tea.Msg) tea.Cmd
+}
+
 func Cmd(handlers ...ReturnCommand) tea.Cmd {
 	for _, h := range handlers {
 		if cmd := h(); cmd != nil {
@@ -41,6 +45,20 @@ func Update(msg tea.Msg, handlers ...func(msg tea.Msg) tea.Cmd) tea.Cmd {
 		}
 	}
 	return nil
+}
+
+func OnEntity[T WithUpdate](entities []T) func(msg tea.Msg) tea.Cmd {
+	return func(msg tea.Msg) tea.Cmd {
+		for _, entity := range entities {
+			cmd := entity.Update(msg)
+
+			if cmd != nil {
+				return cmd
+			}
+		}
+
+		return nil
+	}
 }
 
 func Keypress(msg tea.KeyMsg, handlers ...ReceiveKeyReturnCommand) tea.Cmd {

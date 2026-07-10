@@ -1,8 +1,6 @@
 package mapeditor
 
 import (
-	"log"
-
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/features/key"
 	"github.com/sidekick-coder/atlas/tui/messages"
@@ -11,6 +9,7 @@ import (
 type Keymap struct {
 	Up    key.Binding
 	Down  key.Binding
+	Enter key.Binding
 	Close key.Binding
 }
 
@@ -25,6 +24,10 @@ var Binding = Keymap{
 		SetHelp("j/down").
 		SetTags(tags...).
 		SetDescription("Move down"),
+	Enter: key.CreateBinding("<Enter>").
+		SetHelp("enter").
+		SetTags(tags...).
+		SetDescription("Submit"),
 	Close: key.CreateBinding("<Esc>").
 		SetHelp("esc").
 		SetTags(tags...).
@@ -35,6 +38,7 @@ func (c *Component) GetBindings() []key.Binding {
 	return []key.Binding{
 		Binding.Up,
 		Binding.Down,
+		Binding.Enter,
 		Binding.Close,
 	}
 }
@@ -57,17 +61,40 @@ func (c *Component) HandleBindings(msg tea.KeyMsg) tea.Cmd {
 	}
 
 	if key.Matches(Binding.Up) {
-		log.Println("Up key pressed")
 		c.selection.Prev()
+		c.Refresh()
+		return messages.SkipCmd()
 	}
 
 	if key.Matches(Binding.Down) {
 		c.selection.Next()
+		c.Refresh()
+		return messages.SkipCmd()
 	}
 
 	if key.Matches(Binding.Close) {
 		c.Close()
+		c.DisableInputs()
+		return messages.SkipCmd()
 	}
 
-	return messages.SkipCmd()
+	if key.Matches(Binding.Enter) {
+		if c.onSubmit != nil {
+			values := make(map[string]string) 
+
+			for index, field := range c.fields {
+				input := c.inputs[index]
+
+				values[field.FielName] = input.GetValue()
+			}
+
+			c.onSubmit(values)
+		}
+
+		c.Close()
+
+		return messages.SkipCmd()
+	}
+
+	return nil
 }

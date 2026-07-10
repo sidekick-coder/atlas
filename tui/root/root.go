@@ -5,7 +5,6 @@ import (
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/tui/components"
 	"github.com/sidekick-coder/atlas/tui/components/container"
-	"github.com/sidekick-coder/atlas/tui/components/input"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/models"
@@ -29,7 +28,6 @@ type model struct {
 	footer  *components.Footer
 
 	screenContainer *container.Component
-	input  *input.Input
 	toaster *toast.Component
 }
 
@@ -53,7 +51,6 @@ func New(a *app.App) model {
 		toolbar: toolbar,
 		footer:  footer,
 
-		input:   input.New(),
 		toaster: toast.New(),
 		screenContainer: container.Create(),
 
