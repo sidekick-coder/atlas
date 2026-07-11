@@ -2,7 +2,7 @@ package root
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"maps"
 
 	tea "charm.land/bubbletea/v2"
@@ -10,6 +10,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/features/key"
 	"github.com/sidekick-coder/atlas/tui/messages"
 	"github.com/sidekick-coder/atlas/tui/models"
+	"github.com/sidekick-coder/atlas/tui/screen/custom"
 	"github.com/sidekick-coder/atlas/tui/screen/empty"
 	"github.com/sidekick-coder/atlas/tui/screen/entry"
 	"github.com/sidekick-coder/atlas/tui/screen/entrysingle"
@@ -40,6 +41,7 @@ func (m model) LoadScreenRegistry() tea.Cmd {
 	m.availableScreens["entry_table"] = entrytable.Create
 	m.availableScreens["entry_single"] = entrysingle.Create
 	m.availableScreens["syncer"] = syncer.Create
+	m.availableScreens["custom"] = custom.Create
 
 	us, err := m.app.Config().GetScreens()
 
@@ -63,7 +65,7 @@ func (m model) LoadScreenRegistry() tea.Cmd {
 		loaded = append(loaded, k)
 	}
 
-	log.Printf("Loaded screen registry: %v", loaded)
+	slog.Info("Loaded screen registry: %v", loaded)
 
 	return nil
 }
@@ -108,8 +110,6 @@ func (m *model) LoadTabs() {
 func (m *model) CreateScreenInstance(name string, options map[string]any) (models.Screen, error) {
 	fac := m.availableScreens[name]
 
-	log.Printf("Creating screen instance for name: %s, factory: %v", name, fac)
-
 	if fac == nil {
 		return nil, fmt.Errorf("screen factory not found for name: %s", name)
 	}
@@ -129,6 +129,8 @@ func (m *model) CreateScreenInstance(name string, options map[string]any) (model
 	if err != nil {
 		return nil, fmt.Errorf("failed to create screen instance: %w", err)
 	}
+
+	slog.Info("created screen instance", slog.String("name", name), slog.Any("options", options))
 
 	return s, nil
 }

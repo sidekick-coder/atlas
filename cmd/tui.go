@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 
 	tea "charm.land/bubbletea/v2"
@@ -21,14 +22,18 @@ var tuiCmd = &cobra.Command{
 			panic(fmt.Sprintf("Error creating app: %v", err))
 		}
 
-		f, err := tea.LogToFile("tui.log", "debug")
+		file, err := os.OpenFile("tui.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 
 		if err != nil {
-			fmt.Println("Error creating log file:", err)
+			fmt.Println("Error opening log file:", err)
 			os.Exit(1)
 		}
 
-		defer f.Close()
+		defer file.Close()
+
+		logger := slog.New(slog.NewJSONHandler(file, nil))
+
+		slog.SetDefault(logger)
 
 		root := tui.New(a)
 
