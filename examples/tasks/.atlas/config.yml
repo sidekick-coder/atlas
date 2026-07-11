@@ -13,7 +13,7 @@ handlers:
       patterns: ["**/*.json"]
 
     - type: shell
-      bin: "{{ .workspace.atlas_path }}/handlers/task_id.js"
+      bin: "{{ .workspace.atlas_path }}/handlers/task_id.sh"
       patterns: ["**/*.md"]
 
 actions:
