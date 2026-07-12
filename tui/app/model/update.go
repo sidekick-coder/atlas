@@ -16,6 +16,10 @@ func (m *model) LoadHome(msg tea.Msg) tea.Cmd {
 		return nil
 	}
 
+	if m.ready {
+		return nil
+	}
+
 	hs, ok := m.app.Config().Get("tui.home_screen")
 
 	if !ok {
@@ -27,6 +31,8 @@ func (m *model) LoadHome(msg tea.Msg) tea.Cmd {
 	if err != nil {
 		return toast.Error(err.Error())
 	}
+
+	m.ready = true
 
 	return nil
 }

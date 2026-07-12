@@ -11,15 +11,7 @@ func (f *Feature) HandleMessages(msg tea.Msg) tea.Cmd {
 		f.windowWidth = wm.Width
 		f.windowHeight = wm.Height
 
-		height := f.windowHeight - 7 // footer, hedaer,tabs height
-		width := f.windowWidth
-
-		return func() tea.Msg {
-			return SizeMsg{
-				Width:  width,
-				Height: height,
-			}
-		}
+		return f.Size
 	}
 
 	if as, ok := msg.(AddMsg); ok {
@@ -28,6 +20,8 @@ func (f *Feature) HandleMessages(msg tea.Msg) tea.Cmd {
 		if err != nil {
 			return toast.Error(err.Error())
 		}
+
+		return f.Size
 	}
 
 	if rs, ok := msg.(RemoveMsg); ok {
@@ -36,6 +30,8 @@ func (f *Feature) HandleMessages(msg tea.Msg) tea.Cmd {
 		if err != nil {
 			return toast.Error(err.Error())
 		}
+
+		return f.Size
 	}
 
 	if rp, ok := msg.(ReplaceMsg); ok {
@@ -44,6 +40,8 @@ func (f *Feature) HandleMessages(msg tea.Msg) tea.Cmd {
 		if err != nil {
 			return toast.Error(err.Error())
 		}
+
+		return f.Size
 	}
 
 	if s, ok := f.GetCurrent(); ok {

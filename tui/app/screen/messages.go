@@ -7,6 +7,13 @@ type SizeMsg struct {
 	Height int
 }
 
+func (f *Feature) Size() tea.Msg {
+	return SizeMsg{
+		Width:  f.windowWidth,
+		Height: f.windowHeight - 7,
+	}
+}
+
 type AddMsg struct {
 	Name    string
 	Options map[string]any

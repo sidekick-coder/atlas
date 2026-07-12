@@ -3,7 +3,6 @@ package screen
 import (
 	"fmt"
 	"log/slog"
-
 	"github.com/sidekick-coder/atlas/tui/models"
 )
 

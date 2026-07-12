@@ -1,9 +1,22 @@
 package custom
 
 import (
+	"log/slog"
+
+	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
+	"github.com/sidekick-coder/atlas/tui/app/screen"
 	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
+
+func (s *Screen) HandleSize(msg tea.Msg) tea.Cmd {
+	if ss, ok := msg.(screen.SizeMsg); ok {
+		slog.Info("custom screen size changed", slog.Int("width", ss.Width), slog.Int("height", ss.Height))
+		s.SetSize(ss.Width, ss.Height)
+	}
+
+	return nil
+}
 
 func (s *Screen) SetSize(width, height int) {
 	s.width = width

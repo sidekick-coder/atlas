@@ -26,6 +26,7 @@ type model struct {
 	app    *app.App
 	width  int
 	height int
+	ready  bool
 
 	screen *screen.Feature
 	tabbar *tabbar.Component
