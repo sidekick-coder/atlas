@@ -55,6 +55,8 @@ func (f *Footer) Render() string {
 		parts = append(parts, fmt.Sprintf("%s %s", footerKeyStyle.Render(h.Key), footerStyle.Render(h.Desc)))
 	}
 
+	remaningWidth := f.width
+
 	for _, b := range tkey.GetBindings() {
 		k := b.GetHelp()
 		d := b.GetDescription()
@@ -63,15 +65,17 @@ func (f *Footer) Render() string {
 			continue
 		}
 
+		part := fmt.Sprintf("%s %s", footerKeyStyle.Render(k), footerStyle.Render(d))
+
+		remaningWidth -= lipgloss.Width(part)
+
 		parts = append(parts, fmt.Sprintf("%s %s", footerKeyStyle.Render(k), footerStyle.Render(d)))
-	}
 
-	maxParts := 12
+		if remaningWidth <= 80 {
+			parts = append(parts, footerStyle.Render(fmt.Sprintf("... and %d more", len(tkey.GetBindings())-len(parts))))
+			break
+		}
 
-	if len(parts) > maxParts {
-		remaning := len(parts) - maxParts
-		parts = parts[:maxParts]
-		parts = append(parts, footerStyle.Render(fmt.Sprintf("... and %d more", remaning)))
 	}
 
 	sep := footerStyle.Render(" · ")

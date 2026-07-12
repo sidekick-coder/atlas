@@ -3,7 +3,9 @@ package text
 import (
 	"log"
 
+	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/components/viewport"
+	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/screen/custom/component"
 )
 
@@ -31,9 +33,9 @@ func Create(p component.DefinitionPayload) component.Definition {
 	viewport.SetContent(content)
 
 	return &Component{
-		width:   p.Width,
-		height:  p.Height,
-		options: p.Options,
+		width:    p.Width,
+		height:   p.Height,
+		options:  p.Options,
 		viewport: viewport,
 	}
 }
@@ -42,6 +44,25 @@ func (c *Component) Render() string {
 	return c.viewport.Render()
 }
 
-func (c *Component) OnFocus() {}
+func (c *Component) OnFocus() {
+	c.LoadBindings()
+}
 
-func (c *Component) OnBlur() {}
+func (c *Component) OnBlur() {
+	c.UnloadBindings()
+}
+
+func (c *Component) Init() tea.Cmd {
+	return nil
+}
+
+func (c *Component) Update(msg tea.Msg) tea.Cmd {
+	return chain.Update(
+		msg,
+		chain.OnKey(c.HandleBinding),
+	)
+}
+
+func (c *Component) Dispose() tea.Cmd {
+	return nil
+}

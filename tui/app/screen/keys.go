@@ -12,15 +12,33 @@ type Keymap struct {
 	Close key.Binding
 }
 
+var tags = []string{"global", "screen"}
+
 var Bindings = Keymap{
-	Next: key.CreateBinding("<leader>n"),
-	Prev: key.CreateBinding("<leader>p"),
+	Next: key.CreateBinding("<leader>n").
+		SetTags(tags...).
+		SetHelp("<leader>n").
+		SetDescription("Next screen"),
+	Prev: key.CreateBinding("<leader>p").
+		SetTags(tags...).
+		SetHelp("<leader>p").
+		SetDescription("Previous screen"),
+	Add: key.CreateBinding("<leader>a").
+		SetTags(tags...).
+		SetHelp("<leader>a").
+		SetDescription("Add new screen"),
+	Close: key.CreateBinding("<leader>x").
+		SetTags(tags...).
+		SetHelp("<leader>x").
+		SetDescription("Close screen"),
 }
 
 func (f *Feature) GetBindings() []key.Binding {
 	return []key.Binding{
 		Bindings.Next,
 		Bindings.Prev,
+		Bindings.Add,
+		Bindings.Close,
 	}
 }
 
@@ -39,6 +57,14 @@ func (f *Feature) HandleBinding(km tea.KeyMsg) tea.Cmd {
 
 	if key.Matches(Bindings.Prev) {
 		f.Prev()
+	}
+
+	if key.Matches(Bindings.Add) {
+		return Add("emtpy")
+	}
+
+	if key.Matches(Bindings.Close) {
+		return Remove(f.Selection.GetCursor())
 	}
 
 	return nil

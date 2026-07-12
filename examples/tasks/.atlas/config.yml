@@ -69,6 +69,7 @@ screens:
 
     - id: task_detail
       type: custom
+      title: "{{ .entry.title }}"
       components:
           - type: text
             content: "{{ .entry.content }}"

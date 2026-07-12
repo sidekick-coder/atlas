@@ -1,8 +1,6 @@
 package custom
 
 import (
-	"log/slog"
-
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/tui/app/screen"
@@ -11,7 +9,6 @@ import (
 
 func (s *Screen) HandleSize(msg tea.Msg) tea.Cmd {
 	if ss, ok := msg.(screen.SizeMsg); ok {
-		slog.Info("custom screen size changed", slog.Int("width", ss.Width), slog.Int("height", ss.Height))
 		s.SetSize(ss.Width, ss.Height)
 	}
 
@@ -34,11 +31,11 @@ func (s *Screen) Render() string {
 	for index, c := range s.components {
 		card := s.card.
 			SetSize(c.Cols, c.Rows).
-			SetBorder(theme.Current.Primary).
+			SetBorder(theme.Current.Muted).
 			SetContent(c.Definition.Render())
 
 		if s.selection.IsSelected(index) {
-			card.SetBorder(theme.Current.Accent)
+			card.SetBorder(theme.Current.Primary)
 		}
 
 		layer := lipgloss.NewLayer(card.Render()).

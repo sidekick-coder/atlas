@@ -2,6 +2,7 @@ package custom
 
 import (
 	"fmt"
+	"log/slog"
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/template"
@@ -46,7 +47,13 @@ func Create(p models.ScreenPayload) (models.Screen, error) {
 	}
 
 	if title, ok := p.Options["title"].(string); ok {
-		s.title = title
+		t, err := template.Render(title, p.Options)
+
+		if err != nil {
+			return nil, fmt.Errorf("error rendering title: %w", err)
+		}
+
+		s.title = t
 	}
 
 	return s, nil
@@ -84,6 +91,9 @@ func (s *Screen) LoadComponents() tea.Cmd {
 	}
 
 	s.selection.SetTotal(len(s.components))
+	s.Select(0)
+
+	slog.Info("loaded components", slog.Int("count", len(s.components)))
 
 	return nil
 }

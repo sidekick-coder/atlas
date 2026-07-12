@@ -1,10 +1,9 @@
 package custom
 
 import (
-	"log/slog"
-
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/features/key"
+	"github.com/sidekick-coder/atlas/tui/messages"
 )
 
 type KeyMap struct {
@@ -15,13 +14,13 @@ type KeyMap struct {
 var tags = []string{"screen", "custom"}
 
 var Bindings = KeyMap{
-	Up: key.CreateBinding("k", "<up>").
+	Up: key.CreateBinding("<leader>k", "<leader><up>").
 		SetTags(tags...).
-		SetDescription("component up").
+		SetDescription("<leader>k").
 		SetHelp("k/up"),
-	Down: key.CreateBinding("j", "<down>").
+	Down: key.CreateBinding("<leader>j", "<leader><down>").
 		SetTags(tags...).
-		SetDescription("component down").
+		SetDescription("down").
 		SetHelp("j/down"),
 }
 
@@ -38,18 +37,19 @@ func (s *Screen) LoadBindings() tea.Cmd {
 }
 
 func (s *Screen) UnloadBindings() tea.Cmd {
-	slog.Info("Unloading custom screen bindings")
 	key.Unregister(s.GetBindings()...)
 	return nil
 }
 
 func (s *Screen) HandleBinding(msg tea.KeyMsg) tea.Cmd {
 	if key.Matches(Bindings.Up) {
-		s.selection.Next()
+		s.Next()
+		return messages.SkipCmd()
 	}
 
 	if key.Matches(Bindings.Down) {
-		s.selection.Prev()
+		s.Prev()
+		return messages.SkipCmd()
 	}
 
 	return nil

@@ -5,6 +5,21 @@ import (
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 )
 
+
 func (s *Screen) Update(msg tea.Msg) tea.Cmd {
-	return  chain.Update(msg, s.HandleSize, chain.OnKey(s.HandleBinding))
+	handlers := []func(msg tea.Msg) tea.Cmd{}
+
+	handlers = append(
+		handlers,
+		s.HandleSize,
+		chain.OnKey(s.HandleBinding),
+	)
+
+	current, ok := s.GetCurrent()
+
+	if ok {
+		handlers = append(handlers, current.Definition.Update)
+	}
+
+	return chain.Update(msg, handlers...)
 }

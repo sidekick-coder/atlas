@@ -33,7 +33,7 @@ func (t *Component) Render() string {
 
 	shared := lipgloss.NewStyle().Padding(0, 1)
 
-	normal := shared.Background(lipgloss.Color(theme.Current.Foreground)).Foreground(lipgloss.Color(theme.Current.Background))
+	normal := shared.Background(lipgloss.Color(theme.Current.Muted)).Foreground(lipgloss.Color(theme.Current.Background))
 	active := shared.Background(lipgloss.Color(theme.Current.Primary)).Foreground(lipgloss.Color(theme.Current.Background))
 
 	for i, item := range t.screen.GetScreens() {

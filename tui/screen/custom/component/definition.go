@@ -1,9 +1,14 @@
 package component
 
+import tea "charm.land/bubbletea/v2"
+
 var Definitions = map[string]func(DefinitionPayload) Definition{}
 
 type Definition interface {
 	Render() string
+	Update(msg tea.Msg) tea.Cmd
+	Init() tea.Cmd
+	Dispose() tea.Cmd
 	OnFocus()
 	OnBlur()
 }

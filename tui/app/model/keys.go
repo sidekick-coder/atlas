@@ -13,7 +13,7 @@ var tags = []string{"global"}
 
 var Bindings = Keymap{
 	Close: key.CreateBinding("q", "<c-c>").
-		SetDescription("Close the current screen").
+		SetDescription("close").
 		SetTags(tags...).
 		SetHelp("q/crtl+c"),
 }

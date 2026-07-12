@@ -19,11 +19,16 @@ type AddMsg struct {
 	Options map[string]any
 }
 
-func Add(name string, options map[string]any) tea.Cmd {
+func Add(name string, options ...map[string]any) tea.Cmd {
+	o := map[string]any{}
+
+	if len(options) > 0 {
+		o = options[0]
+	}
 	return func() tea.Msg {
 		return AddMsg{
 			Name:    name,
-			Options: options,
+			Options: o,
 		}
 	}
 }
