@@ -1,10 +1,11 @@
-package utils 
+package utils
 
 import (
 	"fmt"
+	"strings"
 )
 
-func Flatten( input map[string]any, output map[string]any, prefix string) {
+func Flatten(input map[string]any, output map[string]any, prefix string) {
 	for k, v := range input {
 		key := k
 		if prefix != "" {
@@ -54,4 +55,22 @@ func FlattenMap(input map[string]any, prefix string) map[string]any {
 	output := make(map[string]any)
 	Flatten(input, output, prefix)
 	return output
+}
+
+func FlattenArray(array []any, prefix ...string) (map[string]any, bool) {
+	output := make(map[string]any)
+
+	input := map[string]any{"array": array}
+
+	Flatten(input, output, strings.Join(prefix, "."))
+
+	result := make(map[string]any)
+
+	for k, v := range output {
+		nk := strings.TrimPrefix(k, "array")
+		result[nk] = v
+	}
+
+	return result, true
+
 }

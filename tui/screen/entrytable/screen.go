@@ -14,9 +14,11 @@ import (
 type Screen struct {
 	app     *app.App
 	options map[string]any
-
 	width  int
 	height int
+
+	openScreen string
+	openOptions map[string]any
 
 	loader    entryloader.Feature
 	table     table.Component
@@ -24,11 +26,19 @@ type Screen struct {
 }
 
 func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
+	openScreen := "entry_single"
+	
+	if os, ok := p.Options["open_screen"].(string); ok {
+		openScreen = os
+	}
+
 	s := &Screen{
 		app:     p.App,
 		options: p.Options,
 		width:   100,
 		height:  100,
+
+		openScreen: openScreen,
 
 		loader:    *entryloader.Create(*p.App.EntryRepo()),
 		table:     *table.Create(),
@@ -57,10 +67,9 @@ func (s *Screen) OpenEntry(cursor int) tea.Cmd {
 	}
 
 	return messages.AddScreenCmd(messages.AddScreen{
-		Name: "entry_single",
+		Name: s.openScreen,
 		Options: map[string]any{
-			"path":  e.Path,
-			"entry": e,
+			"entry": e.ToMap(),
 		},
 	})
 }

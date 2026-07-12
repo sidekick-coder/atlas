@@ -104,3 +104,22 @@ func Unflatten(input map[string]any) map[string]any {
 
 	return output
 }
+
+func UnflattenArray(array map[string]any) ([]any, bool) {
+	input := map[string]any{}
+
+	for k, v := range array {
+		nw := strings.Join([]string{"array", k}, "")
+		input[nw] = v
+	}
+
+	output := Unflatten(input)
+
+	a, ok := output["array"].([]any)
+
+	if !ok {
+		return []any{}, false
+	}
+
+	return a, true
+}

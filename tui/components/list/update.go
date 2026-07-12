@@ -2,7 +2,7 @@ package list
 
 import (
 	tea "charm.land/bubbletea/v2"
-	"github.com/sidekick-coder/atlas/tui/utils"
+	"github.com/sidekick-coder/atlas/tui/features/chain"
 )
 
 func (c *Component) HandleKeypress(msg tea.Msg) tea.Cmd {
@@ -12,9 +12,9 @@ func (c *Component) HandleKeypress(msg tea.Msg) tea.Cmd {
 		return nil
 	}
 
-	return utils.ChainKeypress(km, c.HandleSelection)
+	return chain.Keypress(km, c.HandleSelection)
 }
 
 func (c *Component) Update(msg tea.Msg) tea.Cmd {
-	return utils.Chain(msg, c.HandleKeypress)
+	return chain.Update(msg, c.HandleKeypress)
 }

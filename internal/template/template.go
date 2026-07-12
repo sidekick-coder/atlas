@@ -2,15 +2,19 @@ package template
 
 import (
 	"bytes"
+	"fmt"
 	"maps"
 	"text/template"
 
 	"github.com/sidekick-coder/atlas/internal/config"
 	"github.com/sidekick-coder/atlas/internal/models"
+	"github.com/sidekick-coder/atlas/internal/utils"
 )
 
-func Render(s string, data map[string]any) (string, error) {
-    t, err := template.New("").Parse(s)
+func Render(payload string, data map[string]any) (string, error) {
+    t, err := template.New("").
+		Option("missingkey=error").
+		Parse(payload)
 
     if err != nil {
         return "", err
@@ -69,4 +73,48 @@ func ContextEntryInfo(info models.EntryInfo) map[string]any {
 	ctx["entry_info"] = ei
 
 	return ctx
+}
+
+func ParseArray(array []any, data map[string]any) ([]any, error) {
+	flat, ok := utils.FlattenArray(array)
+
+	if !ok {
+		return nil, fmt.Errorf("failed to parse array")
+	}
+
+	sm := utils.StringifyMap(flat)
+
+	if !ok {
+		return nil, fmt.Errorf("failed to stringify map")
+	}
+
+	pm := map[string]string{}
+
+	for k, v := range sm {
+		rendered, err := Render(v, data)
+
+		if err != nil {
+			return nil, fmt.Errorf("failed to render template for key %s: %v", k, err)
+		}
+
+		pm[k] = rendered
+	}
+
+	pma := map[string]any{}
+
+	for k, v := range pm {
+		pma[k] = v
+	}
+	
+	if !ok {
+		return nil, fmt.Errorf("failed to convert map[string]string to map[string]any")
+	}
+
+	unflattened, ok := utils.UnflattenArray(pma)
+
+	if !ok {
+		return nil, fmt.Errorf("failed to unflatten array")
+	}
+
+	return unflattened, nil
 }

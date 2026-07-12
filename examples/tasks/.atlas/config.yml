@@ -19,7 +19,7 @@ handlers:
 actions:
     - id: vi
       type: shell
-      command: tmux popup -E -h 90% -w 90% -x C -y C "vi {{ .EntryAbsolutePath }}"
+      command: tmux popup -E -h 90% -w 90% -x C -y C "vi {{ .entry.path }}"
 
     - id: generate-tasks
       type: shell
@@ -45,6 +45,7 @@ screens:
       title: "Tasks"
       description: "List of tasks"
       query: "parent=tasks"
+      open_screen: task_detail
       limit: 100
       columns:
           - id: id
@@ -66,13 +67,15 @@ screens:
             field: due
             width: 30
 
-    # - id: task_detail
-    #   type: custom
-    #   title: "{{ .metas.title }}"
-    #   components:
-    #       - type: meta_box
-    #         x: 0
-    #         y: 0
-    #         rows: 1
-    #         cols: 1
-    #         content: "{{ .metas.content }}"
+    - id: task_detail
+      type: custom
+      components:
+          - type: text
+            content: "{{ .entry.content }}"
+            cols: 220
+            rows: 35
+
+          - type: text
+            x: 220
+            cols: 50
+            rows: 35
