@@ -7,6 +7,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/template"
 	"github.com/sidekick-coder/atlas/tui/components/container"
+	"github.com/sidekick-coder/atlas/tui/components/form"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/selection"
@@ -27,7 +28,7 @@ type Screen struct {
 	options map[string]any
 
 	components []component.Component
-	selection *selection.Feature
+	selection  *selection.Feature
 
 	container container.Component
 	card      container.Component
@@ -35,15 +36,15 @@ type Screen struct {
 
 func Create(p models.ScreenPayload) (models.Screen, error) {
 	s := &Screen{
-		width:      100,
-		height:     100,
-		title:      "custom",
-		options:    p.Options,
+		width:   100,
+		height:  100,
+		title:   "custom",
+		options: p.Options,
 
 		components: []component.Component{},
 		container:  *container.Create(),
 		card:       *container.Create(),
-		selection: selection.Create(),
+		selection:  selection.Create(),
 	}
 
 	if title, ok := p.Options["title"].(string); ok {
@@ -62,10 +63,13 @@ func Create(p models.ScreenPayload) (models.Screen, error) {
 func (s *Screen) Title() string {
 	return s.title
 }
+func (s *Screen) LoadDefinitions() tea.Cmd {
+	component.RegisterDefinition("text", text.Create)
+	component.RegisterDefinition("form", form.Create)
+	return nil
+}
 
 func (s *Screen) LoadComponents() tea.Cmd {
-	component.RegisterDefinition("text", text.Create)
-
 	s.components = []component.Component{}
 
 	oc, ok := s.options["components"].([]any)
@@ -99,7 +103,7 @@ func (s *Screen) LoadComponents() tea.Cmd {
 }
 
 func (s *Screen) Init() tea.Cmd {
-	return chain.Init(s.LoadComponents, s.LoadBindings)
+	return chain.Init(s.LoadDefinitions, s.LoadComponents, s.LoadBindings)
 }
 
 func (s *Screen) Dispose() tea.Cmd {

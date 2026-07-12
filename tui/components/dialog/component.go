@@ -100,7 +100,7 @@ func (c *Component) Init() tea.Cmd {
 	y := (layer.ScreenHeight - c.height) / 2
 
 	c.layer.SetPosition(x, y)
-	c.layer.SetRender(c.Render)
+	c.layer.SetRender(c.render)
 
 	c.LoadDefaultStyle()
 

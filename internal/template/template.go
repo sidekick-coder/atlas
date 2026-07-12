@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"maps"
+	"strings"
 	"text/template"
 
 	"github.com/sidekick-coder/atlas/internal/config"
@@ -11,24 +12,56 @@ import (
 	"github.com/sidekick-coder/atlas/internal/utils"
 )
 
-func Render(payload string, data map[string]any) (string, error) {
-    t, err := template.New("").
+func Eval(payload string, data map[string]any) (any, error) {
+	input := payload
+
+	// if starts with ={{var}}, return the value
+	if len(input) > 0 && input[0] == '=' {
+		key := strings.TrimPrefix(input, "={{")
+		key = strings.TrimSuffix(key, "}}")
+		key = strings.TrimSpace(key)
+		key = strings.TrimPrefix(key, ".")
+
+		return utils.Get(data, key), nil
+	}
+
+	t, err := template.New("").
 		Option("missingkey=error").
 		Parse(payload)
 
-    if err != nil {
-        return "", err
-    }
+	if err != nil {
+		return nil, err
+	}
 
-    var buf bytes.Buffer
+	var buf bytes.Buffer
 
-    err = t.Execute(&buf, data)
+	err = t.Execute(&buf, data)
 
-    if err != nil {
-        return "", err
-    }
+	if err != nil {
+		return nil, err
+	}
 
-    return buf.String(), nil
+	return buf.String(), nil
+}
+
+func Render(payload string, data map[string]any) (string, error) {
+	t, err := template.New("").
+		Option("missingkey=error").
+		Parse(payload)
+
+	if err != nil {
+		return "", err
+	}
+
+	var buf bytes.Buffer
+
+	err = t.Execute(&buf, data)
+
+	if err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
 }
 
 func Context(data ...map[string]any) map[string]any {
@@ -54,7 +87,7 @@ func ContextConfig(config config.Config) map[string]any {
 		worksapce["atlas_path"] = wap
 	}
 
-	ctx["workspace"] = worksapce 
+	ctx["workspace"] = worksapce
 
 	return ctx
 }
@@ -63,10 +96,10 @@ func ContextEntryInfo(info models.EntryInfo) map[string]any {
 	ctx := map[string]any{}
 
 	ei := map[string]string{
-		"path": info.Path,
-		"type": info.Type,
-		"ext":  info.Ext,
-		"basename": info.BaseName,
+		"path":         info.Path,
+		"type":         info.Type,
+		"ext":          info.Ext,
+		"basename":     info.BaseName,
 		"AbsolutePath": info.AbsolutePath,
 	}
 
@@ -88,10 +121,10 @@ func ParseArray(array []any, data map[string]any) ([]any, error) {
 		return nil, fmt.Errorf("failed to stringify map")
 	}
 
-	pm := map[string]string{}
+	pm := map[string]any{}
 
 	for k, v := range sm {
-		rendered, err := Render(v, data)
+		rendered, err := Eval(v, data)
 
 		if err != nil {
 			return nil, fmt.Errorf("failed to render template for key %s: %v", k, err)
@@ -100,17 +133,11 @@ func ParseArray(array []any, data map[string]any) ([]any, error) {
 		pm[k] = rendered
 	}
 
-	pma := map[string]any{}
-
-	for k, v := range pm {
-		pma[k] = v
-	}
-	
 	if !ok {
 		return nil, fmt.Errorf("failed to convert map[string]string to map[string]any")
 	}
 
-	unflattened, ok := utils.UnflattenArray(pma)
+	unflattened, ok := utils.UnflattenArray(pm)
 
 	if !ok {
 		return nil, fmt.Errorf("failed to unflatten array")

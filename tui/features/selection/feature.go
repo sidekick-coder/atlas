@@ -4,6 +4,7 @@ type Feature struct {
 	cursor  int
 	total   int
 	enabled bool
+	loop	bool
 }
 
 func Create() *Feature {
@@ -11,6 +12,7 @@ func Create() *Feature {
 		cursor:  -1,
 		total:   0,
 		enabled: true,
+		loop:    true,
 	}
 }
 
@@ -29,6 +31,7 @@ func (f *Feature) SetTotal(total int) {
 		f.cursor = 0
 	}
 }
+
 
 func (f *Feature) GetCursor() int {
 	return f.cursor

@@ -2,6 +2,8 @@ package component
 
 import (
 	"fmt"
+	"maps"
+
 	"github.com/sidekick-coder/atlas/internal/utils"
 	"github.com/sidekick-coder/atlas/internal/utils/maputil"
 )
@@ -65,12 +67,20 @@ func CreateFromMap(payload any) (*Component, error) {
 		component.Y = y
 	}
 
+	props := map[string]any{}
+	maps.Copy(props, maputil.Except(cm, "type", "cols", "rows", "x", "y"))
+
+	props["width"] = component.Cols
+	props["height"] = component.Rows
+
+	def, err := definition(props)
+
+	if err != nil {
+		return nil, fmt.Errorf("error creating component definition: %w", err)
+	}
+
 	component.Type = t
-	component.Definition = definition(DefinitionPayload{
-		Width:   component.Cols,
-		Height:  component.Rows,
-		Options: maputil.Except(cm, "type", "cols", "rows", "x", "y"),
-	})
+	component.Definition = def
 
 	return component, nil
 }

@@ -78,7 +78,8 @@ func (f *Feature) Add(name string, options ...map[string]any) (models.Screen, er
 	binding := key.CreateBinding(fmt.Sprintf("<leader>%d", index)).
 		SetDescription(fmt.Sprintf("select screen %d", index)).
 		SetHelp(fmt.Sprintf("<leader>%d", index)).
-		SetTags(tags...)
+		SetHidden(true).
+		SetTags("help-dialog=false")
 
 	key.Register(binding)
 

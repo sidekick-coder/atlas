@@ -8,6 +8,7 @@ import (
 
 type Binding struct {
 	id string
+	hidden bool
 	keys []BindingKey
 	tags []string
 	help string
@@ -15,7 +16,24 @@ type Binding struct {
 }
 
 type BindingKey struct {
+	original string
 	tokens []string
+}
+
+func (bk BindingKey) GetTokens() []string {
+	return bk.tokens
+}
+
+func (bk BindingKey) GetOriginal() string {
+	return bk.original
+}
+
+func (bk BindingKey) GetNormalized() string {
+	return strings.Join(bk.tokens, " ")
+}
+
+func (bk BindingKey) String() string {
+	return strings.Join(bk.tokens, " ")
 }
 
 func normalizeToken(t string) string {
@@ -89,6 +107,7 @@ func CreateBinding(keys ...string) Binding {
 		tokens := parse(k)
 
 		bk := BindingKey{
+			original: k,
 			tokens: tokens,
 		}
 
@@ -114,6 +133,11 @@ func (b Binding) SetHelp(help string) Binding {
 	return b
 }
 
+func (b Binding) SetHidden(hidden bool) Binding {
+	b.hidden = hidden
+	return b
+}
+
 func (b Binding) SetDescription(desc string) Binding {
 	b.desc = desc
 	return b
@@ -136,6 +160,24 @@ func (b Binding) GetDescription() string {
 	return b.desc
 }
 
+func (b Binding) GetKeys() []BindingKey {
+	return b.keys
+}
+
+func (b Binding) IsHidden() bool {
+	return b.hidden
+}
+
 func (b Binding) GetTags() []string {
 	return b.tags
+}
+
+func (b Binding) HasTag(tag string) bool {
+	for _, t := range b.tags {
+		if t == tag {
+			return true
+		}
+	}
+
+	return false
 }

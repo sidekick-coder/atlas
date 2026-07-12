@@ -20,6 +20,10 @@ func GetBindings() []Binding {
 	return manager.GetBindings()
 }
 
+func GetBindingsByTags(tags ...string) []Binding {
+	return manager.GetBindingsByTags(tags...)
+}
+
 func ClearBindings() {
 	manager.ClearBindings()
 }

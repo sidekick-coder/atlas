@@ -76,8 +76,18 @@ screens:
             cols: 220
             rows: 35
 
-          - type: mapeditor
-            values: "{{ .entry}}"
+          - type: form
+            values: "={{ .entry }}"
+            fields:
+                - id: title
+                  label: "Title"
+
+                - id: status
+                  label: "Status"
+
+                - id: due
+                  label: "Due Date"
+
             x: 220
             cols: 50
             rows: 35

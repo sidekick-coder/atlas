@@ -1,43 +1,55 @@
 package text
 
 import (
-	"log"
-
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/components/viewport"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
-	"github.com/sidekick-coder/atlas/tui/screen/custom/component"
 )
 
 type Component struct {
 	width   int
 	height  int
-	options map[string]any
 
 	viewport *viewport.Component
 }
 
-func Create(p component.DefinitionPayload) component.Definition {
+func Create(args ...map[string]any) (*Component, error) {
+	props := map[string]any{}
+
+	width := 20
+	height := 5
+
 	content := "Text component"
 
-	log.Printf("Creating text component with payload: %+v", p)
+	if len(args) > 0 {
+		props = args[0]
+	}
 
-	if c, ok := p.Options["content"].(string); ok {
+	if w, ok := props["width"].(int); ok {
+		width = w
+	}
+
+	if h, ok := props["height"].(int); ok {
+		height = h
+	}
+
+	if c, ok := props["content"].(string); ok {
 		content = c
 	}
 
 	viewport := viewport.Create()
 
-	viewport.SetSize(p.Width, p.Height-2) // 2 padding
+	viewport.SetSize(width, height-2) // 2 padding
 
 	viewport.SetContent(content)
 
-	return &Component{
-		width:    p.Width,
-		height:   p.Height,
-		options:  p.Options,
+	c := &Component{
+		width:    width,
+		height:   height,
 		viewport: viewport,
 	}
+
+	return c, nil
 }
 
 func (c *Component) Render() string {

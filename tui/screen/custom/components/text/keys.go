@@ -11,7 +11,7 @@ type Keymap struct {
 	Down key.Binding
 }
 
-var tags = []string{"custom", "component", "text"}
+var tags = []string{"component:text"}
 
 var Bindings = Keymap{
 	Up: key.CreateBinding("k", "<up>").

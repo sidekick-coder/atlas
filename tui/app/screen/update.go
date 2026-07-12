@@ -2,6 +2,7 @@ package screen
 
 import (
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/app/program"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 )
@@ -11,7 +12,7 @@ func (f *Feature) HandleMessages(msg tea.Msg) tea.Cmd {
 		f.windowWidth = wm.Width
 		f.windowHeight = wm.Height
 
-		return f.Size
+		program.Send(f.Size())
 	}
 
 	if as, ok := msg.(AddMsg); ok {

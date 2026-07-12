@@ -9,7 +9,7 @@ import (
 )
 
 type Manager struct {
-	debug	  bool
+	debug      bool
 	leader     string
 	pending    []string
 	registered []Binding
@@ -17,7 +17,7 @@ type Manager struct {
 
 func NewManager() Manager {
 	return Manager{
-		debug:     os.Getenv("DEBUG") == "true",
+		debug:      os.Getenv("DEBUG") == "true",
 		leader:     "space", // default leader key is space
 		pending:    []string{},
 		registered: []Binding{},
@@ -126,7 +126,7 @@ func (m *Manager) HandleKeypress(msg tea.Msg) tea.Cmd {
 		return nil
 	}
 
-	// forse quit 
+	// forse quit
 	if km.String() == "ctrl+c" {
 		return tea.Quit
 	}
@@ -150,6 +150,19 @@ func (m *Manager) HandleKeypress(msg tea.Msg) tea.Cmd {
 
 func (m *Manager) GetBindings() []Binding {
 	return m.registered
+}
+func (m *Manager) GetBindingsByTags(tags ...string) []Binding {
+	var bindings []Binding
+
+	for _, b := range m.registered {
+		if slices.ContainsFunc(b.GetTags(), func(tag string) bool {
+			return slices.Contains(tags, tag)
+		}) {
+			bindings = append(bindings, b)
+		}
+	}
+
+	return bindings
 }
 
 func (m *Manager) ClearBindings() {

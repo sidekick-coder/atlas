@@ -2,7 +2,7 @@ package component
 
 import tea "charm.land/bubbletea/v2"
 
-var Definitions = map[string]func(DefinitionPayload) Definition{}
+var Definitions = map[string]DefinitionFactory{}
 
 type Definition interface {
 	Render() string
@@ -13,14 +13,10 @@ type Definition interface {
 	OnBlur()
 }
 
-type DefinitionPayload struct {
-	Width   int
-	Height  int
-	Options map[string]any
-}
+type DefinitionFactory func(props ...map[string]any) (Definition, error)
 
-type DefinitionFactory func(payload DefinitionPayload) Definition
-
-func RegisterDefinition(name string, factory DefinitionFactory) {
-	Definitions[name] = factory
+func RegisterDefinition[T Definition](name string, factory func(props ...map[string]any) (T, error)) {
+	Definitions[name] = func(props ...map[string]any) (Definition, error) {
+		return factory(props...)
+	}
 }

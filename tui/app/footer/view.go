@@ -1,10 +1,8 @@
-package components
+package footer
 
 import (
 	"fmt"
 	"strings"
-
-	"charm.land/bubbles/v2/key"
 	lipgloss "charm.land/lipgloss/v2"
 	tkey "github.com/sidekick-coder/atlas/tui/features/key"
 	"github.com/sidekick-coder/atlas/tui/features/theme"
@@ -19,25 +17,7 @@ var (
 			Bold(true)
 )
 
-// Footer renders a one-line shortcuts bar.
-type Footer struct {
-	width    int
-	bindings []key.Binding
-}
-
-func NewFooter() *Footer {
-	return &Footer{}
-}
-
-func (f *Footer) SetWidth(width int) {
-	f.width = width
-}
-
-func (f *Footer) SetBindings(bindings ...key.Binding) {
-	f.bindings = bindings
-}
-
-func (f *Footer) Render() string {
+func (f *Component) Render() string {
 	container := lipgloss.NewStyle().
 		BorderStyle(lipgloss.NormalBorder()).
 		Width(f.width-4).
@@ -47,21 +27,17 @@ func (f *Footer) Render() string {
 
 	var parts []string
 
-	for _, b := range f.bindings {
-		h := b.Help()
-		if h.Key == "" {
-			continue
-		}
-		parts = append(parts, fmt.Sprintf("%s %s", footerKeyStyle.Render(h.Key), footerStyle.Render(h.Desc)))
-	}
-
 	remaningWidth := f.width
 
 	for _, b := range tkey.GetBindings() {
 		k := b.GetHelp()
 		d := b.GetDescription()
 
-		if k == "" || d == "" {
+		if f.dialog.IsOpen() && !b.HasTag("global:help") {
+			continue
+		}
+
+		if k == "" || d == "" || b.IsHidden() {
 			continue
 		}
 
@@ -84,14 +60,3 @@ func (f *Footer) Render() string {
 	return container.Render(row)
 }
 
-func (f *Footer) View() string {
-	return f.Render()
-}
-
-func (f *Footer) GetHeight() int {
-	return lipgloss.Height(f.Render())
-}
-
-func (f *Footer) GetWidth() int {
-	return lipgloss.Width(f.Render())
-}

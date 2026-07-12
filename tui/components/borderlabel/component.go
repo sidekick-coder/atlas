@@ -30,6 +30,10 @@ func (c *Component) SetSize(width, height int) *Component {
 	return c
 }
 
+func (c *Component) SetWidth(width int) *Component {
+	return c.SetSize(width, c.height)
+}
+
 func (c *Component) GetLabel() string {
 	return c.label
 }

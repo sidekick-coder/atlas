@@ -9,9 +9,11 @@ import (
 func (c *Component) Render() string {
 	border := lipgloss.NewStyle().Foreground(lipgloss.Color(c.color))
 	text := lipgloss.NewStyle().Foreground(lipgloss.Color("252"))
+	maxWidth := c.width + 4
 
 	boxWidth := c.width + 4                                 // 2 for padding on each side
 	boxWidth = max(boxWidth, lipgloss.Width(c.label)+6, 50) // 2 for corners, 4 for padding
+	boxWidth = min(boxWidth, maxWidth)
 
 	// Top border with title.
 	labelPart := "─ " + c.label + " "

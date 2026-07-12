@@ -7,6 +7,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/internal/config"
+	"github.com/sidekick-coder/atlas/tui/app/footer"
 	"github.com/sidekick-coder/atlas/tui/app/screen"
 	"github.com/sidekick-coder/atlas/tui/app/tabbar"
 	"github.com/sidekick-coder/atlas/tui/app/toaster"
@@ -31,9 +32,9 @@ type model struct {
 
 	screen *screen.Feature
 	tabbar *tabbar.Component
+	footer *footer.Component
 
 	toolbar *components.Toolbar
-	footer  *components.Footer
 
 	toaster *toaster.Component
 }
@@ -42,8 +43,6 @@ func Create(a *app.App) model {
 	toolbar := components.NewToolbar()
 	toolbar.SetTitle("󰉋 " + a.WorkspacePath())
 
-	footer := components.NewFooter()
-
 	m := model{
 		app:    a,
 		width:  100,
@@ -51,7 +50,7 @@ func Create(a *app.App) model {
 		ready:  false,
 
 		toolbar: toolbar,
-		footer:  footer,
+		footer:  footer.Create(),
 		toaster: toaster.Create(),
 
 		screen: screen.Create(),
@@ -150,5 +149,12 @@ func (m model) InitTabbar() tea.Cmd {
 }
 
 func (m model) Init() tea.Cmd {
-	return chain.Init(m.LoadBindings, m.toaster.Init, chain.OnError(m.screen.Init), m.InitTabbar, m.InitScreen)
+	return chain.Init(
+		m.footer.Init,
+		m.LoadBindings,
+		m.toaster.Init,
+		chain.OnError(m.screen.Init),
+		m.InitTabbar,
+		m.InitScreen,
+	)
 }

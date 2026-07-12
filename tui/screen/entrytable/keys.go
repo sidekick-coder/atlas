@@ -12,7 +12,7 @@ type Keymap struct {
 	Prev tkey.Binding
 }
 
-var tags = []string{"entry_table"}
+var tags = []string{"screen:entry_table"}
 
 var Bindings = Keymap{
 	Next: tkey.CreateBinding("n", "l").

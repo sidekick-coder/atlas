@@ -8,7 +8,7 @@ import (
 )
 
 func (c *Component) HandleView() tea.Cmd {
-	c.layer.SetRender(c.Render)
+	c.layer.SetRender(c.render)
 
 	c.LoadDefaultStyle()
 
@@ -28,7 +28,7 @@ func (c *Component) GetWidth() int {
 	return c.width
 }
 
-func (c *Component) Render() string {
+func (c *Component) render() string {
 	x := (layer.ScreenWidth - c.width) / 2
 	y := (layer.ScreenHeight - c.height) / 2
 

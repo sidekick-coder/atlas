@@ -12,7 +12,7 @@ type Keymap struct {
 	EditColumns key.Binding
 }
 
-var tags = []string{"table", "table view"}
+var tags = []string{"component:table"}
 
 var Binding = Keymap{
 	Up: key.CreateBinding("k", "<Up>").

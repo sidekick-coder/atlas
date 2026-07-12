@@ -19,9 +19,16 @@ type Component struct {
 }
 
 func Create() *Component {
+	dialog, err := mapeditor.Create()
+
+	if err != nil {
+		log.Println("Error creating map editor dialog:", err)
+		return nil
+	}
+
 	return &Component{
 		sidepeeck: sidepeeck.Create(),
-		dialog:    mapeditor.Create(),
+		dialog:    dialog,
 	}
 }
 

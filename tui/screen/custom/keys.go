@@ -11,17 +11,17 @@ type KeyMap struct {
 	Down key.Binding
 }
 
-var tags = []string{"screen", "custom"}
+var tags = []string{"screen:custom"}
 
 var Bindings = KeyMap{
 	Up: key.CreateBinding("<leader>k", "<leader><up>").
 		SetTags(tags...).
 		SetDescription("<leader>k").
-		SetHelp("k/up"),
+		SetHelp("<leader>k/up"),
 	Down: key.CreateBinding("<leader>j", "<leader><down>").
 		SetTags(tags...).
 		SetDescription("down").
-		SetHelp("j/down"),
+		SetHelp("<leader>j/down"),
 }
 
 func (s *Screen) GetBindings() []key.Binding {

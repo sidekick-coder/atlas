@@ -26,6 +26,18 @@ func New() *Input {
 	return Create()
 }
 
+func (i *Input) SetSize(width, height int) *Input {
+	i.width = width
+	i.height = height
+
+	return i
+}
+
+func (i *Input) SetWidth(width int) *Input {
+	i.width = width
+	return i
+}
+
 func (i *Input) Enable() *Input {
 	i.enabled = true
 	return i

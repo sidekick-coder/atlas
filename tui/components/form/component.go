@@ -1,9 +1,8 @@
-package mapeditor
+package form
 
 import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/components/borderlabel"
-	"github.com/sidekick-coder/atlas/tui/components/dialog"
 	"github.com/sidekick-coder/atlas/tui/components/input"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/selection"
@@ -13,14 +12,10 @@ import (
 type Component struct {
 	fields []Field
 	values map[string]string
+	focused bool
 	width  int 
 	height int
 
-	onClose  func()
-	onOpen   func()
-	onSubmit func(values map[string]string)
-
-	dialog    *dialog.Component
 	selection *selection.Feature
 	inputs    []*input.Input
 
@@ -36,7 +31,6 @@ func Create(args ...map[string]any) (*Component, error) {
 		height: 20,
 		values: map[string]string{},
 
-		dialog:    dialog.Create().SetTitle("Map Editor"),
 		selection: selection.Create(),
 
 		fieldBorder: borderlabel.
@@ -67,65 +61,18 @@ func Create(args ...map[string]any) (*Component, error) {
 		c.width = w
 	}
 
+	if h, ok := props["height"].(int); ok {
+		c.height = h
+	}
+
+	if v, ok := props["values"].(map[string]string); ok {
+		c.SetValues(v)
+	}
+
 	c.fieldBorder.SetWidth(c.width - 6)
 	c.fieldBorderSelected.SetWidth(c.width - 6) // 4 padding
 
 	return c, nil
-}
-
-func (c *Component) OnOpen(fn func()) {
-	c.onOpen = fn
-}
-
-func (c *Component) OnSubmit(fn func(values map[string]string)) {
-	c.onSubmit = fn
-}
-
-func (c *Component) OnClose(fn func()) {
-	c.onClose = fn
-}
-
-func (c *Component) IsOpen() bool {
-	return c.dialog.IsOpen()
-}
-
-func (c *Component) GetFields() []Field {
-	return c.fields
-}
-
-func (c *Component) GetField(index int) (Field, bool) {
-	if index < 0 || index >= len(c.fields) {
-		return Field{}, false
-	}
-
-	return c.fields[index], true
-}
-
-func (c *Component) GetFieldSelected() (Field, bool) {
-	index := c.selection.GetCursor()
-
-	if index < 0 || index >= len(c.fields) {
-		return Field{}, false
-	}
-
-	return c.fields[index], true
-}
-
-func (c *Component) SetFields(fields []Field) {
-	c.fields = fields
-	c.selection.SetTotal(len(fields))
-	c.selection.SetCursor(0)
-
-	inputs := []*input.Input{}
-
-	for range fields {
-		input := input.New()
-		input.SetWidth(c.width - 4) // 4 padding
-
-		inputs = append(inputs, input)
-	}
-
-	c.inputs = inputs
 }
 
 func (c *Component) GetValues() map[string]string {
@@ -143,21 +90,19 @@ func (c *Component) SetValues(values map[string]string) {
 }
 
 func (c *Component) Init() tea.Cmd {
-	c.dialog.OnClose(func() {
-		c.DisableInputs()
-	})
-
-	return chain.Init(c.dialog.Init, c.InitRender)
+	return chain.Init(c.InitRender)
 }
 
 func (c *Component) Dispose() tea.Cmd {
-	return chain.Dispose(c.dialog.Dispose)
+	return nil
 }
 
 func (c *Component) OnFocus() {
 	c.LoadBindings()
+	c.focused = true
 }
 
 func (c *Component) OnBlur() {
-
+	c.UnloadBindings()
+	c.focused = false
 }

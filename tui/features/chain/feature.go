@@ -38,6 +38,15 @@ func OnKey(keyHandler ReceiveKeyReturnCommand) func(msg tea.Msg) tea.Cmd {
 		return nil
 	}
 }
+func OnCondition(h func(tea.Msg) tea.Cmd, cond bool) func(msg tea.Msg) tea.Cmd {
+	return func(msg tea.Msg) tea.Cmd {
+		if cond {
+			return h(msg)
+		}
+
+		return nil
+	}
+}
 
 func OnError(fn func() error) func() tea.Cmd {
 	return func() tea.Cmd {
