@@ -19,12 +19,10 @@ func (m *model) SetSize(width int, height int) {
 	m.toolbar.SetWidth(width)
 	m.tabbar.SetWidth(width)
 	m.footer.SetWidth(width)
-
-	m.toaster.SetScreenSize(width, height)
 }
 
 func (m model) View() tea.View {
-	body := container.Create().SetSize(m.width-4, m.screenHeight).SetContent("No screen loaded").SetBorder(theme.Current.Primary).SetMargin(0,2).Render()
+	body := container.Create().SetSize(m.width-4, m.height-6).SetContent("No screen loaded").SetBorder(theme.Current.Primary).SetMargin(0,2).Render()
 
 	if s, ok := m.screen.GetCurrent(); ok {
 		body = s.Render()
@@ -40,10 +38,6 @@ func (m model) View() tea.View {
 	layers = append(layers, lipgloss.NewLayer(m.footer.Render()).X(0).Y(m.height - 3).Z(1))
 
 	layers = append(layers, layer.GetLipglossLayers()...)
-
-	if m.toaster.Active {
-		layers = append(layers, m.toaster.RenderLayer())
-	}
 
 	output := lipgloss.NewCompositor(layers...).Render()
 

@@ -44,7 +44,6 @@ func (m *model) HandleMessages(msg tea.Msg) tea.Cmd {
 	}
 
 	return nil
-
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -58,6 +57,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.actionBindingMessageHandler,
 
 		chain.OnKey(m.screen.HandleBinding),
+		m.toaster.Update,
 		m.screen.Update,
 	)
 

@@ -76,7 +76,8 @@ screens:
             cols: 220
             rows: 35
 
-          - type: text
+          - type: mapeditor
+            values: "{{ .entry}}"
             x: 220
             cols: 50
             rows: 35

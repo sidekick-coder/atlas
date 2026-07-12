@@ -9,6 +9,7 @@ import (
 	"github.com/sidekick-coder/atlas/internal/config"
 	"github.com/sidekick-coder/atlas/tui/app/screen"
 	"github.com/sidekick-coder/atlas/tui/app/tabbar"
+	"github.com/sidekick-coder/atlas/tui/app/toaster"
 	"github.com/sidekick-coder/atlas/tui/components"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
@@ -31,33 +32,27 @@ type model struct {
 	screen *screen.Feature
 	tabbar *tabbar.Component
 
-	screens      []models.Screen
-	screenHeight int
-	currentIndex int
-
 	toolbar *components.Toolbar
 	footer  *components.Footer
 
-	toaster *toast.Component
+	toaster *toaster.Component
 }
 
 func Create(a *app.App) model {
-	screens := []models.Screen{}
-
 	toolbar := components.NewToolbar()
 	toolbar.SetTitle("󰉋 " + a.WorkspacePath())
 
 	footer := components.NewFooter()
 
 	m := model{
-		app:          a,
-		currentIndex: 0,
+		app:    a,
+		width:  100,
+		height: 100,
+		ready:  false,
 
-		screens: screens,
 		toolbar: toolbar,
 		footer:  footer,
-
-		toaster: toast.New(),
+		toaster: toaster.Create(),
 
 		screen: screen.Create(),
 		tabbar: tabbar.Create(),
@@ -155,5 +150,5 @@ func (m model) InitTabbar() tea.Cmd {
 }
 
 func (m model) Init() tea.Cmd {
-	return chain.Init(m.LoadBindings, chain.OnError(m.screen.Init), m.InitTabbar, m.InitScreen)
+	return chain.Init(m.LoadBindings, m.toaster.Init, chain.OnError(m.screen.Init), m.InitTabbar, m.InitScreen)
 }

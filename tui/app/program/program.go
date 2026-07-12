@@ -24,7 +24,7 @@ func Send[T tea.Msg](msg T) error {
 		return fmt.Errorf("program is not set")
 	}
 
-	teaProgram.Send(msg)
+	go teaProgram.Send(msg)
 
 	return nil
 }

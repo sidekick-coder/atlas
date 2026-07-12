@@ -52,8 +52,8 @@ func (t *Component) Render() string {
 	barWidth := max(1, t.width-6)
 	tabWidth := barWidth / visible
 
-	normal = normal.Width(tabWidth)
-	active = active.Width(tabWidth)
+	normal = normal.MaxWidth(tabWidth)
+	active = active.MaxWidth(tabWidth)
 
 	maxVisibleTabs := t.width / tabWidth
 	currentIndex := t.screen.GetCurrentIndex()
