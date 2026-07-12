@@ -1,4 +1,4 @@
-package root
+package model
 
 import (
 	"log/slog"
@@ -44,6 +44,8 @@ func (m *model) HandleMessages(msg tea.Msg) tea.Cmd {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	cmd := chain.Update(msg,
 		key.HandleKeypress,
+
+	    chain.OnKey(m.HandleBinding),
 		m.HandleMessages,
 		m.LoadHome,
 		m.HandleActions,

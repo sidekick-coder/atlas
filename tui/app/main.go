@@ -8,7 +8,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/tui/app/program"
-	"github.com/sidekick-coder/atlas/tui/root"
+	"github.com/sidekick-coder/atlas/tui/app/model"
 )
 
 type App struct {
@@ -51,7 +51,7 @@ func (a *App) LoadLogger() error {
 }
 
 func (a *App) LoadProgram() error {
-	model := root.New(a.App)
+	model := model.Create(a.App)
 
 	p := tea.NewProgram(model)
 

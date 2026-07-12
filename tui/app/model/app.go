@@ -1,4 +1,4 @@
-package root
+package model
 
 import (
 	"fmt"
@@ -37,10 +37,10 @@ type model struct {
 	toolbar *components.Toolbar
 	footer  *components.Footer
 
-	toaster         *toast.Component
+	toaster *toast.Component
 }
 
-func New(a *app.App) model {
+func Create(a *app.App) model {
 	screens := []models.Screen{}
 
 	toolbar := components.NewToolbar()
@@ -56,7 +56,7 @@ func New(a *app.App) model {
 		toolbar: toolbar,
 		footer:  footer,
 
-		toaster:         toast.New(),
+		toaster: toast.New(),
 
 		screen: screen.Create(),
 		tabbar: tabbar.Create(),
@@ -120,7 +120,6 @@ func (m *model) LoadUserScreen(screen config.Screen) (models.ScreenFactory, erro
 	return fac, nil
 }
 
-
 func (m model) InitScreen() tea.Cmd {
 	m.screen.SetApp(m.app)
 
@@ -155,5 +154,5 @@ func (m model) InitTabbar() tea.Cmd {
 }
 
 func (m model) Init() tea.Cmd {
-	return chain.Init(chain.OnError(m.screen.Init), m.InitTabbar, m.InitScreen)
+	return chain.Init(m.LoadBindings, chain.OnError(m.screen.Init), m.InitTabbar, m.InitScreen)
 }
