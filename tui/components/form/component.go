@@ -99,10 +99,13 @@ func (c *Component) Dispose() tea.Cmd {
 
 func (c *Component) OnFocus() {
 	c.LoadBindings()
+	c.selection.SetCursor(0)
+	c.Refresh()
 	c.focused = true
 }
 
 func (c *Component) OnBlur() {
 	c.UnloadBindings()
+	c.DisableInputs()
 	c.focused = false
 }

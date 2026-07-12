@@ -13,7 +13,7 @@ type Keymap struct {
 	Close key.Binding
 }
 
-var tags = []string{"input"}
+var tags = []string{"components:input"}
 
 var Binding = Keymap{
 	Left: key.CreateBinding("<Left>", "<c-h>", "<c-p").

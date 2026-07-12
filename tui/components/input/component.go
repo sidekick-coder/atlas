@@ -40,11 +40,13 @@ func (i *Input) SetWidth(width int) *Input {
 
 func (i *Input) Enable() *Input {
 	i.enabled = true
+	i.LoadBindings()
 	return i
 }
 
 func (i *Input) Disable() *Input {
 	i.enabled = false
+	i.UnloadBindings()
 	return i
 }
 

@@ -9,17 +9,15 @@ import (
 func (c *Component) DisableInputs() {
 	for _, input := range c.inputs {
 		input.Disable()
-		input.UnloadBindings()
 	}
 }
 
 func (c *Component) Refresh(){
 	cursor := c.selection.GetCursor()
 
-	for index, input := range c.inputs {
-		input.Disable()
-		input.LoadBindings()
+	c.DisableInputs()
 
+	for index, input := range c.inputs {
 		if cursor == index {
 			input.Enable()
 		}

@@ -10,7 +10,7 @@ type Keymap struct {
 	Up    key.Binding
 	Down  key.Binding
 	Enter key.Binding
-	Close key.Binding
+	Blur key.Binding
 }
 
 var tags = []string{"component:form"}
@@ -28,6 +28,10 @@ var Binding = Keymap{
 		SetHelp("enter").
 		SetTags(tags...).
 		SetDescription("Submit"),
+	Blur: key.CreateBinding("<esc>").
+		SetHelp("esc").
+		SetTags(tags...).
+		SetDescription("Close form"),
 }
 
 func (c *Component) GetBindings() []key.Binding {
@@ -35,7 +39,7 @@ func (c *Component) GetBindings() []key.Binding {
 		Binding.Up,
 		Binding.Down,
 		Binding.Enter,
-		Binding.Close,
+		Binding.Blur,
 	}
 }
 
@@ -64,6 +68,12 @@ func (c *Component) HandleBindings(msg tea.KeyMsg) tea.Cmd {
 
 	if key.Matches(Binding.Down) {
 		c.selection.Next()
+		c.Refresh()
+		return messages.SkipCmd()
+	}
+
+	if key.Matches(Binding.Blur) {
+		c.selection.SetCursor(-1)
 		c.Refresh()
 		return messages.SkipCmd()
 	}

@@ -55,10 +55,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.HandleActions,
 		m.actionBindingMessageHandler,
 
-		chain.OnKey(m.screen.HandleBinding),
 		m.toaster.Update,
 		m.footer.Update,
 		m.screen.Update,
+
 	    chain.OnKey(m.HandleBinding),
 	)
 
