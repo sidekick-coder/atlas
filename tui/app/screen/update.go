@@ -2,6 +2,7 @@ package screen
 
 import (
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 )
 
@@ -21,12 +22,35 @@ func (f *Feature) HandleMessages(msg tea.Msg) tea.Cmd {
 		}
 	}
 
+	if as, ok := msg.(AddMsg); ok {
+		_, err := f.Add(as.Name, as.Options)
+
+		if err != nil {
+			return toast.Error(err.Error())
+		}
+	}
+
+	if rs, ok := msg.(RemoveMsg); ok {
+		err := f.Remove(rs.Index)
+
+		if err != nil {
+			return toast.Error(err.Error())
+		}
+	}
+
+	if rp, ok := msg.(ReplaceMsg); ok {
+		_, err := f.Replace(rp.Index, rp.Name, rp.Options)
+
+		if err != nil {
+			return toast.Error(err.Error())
+		}
+	}
+
 	if s, ok := f.GetCurrent(); ok {
 		return s.Update(msg)
 	}
 
 	return nil
-
 }
 
 func (f *Feature) Update(msg tea.Msg) tea.Cmd {

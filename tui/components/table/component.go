@@ -66,12 +66,16 @@ func (c *Component) Init() tea.Cmd {
 		c.LoadBindings()
 	})
 
-	c.LoadBindings()
-
-	return chain.Init(c.columnList.Init)
+	return chain.Init(
+		c.LoadBindings,
+		c.columnList.Init,
+	)
 }
 
 func (c *Component) Dispose() tea.Cmd {
-	return chain.Dispose(c.columnList.Dispose)
+	return chain.Dispose(
+		c.UnloadBindings,
+		c.columnList.Dispose,
+	)
 }
 

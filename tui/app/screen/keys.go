@@ -33,6 +33,13 @@ func (f *Feature) UnloadBindings() {
 }
 
 func (f *Feature) HandleBinding(km tea.KeyMsg) tea.Cmd {
+	if key.Matches(Bindings.Next) {
+		f.Next()
+	}
+
+	if key.Matches(Bindings.Prev) {
+		f.Prev()
+	}
 
 	return nil
 }

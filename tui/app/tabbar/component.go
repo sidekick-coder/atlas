@@ -1,6 +1,8 @@
 package tabbar
 
 import (
+	"fmt"
+
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/tui/app/screen"
 	"github.com/sidekick-coder/atlas/tui/features/theme"
@@ -35,10 +37,11 @@ func (t *Component) Render() string {
 	active := shared.Background(lipgloss.Color(theme.Current.Primary)).Foreground(lipgloss.Color(theme.Current.Background))
 
 	for i, item := range t.screen.GetScreens() {
-		row := normal.Render(item.Title())
+		text := fmt.Sprintf("[%d] %s", i, item.Title())
+		row := normal.Render(text)
 
 		if i == t.screen.GetCurrentIndex() {
-			row = active.Render(item.Title())
+			row = active.Render(text)
 		}
 
 		items[i] = row

@@ -38,26 +38,32 @@ func (f *Feature) IsSelected(index int) bool {
 	return f.cursor == index
 }
 
-func (f *Feature) Next() {
+func (f *Feature) GetNextIndex() int {
 	isLast := f.cursor == f.total-1
 
 	if isLast {
-		f.cursor = 0
-		return
+		return 0
 	}
 
-	f.cursor++
+	return f.cursor + 1
 }
 
-func (f *Feature) Prev() {
+func (f *Feature) Next() {
+	f.cursor = f.GetNextIndex()
+}
+
+func (f *Feature) GetPrevIndex() int {
 	isFirst := f.cursor == 0
 
 	if isFirst {
-		f.cursor = f.total- 1
-		return
+		return f.total - 1
 	}
 
-	f.cursor--
+	return f.cursor - 1
+}
+
+func (f *Feature) Prev() {
+	f.cursor = f.GetPrevIndex()
 }
 
 func (f *Feature) Clear() {

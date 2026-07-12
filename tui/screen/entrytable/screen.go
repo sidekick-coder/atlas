@@ -3,6 +3,7 @@ package entrytable
 import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
+	"github.com/sidekick-coder/atlas/tui/app/screen"
 	"github.com/sidekick-coder/atlas/tui/components/container"
 	"github.com/sidekick-coder/atlas/tui/components/table"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
@@ -14,10 +15,10 @@ import (
 type Screen struct {
 	app     *app.App
 	options map[string]any
-	width  int
-	height int
+	width   int
+	height  int
 
-	openScreen string
+	openScreen  string
 	openOptions map[string]any
 
 	loader    entryloader.Feature
@@ -27,7 +28,7 @@ type Screen struct {
 
 func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 	openScreen := "entry_single"
-	
+
 	if os, ok := p.Options["open_screen"].(string); ok {
 		openScreen = os
 	}
@@ -66,16 +67,12 @@ func (s *Screen) OpenEntry(cursor int) tea.Cmd {
 		return messages.ToastErrorCmd(err.Error())
 	}
 
-	return messages.AddScreenCmd(messages.AddScreen{
-		Name: s.openScreen,
-		Options: map[string]any{
-			"entry": e.ToMap(),
-		},
+	return screen.Add(s.openScreen, map[string]any{
+		"entry": e.ToMap(),
 	})
 }
 
 func (s *Screen) Init() tea.Cmd {
-
 	s.table.OnSelect(s.OpenEntry)
 
 	q := s.options["query"]
@@ -98,4 +95,3 @@ func (s *Screen) Dispose() tea.Cmd {
 		s.UnloadBindings,
 	)
 }
-
