@@ -2,6 +2,7 @@ package screen
 
 import (
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/key"
 )
 
@@ -65,6 +66,16 @@ func (f *Feature) HandleBinding(km tea.KeyMsg) tea.Cmd {
 
 	if key.Matches(Bindings.Close) {
 		return Remove(f.Selection.GetCursor())
+	}
+
+	for i, b := range f.bindings {
+		if key.Matches(b) {
+			err := f.SetCurrent(i)
+
+			if err != nil {
+				return toast.Error(err.Error())
+			}
+		}
 	}
 
 	return nil

@@ -2,7 +2,6 @@ package entrytable
 
 import (
 	"fmt"
-	"log/slog"
 	"maps"
 	"strconv"
 
@@ -32,8 +31,6 @@ func (s *Screen) SetSize(width, height int) {
 	limit = max(limit, s.height-6)
 
 	s.loader.SetLimit(limit)
-
-	slog.Info("table size changed", slog.Int("width", s.width), slog.Int("height", s.height), slog.Int("limit", limit))
 
 	s.loader.Load()
 }

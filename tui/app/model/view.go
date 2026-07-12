@@ -17,6 +17,7 @@ func (m *model) SetSize(width int, height int) {
 	m.height = height
 
 	m.toolbar.SetWidth(width)
+	m.tabbar.SetWidth(width)
 	m.footer.SetWidth(width)
 
 	m.toaster.SetScreenSize(width, height)

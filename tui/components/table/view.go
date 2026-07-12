@@ -1,14 +1,11 @@
 package table
 
 import (
-	"log/slog"
-
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
 
 func (c *Component) SetSize(w, h int) {
-	slog.Info("table component size changed", slog.Int("width", w), slog.Int("height", h))
 	c.width = w
 	c.height = h
 	c.column.SetSize(w, h)

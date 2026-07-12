@@ -10,8 +10,13 @@ type Component struct {
 
 	cursorY int
 	offsetY int
-	maxY  int
-	countY int
+	maxY    int
+	countY  int
+
+	cursorX int
+	offsetX int
+	maxX    int
+	countX  int
 
 	content string
 }
@@ -32,9 +37,20 @@ func (c *Component) SetSize(width, height int) *Component {
 }
 
 func (c *Component) SetContent(content string) *Component {
+	lines := strings.Split(content, "\n")
+
+	for _, line := range lines {
+		if w := len([]rune(line)); w > c.countX {
+			c.countX = w
+		}
+	}
+
 	c.content = content
-	c.countY = len(strings.Split(content, "\n"))
-	c.maxY = c.countY - c.height
+	c.countY = len(lines)
+
+	c.maxY = max(0, c.countY-c.height)
+	c.maxX = max(0, c.countX-c.width)
+
 	return c
 }
 
@@ -50,14 +66,43 @@ func (c *Component) Down() {
 	}
 }
 
+func (c *Component) Left() {
+	if c.offsetX > 0 {
+		c.offsetX--
+	}
+}
+
+func (c *Component) Right() {
+	if c.offsetX < c.maxX {
+		c.offsetX++
+	}
+}
+func clamp(v, minV, maxV int) int {
+	if v < minV {
+		return minV
+	}
+	if v > maxV {
+		return maxV
+	}
+	return v
+}
+
 func (c *Component) Render() string {
 	lines := strings.Split(c.content, "\n")
-	maxLines := len(lines)
 
-	start := c.offsetY 
-	end := min(c.offsetY+c.height, maxLines)
+	c.offsetY = clamp(c.offsetY, 0, max(0, len(lines)-c.height))
+	c.offsetX = clamp(c.offsetX, 0, max(0, c.countX-c.width))
 
-	visible := lines[start:end]
+	out := make([]string, 0, c.height)
 
-	return strings.Join(visible, "\n")
+	for y := c.offsetY; y < min(c.offsetY+c.height, len(lines)); y++ {
+		r := []rune(lines[y])
+
+		start := min(c.offsetX, len(r))
+		end := min(start+c.width, len(r))
+
+		out = append(out, string(r[start:end]))
+	}
+
+	return strings.Join(out, "\n")
 }

@@ -5,16 +5,18 @@ import (
 	"log/slog"
 
 	"github.com/sidekick-coder/atlas/internal/app"
+	"github.com/sidekick-coder/atlas/tui/features/key"
 	"github.com/sidekick-coder/atlas/tui/features/selection"
 	"github.com/sidekick-coder/atlas/tui/models"
 )
 
 type Feature struct {
-	app         *app.App
+	app          *app.App
 	windowWidth  int
 	windowHeight int
-	screens     []models.Screen
-	definitions map[string]models.ScreenFactory
+	screens      []models.Screen
+	bindings     []key.Binding // select screens with <leader>[1,2,3...]
+	definitions  map[string]models.ScreenFactory
 
 	Selection *selection.Feature
 }
@@ -23,8 +25,9 @@ func Create() *Feature {
 	return &Feature{
 		windowWidth:  100,
 		windowHeight: 100,
-		screens:     []models.Screen{},
-		definitions: make(map[string]models.ScreenFactory),
+		screens:      []models.Screen{},
+		bindings:     []key.Binding{},
+		definitions:  make(map[string]models.ScreenFactory),
 
 		Selection: selection.Create(),
 	}
@@ -68,11 +71,22 @@ func (f *Feature) Add(name string, options ...map[string]any) (models.Screen, er
 
 	f.screens = append(f.screens, s)
 
-	f.SetCurrent(len(f.screens) - 1)
+	index := len(f.screens) - 1
 
-	slog.Info("added screen", slog.String("name", name))
+	f.SetCurrent(index)
+
+	binding := key.CreateBinding(fmt.Sprintf("<leader>%d", index)).
+		SetDescription(fmt.Sprintf("select screen %d", index)).
+		SetHelp(fmt.Sprintf("<leader>%d", index)).
+		SetTags(tags...)
+
+	key.Register(binding)
+
+	f.bindings = append(f.bindings, binding)
 
 	f.Selection.SetTotal(len(f.screens))
+
+	slog.Info("added screen", slog.String("name", name))
 
 	return nil, nil
 }
@@ -104,11 +118,17 @@ func (f *Feature) Remove(index int) error {
 
 	f.screens = append(f.screens[:index], f.screens[index+1:]...)
 
-	current:= f.Selection.GetCursor()
+	current := f.Selection.GetCursor()
 
 	if current >= len(f.screens) {
 		f.SetCurrent(len(f.screens) - 1)
 	}
+
+	binding := f.bindings[index]
+
+	key.Unregister(binding)
+
+	f.bindings = append(f.bindings[:index], f.bindings[index+1:]...)
 
 	slog.Info("removed screen", slog.Int("index", index))
 
