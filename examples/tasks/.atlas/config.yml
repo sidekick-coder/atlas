@@ -50,7 +50,7 @@ screens:
       columns:
           - id: id
             label: "ID"
-            field: basename
+            field: task_id
             width: 10
 
           - id: title

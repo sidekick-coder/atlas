@@ -17,7 +17,7 @@ jq -n \
     --arg slug "$slug" \
     '{
         metas: {
-            id: $id,
+            task_id: $id,
             slug: $slug
         }
     }'

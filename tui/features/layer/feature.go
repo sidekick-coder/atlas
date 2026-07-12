@@ -1,19 +1,25 @@
 package layer
 
-import "charm.land/lipgloss/v2"
+import (
+	"log/slog"
+
+	"charm.land/lipgloss/v2"
+)
 
 var layers []*Layer
-var ScreenWidth int 
+var ScreenWidth int
 var ScreenHeight int
 
-func Add(layer *Layer) {
-	layers = append(layers, layer)
+func Add(l *Layer) {
+	layers = append(layers, l)
+	slog.Info("Adding layer", "id", l.ID, "x", l.X, "y", l.Y, "z", l.Z)
 }
 
 func Remove(layer *Layer) {
 	for i, l := range layers {
 		if l.ID == layer.ID {
 			layers = append(layers[:i], layers[i+1:]...)
+			slog.Info("Remove layer", "id", l.ID, "x", l.X, "y", l.Y, "z", l.Z)
 			break
 		}
 	}
@@ -27,7 +33,7 @@ func GetLipglossLayers() []*lipgloss.Layer {
 			continue
 		}
 
-		lipglossLayer := lipgloss.NewLayer(l.Render()).X(l.X).Y(l.Y)
+		lipglossLayer := lipgloss.NewLayer(l.Render()).X(l.X).Y(l.Y).Z(l.Z)
 
 		result = append(result, lipglossLayer)
 	}
@@ -39,5 +45,3 @@ func SetScreenSize(width, height int) {
 	ScreenWidth = width
 	ScreenHeight = height
 }
-
-

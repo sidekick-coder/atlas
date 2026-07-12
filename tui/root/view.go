@@ -1,11 +1,11 @@
 package root
 
 import (
-	"fmt"
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
+	"github.com/sidekick-coder/atlas/tui/components/container"
 	"github.com/sidekick-coder/atlas/tui/features/layer"
-	"github.com/sidekick-coder/atlas/tui/screen/empty"
+	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
 
 
@@ -16,44 +16,27 @@ func (m *model) SetSize(width int, height int) {
 	m.width = width
 	m.height = height
 
-	m.tabBar.SetWidth(width)
 	m.toolbar.SetWidth(width)
 	m.footer.SetWidth(width)
 
 	m.toaster.SetScreenSize(width, height)
-
-	sh := height - m.toolbar.GetHeight() - m.tabBar.GetHeight() - m.footer.GetHeight()
-
-	m.screenContainer.SetSize(width, sh)
-	m.screenHeight = sh
-
-	for _, s := range m.screens {
-		s.SetSize(width, sh)
-	}
 }
 
 func (m model) View() tea.View {
-	body := empty.Placeholder(empty.PlaceholderPayload{
-		Width:  m.width,
-		Height: m.screenContainer.GetHeight(),
-		Text: fmt.Sprintf("No screens available. Press [%s] to add a new screen.", ScreenBindings.Add.Help().Key),
-	})
+	body := container.Create().SetSize(m.width-4, m.screenHeight).SetContent("No screen loaded").SetBorder(theme.Current.Primary).SetMargin(0,2).Render()
 
-	if s, ok := m.GetCurrentScreen(); ok {
+	if s, ok := m.screen.GetCurrent(); ok {
 		body = s.Render()
 	}
 
-	content := lipgloss.JoinVertical(
-		lipgloss.Left,
-		m.toolbar.Render(),
-		m.tabBar.Render(),
-		body,
-		m.footer.Render(),
-	)
+	layers := []*lipgloss.Layer{}
 
-	layers := []*lipgloss.Layer{
-		lipgloss.NewLayer(content),
-	}
+	layers = append(layers, lipgloss.NewLayer(m.toolbar.Render()).X(0).Y(0).Z(1))
+	layers = append(layers, lipgloss.NewLayer(m.tabbar.Render()).X(0).Y(3).Z(1))
+
+	layers = append(layers, lipgloss.NewLayer(body).X(0).Y(4).Z(0))
+
+	layers = append(layers, lipgloss.NewLayer(m.footer.Render()).X(0).Y(m.height - 3).Z(1))
 
 	layers = append(layers, layer.GetLipglossLayers()...)
 

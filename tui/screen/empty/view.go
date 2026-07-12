@@ -1,32 +1,6 @@
 package empty
 
-import (
-	lipgloss "charm.land/lipgloss/v2"
-)
-
-type PlaceholderPayload struct {
-	Width  int
-	Height int
-	Text   string
-}
-
-func Placeholder(p PlaceholderPayload) string {
-	border := lipgloss.NewStyle().
-		BorderStyle(lipgloss.NormalBorder()).
-		Width(p.Width-4).
-		Height(p.Height-4).
-		Margin(0, 2).
-		Align(lipgloss.Center, lipgloss.Center).
-		BorderForeground(lipgloss.Color("12"))
-
-	content := "Empty Screen"
-
-	if p.Text != "" {
-		content = p.Text
-	}
-
-	return border.Render(content)
-}
+import "github.com/sidekick-coder/atlas/tui/features/theme"
 
 func (s *Screen) SetSize(width, height int) {
 	s.Width = width
@@ -36,7 +10,7 @@ func (s *Screen) SetSize(width, height int) {
 
 	s.container.
 		SetSize(width-4, height).
-		SetBorder("12").
+		SetBorder(theme.Current.Primary).
 		SetMargin(0, 2, 0, 2)
 }
 

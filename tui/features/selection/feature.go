@@ -1,15 +1,15 @@
 package selection
 
 type Feature struct {
-	cursor int
-	total  int
+	cursor  int
+	total   int
 	enabled bool
 }
 
 func Create() *Feature {
 	return &Feature{
-		cursor: -1,
-		total:  0,
+		cursor:  -1,
+		total:   0,
 		enabled: true,
 	}
 }
@@ -39,21 +39,25 @@ func (f *Feature) IsSelected(index int) bool {
 }
 
 func (f *Feature) Next() {
-	if f.cursor < f.total-1 {
-		f.cursor++
+	isLast := f.cursor == f.total-1
+
+	if isLast {
+		f.cursor = 0
 		return
 	}
 
-	f.cursor = 0
+	f.cursor++
 }
 
 func (f *Feature) Prev() {
-	if f.cursor > 0 {
-		f.cursor--
+	isFirst := f.cursor == 0
+
+	if isFirst {
+		f.cursor = f.total- 1
 		return
 	}
 
-	f.cursor = f.total
+	f.cursor--
 }
 
 func (f *Feature) Clear() {

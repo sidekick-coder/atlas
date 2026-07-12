@@ -2,13 +2,13 @@ package custom
 
 import (
 	"fmt"
-	"log"
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/template"
 	"github.com/sidekick-coder/atlas/tui/components/container"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
+	"github.com/sidekick-coder/atlas/tui/features/selection"
 	"github.com/sidekick-coder/atlas/tui/models"
 	"github.com/sidekick-coder/atlas/tui/screen/custom/component"
 	"github.com/sidekick-coder/atlas/tui/screen/custom/components/text"
@@ -26,6 +26,7 @@ type Screen struct {
 	options map[string]any
 
 	components []component.Component
+	selection *selection.Feature
 
 	container container.Component
 	card      container.Component
@@ -37,9 +38,11 @@ func Create(p models.ScreenPayload) (models.Screen, error) {
 		height:     100,
 		title:      "custom",
 		options:    p.Options,
+
 		components: []component.Component{},
 		container:  *container.Create(),
 		card:       *container.Create(),
+		selection: selection.Create(),
 	}
 
 	if title, ok := p.Options["title"].(string); ok {
@@ -66,8 +69,6 @@ func (s *Screen) LoadComponents() tea.Cmd {
 
 	oc, err := template.ParseArray(oc, s.options)
 
-	log.Printf("Parsed %v", oc)
-
 	if err != nil {
 		return toast.Error(fmt.Sprintf("Error parsing components: %s", err.Error()))
 	}
@@ -82,15 +83,15 @@ func (s *Screen) LoadComponents() tea.Cmd {
 		s.components = append(s.components, *component)
 	}
 
-	log.Printf("Loaded %d components", len(s.components))
+	s.selection.SetTotal(len(s.components))
 
 	return nil
 }
 
 func (s *Screen) Init() tea.Cmd {
-	return chain.Init(s.LoadComponents)
+	return chain.Init(s.LoadComponents, s.LoadBindings)
 }
 
 func (s *Screen) Dispose() tea.Cmd {
-	return nil
+	return chain.Dispose(s.UnloadBindings)
 }

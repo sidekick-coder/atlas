@@ -2,17 +2,19 @@ package component
 
 import (
 	"fmt"
-
 	"github.com/sidekick-coder/atlas/internal/utils"
 	"github.com/sidekick-coder/atlas/internal/utils/maputil"
 )
 
 type Component struct {
 	Type string
+
 	Cols int
 	Rows int
+
 	X    int
 	Y    int
+
 	Definition Definition
 }
 
@@ -47,14 +49,6 @@ func CreateFromMap(payload any) (*Component, error) {
 		return nil, fmt.Errorf("component definition not found: %s", t)
 	}
 
-	component.Type = t
-	component.Definition = definition(DefinitionPayload{
-		Width:   component.Cols,
-		Height:  component.Rows,
-		Options: maputil.Except(cm, "type", "cols", "rows", "x", "y"),
-	})
-
-
 	if cols, ok := utils.ParseInt(cm["cols"]); ok {
 		component.Cols = cols
 	}
@@ -70,6 +64,13 @@ func CreateFromMap(payload any) (*Component, error) {
 	if y, ok := utils.ParseInt(cm["y"]); ok {
 		component.Y = y
 	}
+
+	component.Type = t
+	component.Definition = definition(DefinitionPayload{
+		Width:   component.Cols,
+		Height:  component.Rows,
+		Options: maputil.Except(cm, "type", "cols", "rows", "x", "y"),
+	})
 
 	return component, nil
 }

@@ -1,0 +1,159 @@
+package root
+
+import (
+	"fmt"
+	"maps"
+
+	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/internal/app"
+	"github.com/sidekick-coder/atlas/internal/config"
+	"github.com/sidekick-coder/atlas/tui/app/screen"
+	"github.com/sidekick-coder/atlas/tui/app/tabbar"
+	"github.com/sidekick-coder/atlas/tui/components"
+	"github.com/sidekick-coder/atlas/tui/components/toast"
+	"github.com/sidekick-coder/atlas/tui/features/chain"
+	"github.com/sidekick-coder/atlas/tui/models"
+
+	"github.com/sidekick-coder/atlas/tui/screen/custom"
+	"github.com/sidekick-coder/atlas/tui/screen/empty"
+	"github.com/sidekick-coder/atlas/tui/screen/entrysingle"
+	"github.com/sidekick-coder/atlas/tui/screen/entrytable"
+)
+
+var Program *tea.Program
+
+type model struct {
+	app    *app.App
+	width  int
+	height int
+
+	screen *screen.Feature
+	tabbar *tabbar.Component
+
+	screens      []models.Screen
+	screenHeight int
+	currentIndex int
+
+	toolbar *components.Toolbar
+	footer  *components.Footer
+
+	toaster         *toast.Component
+}
+
+func New(a *app.App) model {
+	screens := []models.Screen{}
+
+	toolbar := components.NewToolbar()
+	toolbar.SetTitle("󰉋 " + a.WorkspacePath())
+
+	footer := components.NewFooter()
+
+	m := model{
+		app:          a,
+		currentIndex: 0,
+
+		screens: screens,
+		toolbar: toolbar,
+		footer:  footer,
+
+		toaster:         toast.New(),
+
+		screen: screen.Create(),
+		tabbar: tabbar.Create(),
+	}
+
+	return m
+}
+
+func (m *model) AddScreenEmpty() tea.Cmd {
+	entries := []empty.Entry{}
+
+	entries = append(entries, empty.Entry{
+		ID:      "entry_list",
+		Options: map[string]any{},
+	})
+
+	entries = append(entries, empty.Entry{
+		ID:      "entry_table",
+		Options: map[string]any{},
+	})
+
+	us, err := m.app.Config().GetScreens()
+
+	if err != nil {
+		return toast.Error(err.Error())
+	}
+
+	for _, s := range us {
+		entries = append(entries, empty.Entry{
+			ID:      s.ID,
+			Options: s.Options,
+		})
+	}
+
+	options := map[string]any{
+		"entries": entries,
+	}
+
+	_, err = m.screen.Add("empty", options)
+
+	if err != nil {
+		return toast.Error(err.Error())
+	}
+
+	return nil
+}
+
+func (m *model) LoadUserScreen(screen config.Screen) (models.ScreenFactory, error) {
+	original, ok := m.screen.GetDefinition(screen.Type)
+
+	if !ok {
+		return nil, fmt.Errorf("invalid screen type: %s", screen.Type)
+	}
+
+	fac := func(p models.ScreenPayload) (models.Screen, error) {
+		maps.Copy(p.Options, screen.Options)
+
+		return original(p)
+	}
+
+	return fac, nil
+}
+
+
+func (m model) InitScreen() tea.Cmd {
+	m.screen.SetApp(m.app)
+
+	m.screen.SetDefinition("empty", empty.Create)
+	m.screen.SetDefinition("entry_table", entrytable.Create)
+	m.screen.SetDefinition("entry_single", entrysingle.Create)
+	m.screen.SetDefinition("custom", custom.Create)
+
+	us, err := m.app.Config().GetScreens()
+
+	if err != nil {
+		return toast.Error(err.Error())
+	}
+
+	for _, s := range us {
+		fac, err := m.LoadUserScreen(s)
+
+		if err != nil {
+			return toast.Error(err.Error())
+		}
+
+		m.screen.SetDefinition(s.ID, fac)
+	}
+
+	return nil
+}
+
+func (m model) InitTabbar() tea.Cmd {
+	m.tabbar.SetScreen(m.screen)
+
+	return nil
+}
+
+func (m model) Init() tea.Cmd {
+	return chain.Init(chain.OnError(m.screen.Init), m.InitTabbar, m.InitScreen)
+}

@@ -1,6 +1,8 @@
 package sidepeeck
 
 import (
+	"log/slog"
+
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/tui/features/layer"
@@ -56,10 +58,14 @@ func (c *Component) IsOpen() bool {
 func (c *Component) Init() tea.Cmd {
 	c.height = layer.ScreenHeight 
 
+	slog.Info("Initializing sidepeek component", "width", c.width, "height", c.height, "screenWidth", layer.ScreenWidth, "screenHeight", layer.ScreenHeight)
+
 	x := layer.ScreenWidth - c.width
 
 	c.layer.SetPosition(x, 0)
+	c.layer.SetZIndex(2)
 	c.layer.SetRender(c.Render)
+	c.layer.SetID("sidepeek-" + c.layer.ID)
 
 	c.LoadDefaultStyle()
 
@@ -69,6 +75,5 @@ func (c *Component) Init() tea.Cmd {
 
 func (c *Component) Dispose() tea.Cmd {
 	layer.Remove(c.layer)
-
 	return nil
 }

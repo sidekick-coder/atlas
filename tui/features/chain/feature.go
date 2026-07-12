@@ -1,16 +1,17 @@
 package chain
 
-import tea "charm.land/bubbletea/v2"
+import (
+	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/components/toast"
+)
 
-type ReturnCommand func() tea.Cmd
-type ReceiveMessageReturnCommand func(msg tea.Msg) tea.Cmd
 type ReceiveKeyReturnCommand func(msg tea.KeyMsg) tea.Cmd
 
 type WithUpdate interface {
 	Update(msg tea.Msg) tea.Cmd
 }
 
-func Cmd(handlers ...ReturnCommand) tea.Cmd {
+func Cmd(handlers ...func() tea.Cmd) tea.Cmd {
 	for _, h := range handlers {
 		if cmd := h(); cmd != nil {
 			return cmd
@@ -20,18 +21,30 @@ func Cmd(handlers ...ReturnCommand) tea.Cmd {
 	return nil
 }
 
-func Init(handlers ...ReturnCommand) tea.Cmd {
+func Init(handlers ...func() tea.Cmd) tea.Cmd {
 	return Cmd(handlers...)
 }
 
-func Dispose(handlers ...ReturnCommand) tea.Cmd {
+func Dispose(handlers ...func() tea.Cmd) tea.Cmd {
 	return Cmd(handlers...)
 }
 
-func OnKey(keyHandler ReceiveKeyReturnCommand) ReceiveMessageReturnCommand {
+func OnKey(keyHandler ReceiveKeyReturnCommand) func(msg tea.Msg) tea.Cmd {
 	return func(msg tea.Msg) tea.Cmd {
 		if keyMsg, ok := msg.(tea.KeyMsg); ok {
 			return keyHandler(keyMsg)
+		}
+
+		return nil
+	}
+}
+
+func OnError(fn func() error) func() tea.Cmd {
+	return func() tea.Cmd {
+		err := fn()
+
+		if err != nil {
+			return toast.Error(err.Error())
 		}
 
 		return nil

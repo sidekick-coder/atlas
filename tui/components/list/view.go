@@ -33,5 +33,9 @@ func (c *Component) Render() string {
 		items = append(items, normal.Render(item))
 	}
 
+	if len(items) == 0 {
+		return normal.Render("No items")
+	}
+
 	return lipgloss.JoinVertical(lipgloss.Left, items...)
 }

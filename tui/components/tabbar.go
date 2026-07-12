@@ -57,6 +57,10 @@ func (t *TabBar) Render() string {
 		}
 	}
 
+	if len(items) == 0 {
+		return container.Render(normal.Render("No tabs"))
+	}
+
 	row := lipgloss.JoinHorizontal(lipgloss.Top, items...)
 
 	return container.Render(row)

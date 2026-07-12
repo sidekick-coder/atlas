@@ -75,11 +75,6 @@ func (s *Screen) OpenEntry(cursor int) tea.Cmd {
 }
 
 func (s *Screen) Init() tea.Cmd {
-	limit := 10
-
-	limit = max(limit, s.height-6)
-
-	s.loader.SetLimit(limit)
 
 	s.table.OnSelect(s.OpenEntry)
 
@@ -104,10 +99,3 @@ func (s *Screen) Dispose() tea.Cmd {
 	)
 }
 
-func (s *Screen) Update(msg tea.Msg) tea.Cmd {
-	return chain.Update(
-		msg,
-		s.table.Update,
-		chain.OnKey(s.HadleBinding),
-	)
-}

@@ -7,6 +7,7 @@ type Layer struct {
 	Render func() string
 	X int
 	Y int
+	Z int
 }
 
 func Create() *Layer {
@@ -32,5 +33,9 @@ func (l *Layer) SetRender(renderFunc func() string) {
 func (l *Layer) SetPosition(x, y int) {
 	l.Y = y
 	l.X = x
+}
+
+func (l *Layer) SetZIndex(z int) {
+	l.Z = z
 }
 

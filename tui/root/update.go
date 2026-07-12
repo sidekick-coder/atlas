@@ -1,56 +1,56 @@
 package root
 
 import (
+	"log/slog"
+
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/key"
 )
 
-func (m *model) HandleWindow(msg tea.Msg) tea.Cmd {
-	wm, ok := msg.(tea.WindowSizeMsg)
+func (m *model) LoadHome(msg tea.Msg) tea.Cmd {
+	_, ok := msg.(tea.WindowSizeMsg)
 
 	if !ok {
 		return nil
 	}
 
-	m.SetSize(wm.Width, wm.Height)
-
 	hs, ok := m.app.Config().Get("tui.home_screen")
 
-	if ok {
-		return m.AddScreen(hs)
+	if !ok {
+		return m.AddScreenEmpty()
 	}
 
-	return m.AddScreenEmpty()
+	_, err := m.screen.Add(hs)
+
+	if err != nil {
+		return toast.Error(err.Error())
+	}
+
+	return nil
 }
 
-func (m *model) HandleScreenUpdate(msg tea.Msg) tea.Cmd {
-	if len(m.screens) == 0 {
-		return nil
+func (m *model) HandleMessages(msg tea.Msg) tea.Cmd {
+	if wm, ok := msg.(tea.WindowSizeMsg); ok {
+		slog.Info("window size changed", slog.Int("width", wm.Width), slog.Int("height", wm.Height))
+		m.SetSize(wm.Width, wm.Height)
 	}
 
-	s := m.screens[m.currentIndex]
+	return nil
 
-	if s == nil {
-		return nil
-	}
-
-	return s.Update(msg)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	cmd := chain.Update(msg,
 		key.HandleKeypress,
-		m.HandleWindow,
+		m.HandleMessages,
+		m.LoadHome,
 		m.HandleActions,
 		m.actionBindingMessageHandler,
-		m.HandleGlobalKeyMap,
 
-		m.HandleScreenUpdate,
-		m.HandleScreeManagerKeypress,
-		m.HandleScreeManagerMessages,
-
-		m.HandleToastMessages,
+		chain.OnKey(m.screen.HandleBinding),
+		m.screen.Update,
 	)
 
 	return m, cmd

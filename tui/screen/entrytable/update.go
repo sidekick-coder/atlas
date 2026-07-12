@@ -6,8 +6,18 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/components/table"
+	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/messages"
 )
+
+func (s *Screen) Update(msg tea.Msg) tea.Cmd {
+	return chain.Update(
+		msg,
+		s.table.Update,
+		s.HandleSize,
+		chain.OnKey(s.HadleBinding),
+	)
+}
 
 func (s *Screen) LoadDefaultColumn() tea.Cmd {
 	columns := []*table.Column{}

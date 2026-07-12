@@ -4,6 +4,8 @@ var Definitions = map[string]func(DefinitionPayload) Definition{}
 
 type Definition interface {
 	Render() string
+	OnFocus()
+	OnBlur()
 }
 
 type DefinitionPayload struct {

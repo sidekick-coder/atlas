@@ -18,14 +18,17 @@ func (s *Screen) Render() string {
 
 	layers := []*lipgloss.Layer{}
 
-	for _, c := range s.components {
+	for index, c := range s.components {
 		card := s.card.
 			SetSize(c.Cols, c.Rows).
-			SetBorder(theme.Current.Secondary).
-			SetContent(c.Definition.Render()).
-			Render()
+			SetBorder(theme.Current.Primary).
+			SetContent(c.Definition.Render())
 
-		layer := lipgloss.NewLayer(card).
+		if s.selection.IsSelected(index) {
+			card.SetBorder(theme.Current.Accent)
+		}
+
+		layer := lipgloss.NewLayer(card.Render()).
 			X(c.X).
 			Y(c.Y)
 

@@ -7,7 +7,6 @@ import (
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/internal/syncer"
 	tuimodels "github.com/sidekick-coder/atlas/tui/models"
-	"github.com/sidekick-coder/atlas/tui/screen/empty"
 )
 
 type Entry struct {
@@ -36,7 +35,7 @@ func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 	s := &Screen{
 		App:       p.App,
 		Syncer:    p.App.Syncer(),
-		Program:   p.Program,
+		// Program:   p.Program,
 		Width:     100,
 		Height:    100,
 		Running:   false,
@@ -98,11 +97,7 @@ func (s *Screen) Render() string {
 	content += "[e] to start syncing entries\n"
 	content += "[E] to start syncing detailed view\n"
 
-	return empty.Placeholder(empty.PlaceholderPayload{
-		Width:  s.Width,
-		Height: s.Height,
-		Text:   content,
-	})
+	return content
 }
 
 func (s *Screen) Dispose() tea.Cmd {

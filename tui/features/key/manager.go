@@ -126,6 +126,11 @@ func (m *Manager) HandleKeypress(msg tea.Msg) tea.Cmd {
 		return nil
 	}
 
+	// forse quit 
+	if km.String() == "ctrl+c" {
+		return tea.Quit
+	}
+
 	normalized := normalize(km)
 
 	manager.pending = append(manager.pending, normalized)
