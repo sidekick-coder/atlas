@@ -14,7 +14,7 @@ type Keymap struct {
 var tags = []string{"global"}
 
 var Binding = Keymap{
-	Toggle: key.CreateBinding("?").
+	Toggle: key.CreateBinding("?", "<f1>").
 		SetHelp("?").
 		SetDescription("Open help").
 		SetTags(tags...),

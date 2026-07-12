@@ -1,10 +1,22 @@
 package maputil
 
+import "fmt"
+
 func Any[K comparable, V any](src map[K]V) map[any]any {
 	out := map[any]any{}
 
 	for k, v := range src {
 		out[k] = v
+	}
+
+	return out
+}
+
+func String(src map[string]any) map[string]string {
+	out := map[string]string{}
+
+	for k, v := range src {
+		out[k] = fmt.Sprintf("%v", v)
 	}
 
 	return out

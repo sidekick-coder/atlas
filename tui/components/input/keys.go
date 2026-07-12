@@ -13,15 +13,17 @@ type Keymap struct {
 	Close key.Binding
 }
 
-var tags = []string{"components:input"}
+var tags = []string{"component:input"}
 
 var Binding = Keymap{
 	Left: key.CreateBinding("<Left>", "<c-h>", "<c-p").
 		SetHelp("/c-h/c-p").
 		SetTags(tags...).
+		SetHidden(true).
 		SetDescription("Move cursor left"),
 	Right: key.CreateBinding("<Right>", "<c-l>", "<c-n>").
 		SetHelp("/c-l/c-n").
+		SetHidden(true).
 		SetDescription("Move cursor right").
 		SetTags(tags...),
 }
@@ -55,6 +57,18 @@ func (i *Input) HandleKeypress(msg tea.Msg) tea.Cmd {
 
 	if !ok {
 		return nil
+	}
+
+	if key.Matches(Binding.Left) {
+		if i.cursor > 0 {
+			i.cursor--
+		}
+	}
+	
+	if key.Matches(Binding.Right) {
+		if i.cursor < len(i.buf) {
+			i.cursor++
+		}
 	}
 
 	code := textMsg.Code

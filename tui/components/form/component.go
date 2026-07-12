@@ -2,6 +2,7 @@ package form
 
 import (
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/internal/utils/maputil"
 	"github.com/sidekick-coder/atlas/tui/components/borderlabel"
 	"github.com/sidekick-coder/atlas/tui/components/input"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
@@ -65,8 +66,8 @@ func Create(args ...map[string]any) (*Component, error) {
 		c.height = h
 	}
 
-	if v, ok := props["values"].(map[string]string); ok {
-		c.SetValues(v)
+	if v, ok := props["values"].(map[string]any); ok {
+		c.SetValues(maputil.String(v))
 	}
 
 	c.fieldBorder.SetWidth(c.width - 6)
@@ -83,7 +84,7 @@ func (c *Component) SetValues(values map[string]string) {
 	c.values = values
 
 	for index, field := range c.fields {
-		if value, ok := values[field.FielName]; ok {
+		if value, ok := values[field.Name]; ok {
 			c.inputs[index].SetInitialValue(value)
 		}
 	}
@@ -99,7 +100,6 @@ func (c *Component) Dispose() tea.Cmd {
 
 func (c *Component) OnFocus() {
 	c.LoadBindings()
-	c.selection.SetCursor(0)
 	c.Refresh()
 	c.focused = true
 }

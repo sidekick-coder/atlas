@@ -138,7 +138,7 @@ func (m *Manager) HandleKeypress(msg tea.Msg) tea.Cmd {
 	b, hasPossibleMatch := manager.hasPossibleMatch()
 
 	if m.debug {
-		log.Printf("Key pressed: %s, pending: %v, possible match: %s\n", normalized, manager.pending, b.GetDescription())
+		log.Printf("Key pressed: %s, normalized %s, pending: %v, possible match: %s\n", km.String(), normalized, manager.pending, b.GetDescription())
 	}
 
 	if !hasPossibleMatch {

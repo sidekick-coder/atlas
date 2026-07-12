@@ -3,6 +3,8 @@ package screen
 import (
 	"fmt"
 	"log/slog"
+
+	"github.com/sidekick-coder/atlas/tui/app/program"
 	"github.com/sidekick-coder/atlas/tui/models"
 )
 
@@ -23,6 +25,8 @@ func (f *Feature) SetCurrent(index int) error {
 	f.Selection.SetCursor(index)
 
 	s.Init()
+
+	program.Send(f.Size())
 
 	slog.Info("set current screen", slog.Int("index", index), slog.String("title", s.Title()))
 

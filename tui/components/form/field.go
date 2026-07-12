@@ -8,7 +8,7 @@ import (
 
 type Field struct {
 	Label    string
-	FielName string
+	Name string
 }
 
 func CreateFieldFromMap(payload any) (Field, error) {
@@ -25,7 +25,7 @@ func CreateFieldFromMap(payload any) (Field, error) {
 	}
 
 	if name, ok := m["name"].(string); ok {
-		f.FielName = name
+		f.Name = name
 	}
 
 	return f, nil
@@ -78,7 +78,7 @@ func (c *Component) GetFieldSelected() (Field, bool) {
 func (c *Component) SetFields(fields []Field) {
 	c.fields = fields
 	c.selection.SetTotal(len(fields))
-	c.selection.SetCursor(0)
+	c.selection.SetCursor(-1)
 
 	inputs := []*input.Input{}
 
