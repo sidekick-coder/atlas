@@ -1,23 +1,24 @@
 package key
 
 import (
+	"slices"
 	"strings"
 
 	"github.com/sidekick-coder/atlas/internal/utils"
 )
 
 type Binding struct {
-	id string
+	id     string
 	hidden bool
-	keys []BindingKey
-	tags []string
-	help string
-	desc string
+	keys   []BindingKey
+	tags   []string
+	help   string
+	desc   string
 }
 
 type BindingKey struct {
 	original string
-	tokens []string
+	tokens   []string
 }
 
 func (bk BindingKey) GetTokens() []string {
@@ -108,7 +109,7 @@ func CreateBinding(keys ...string) Binding {
 
 		bk := BindingKey{
 			original: k,
-			tokens: tokens,
+			tokens:   tokens,
 		}
 
 		bkeys = append(bkeys, bk)
@@ -122,7 +123,7 @@ func CreateBinding(keys ...string) Binding {
 	}
 
 	return Binding{
-		id: id,
+		id:   id,
 		keys: bkeys,
 		tags: []string{},
 	}
@@ -173,11 +174,24 @@ func (b Binding) GetTags() []string {
 }
 
 func (b Binding) HasTag(tag string) bool {
-	for _, t := range b.tags {
-		if t == tag {
-			return true
+	return slices.Contains(b.tags, tag)
+}
+
+func (b *Binding) HasPossibleMatchWith(payload []string) bool {
+	for _, k := range b.keys {
+		tokens := k.tokens
+
+		if len(payload) > len(tokens) {
+			return false
 		}
+
+		for i := range payload {
+			if payload[i] != tokens[i] {
+				return false
+			}
+		}
+
 	}
 
-	return false
+	return true
 }

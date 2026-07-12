@@ -1,6 +1,10 @@
 package custom
 
-import "github.com/sidekick-coder/atlas/tui/screen/custom/component"
+import (
+	"log/slog"
+
+	"github.com/sidekick-coder/atlas/tui/screen/custom/component"
+)
 
 func (s *Screen) GetCurrent() (*component.Component, bool) {
 	if len(s.components) == 0 {
@@ -16,10 +20,6 @@ func (s *Screen) GetCurrent() (*component.Component, bool) {
 }
 
 func (s *Screen) Select(index int) {
-	if index < 0 || index >= len(s.components) {
-		return
-	}
-
 	if oc, ok := s.GetCurrent(); ok {
 		oc.Definition.OnBlur()
 	}
@@ -29,6 +29,8 @@ func (s *Screen) Select(index int) {
 	if cc, ok := s.GetCurrent(); ok {
 		cc.Definition.OnFocus()
 	}
+
+	slog.Info("Selected component", "index", index)
 }
 
 func (s *Screen) Next() {

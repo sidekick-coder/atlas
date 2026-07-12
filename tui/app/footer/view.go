@@ -3,18 +3,10 @@ package footer
 import (
 	"fmt"
 	"strings"
+
 	lipgloss "charm.land/lipgloss/v2"
 	tkey "github.com/sidekick-coder/atlas/tui/features/key"
 	"github.com/sidekick-coder/atlas/tui/features/theme"
-)
-
-var (
-	footerStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color(theme.Current.Muted))
-
-	footerKeyStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color(theme.Current.Primary)).
-			Bold(true)
 )
 
 func (f *Component) Render() string {
@@ -24,6 +16,13 @@ func (f *Component) Render() string {
 		Margin(0, 2).
 		Padding(0, 2).
 		BorderForeground(lipgloss.Color(theme.Current.Primary))
+
+	keyStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Color(theme.Current.Primary)).
+		Bold(true)
+
+	textStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Color(theme.Current.Foreground))
 
 	var parts []string
 
@@ -41,20 +40,20 @@ func (f *Component) Render() string {
 			continue
 		}
 
-		part := fmt.Sprintf("%s %s", footerKeyStyle.Render(k), footerStyle.Render(d))
+		part := fmt.Sprintf("%s %s", keyStyle.Render(k), textStyle.Render(d))
 
 		remaningWidth -= lipgloss.Width(part)
 
-		parts = append(parts, fmt.Sprintf("%s %s", footerKeyStyle.Render(k), footerStyle.Render(d)))
+		parts = append(parts, fmt.Sprintf("%s %s", keyStyle.Render(k), textStyle.Render(d)))
 
 		if remaningWidth <= 80 {
-			parts = append(parts, footerStyle.Render(fmt.Sprintf("... and %d more", len(tkey.GetBindings())-len(parts))))
+			parts = append(parts, textStyle.Render(fmt.Sprintf("... and %d more", len(tkey.GetBindings())-len(parts))))
 			break
 		}
 
 	}
 
-	sep := footerStyle.Render(" · ")
+	sep := textStyle.Render(" · ")
 	row := strings.Join(parts, sep)
 
 	return container.Render(row)

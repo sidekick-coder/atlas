@@ -9,17 +9,18 @@ import (
 func (s *Screen) Update(msg tea.Msg) tea.Cmd {
 	handlers := []func(msg tea.Msg) tea.Cmd{}
 
+	current, ok := s.GetCurrent()
+
+	if ok {
+		handlers = append(handlers, current.Definition.Update)
+	}
+
 	handlers = append(
 		handlers,
 		s.HandleSize,
 		chain.OnKey(s.HandleBinding),
 	)
 
-	current, ok := s.GetCurrent()
-
-	if ok {
-		handlers = append(handlers, current.Definition.Update)
-	}
 
 	return chain.Update(msg, handlers...)
 }

@@ -20,6 +20,10 @@ func GetBindings() []Binding {
 	return manager.GetBindings()
 }
 
+func GetPendingTokens() []string {
+	return manager.GetPendingTokens()
+}
+
 func GetBindingsByTags(tags ...string) []Binding {
 	return manager.GetBindingsByTags(tags...)
 }

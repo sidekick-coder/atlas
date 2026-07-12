@@ -4,7 +4,7 @@ type Feature struct {
 	cursor  int
 	total   int
 	enabled bool
-	loop	bool
+	loop    bool
 }
 
 func Create() *Feature {
@@ -32,7 +32,6 @@ func (f *Feature) SetTotal(total int) {
 	}
 }
 
-
 func (f *Feature) GetCursor() int {
 	return f.cursor
 }
@@ -48,6 +47,10 @@ func (f *Feature) IsSelected(index int) bool {
 func (f *Feature) GetNextIndex() int {
 	isLast := f.cursor == f.total-1
 
+	if f.cursor < 0 {
+		return 0
+	}
+
 	if isLast {
 		return 0
 	}
@@ -61,6 +64,10 @@ func (f *Feature) Next() {
 
 func (f *Feature) GetPrevIndex() int {
 	isFirst := f.cursor == 0
+
+	if f.cursor < 0 {
+		return 0
+	}
 
 	if isFirst {
 		return f.total - 1

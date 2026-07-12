@@ -168,3 +168,7 @@ func (m *Manager) GetBindingsByTags(tags ...string) []Binding {
 func (m *Manager) ClearBindings() {
 	m.registered = []Binding{}
 }
+
+func (m *Manager) GetPendingTokens() []string {
+	return m.pending
+}

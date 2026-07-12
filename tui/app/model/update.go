@@ -58,6 +58,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.toaster.Update,
 		m.footer.Update,
 		m.screen.Update,
+		m.toolbar.Update,
 
 	    chain.OnKey(m.HandleBinding),
 	)

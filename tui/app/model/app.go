@@ -11,7 +11,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/app/screen"
 	"github.com/sidekick-coder/atlas/tui/app/tabbar"
 	"github.com/sidekick-coder/atlas/tui/app/toaster"
-	"github.com/sidekick-coder/atlas/tui/components"
+	"github.com/sidekick-coder/atlas/tui/app/toolbar"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/models"
@@ -33,23 +33,18 @@ type model struct {
 	screen *screen.Feature
 	tabbar *tabbar.Component
 	footer *footer.Component
-
-	toolbar *components.Toolbar
-
+	toolbar *toolbar.Component
 	toaster *toaster.Component
 }
 
 func Create(a *app.App) model {
-	toolbar := components.NewToolbar()
-	toolbar.SetTitle("󰉋 " + a.WorkspacePath())
-
 	m := model{
 		app:    a,
 		width:  100,
 		height: 100,
 		ready:  false,
 
-		toolbar: toolbar,
+		toolbar: toolbar.Create(a),
 		footer:  footer.Create(),
 		toaster: toaster.Create(),
 
