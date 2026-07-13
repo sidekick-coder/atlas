@@ -1,10 +1,13 @@
 package empty
 
 import (
+	"log/slog"
+
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/app/screen"
 	"github.com/sidekick-coder/atlas/tui/components/container"
 	"github.com/sidekick-coder/atlas/tui/components/list"
-	"github.com/sidekick-coder/atlas/tui/messages"
+	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/models"
 )
 
@@ -22,10 +25,12 @@ type Screen struct {
 	container container.Component
 }
 
-func (s *Screen) HandleSelection(index int) tea.Cmd {
+func (s *Screen) Select(index int) tea.Cmd {
 	if index < 0 || index >= len(s.Entries) {
 		return nil
 	}
+
+	slog.Debug("selecting entry", "index", index)
 
 	entry := s.Entries[index]
 
@@ -33,10 +38,7 @@ func (s *Screen) HandleSelection(index int) tea.Cmd {
 		return nil
 	}
 
-	return messages.ReplaceScreenCmd(messages.ReplaceCurrentScreen{
-		Name:   entry.ID,
-		Options: entry.Options,
-	})
+	return screen.ReplaceCurrent(entry.ID, entry.Options)
 }
 
 func Create(p models.ScreenPayload) (models.Screen, error) {
@@ -70,11 +72,11 @@ func (s *Screen) Init() tea.Cmd {
 	}
 
 	s.list.SetItems(items)
-	s.list.OnSelect(s.HandleSelection)
+	s.list.OnSelect(s.Select)
 
-	return nil
+	return chain.Init(chain.OnVoid(s.LoadBindings), s.list.Init)
 }
 
 func (s *Screen) Dispose() tea.Cmd {
-	return nil
+	return chain.Dispose(chain.OnVoid(s.UnloadBindings), s.list.Dispose)
 }

@@ -50,15 +50,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	cmd := chain.Update(msg,
 		key.HandleKeypress,
 
-		m.HandleMessages,
 		m.LoadHome,
-		m.HandleActions,
-		m.actionBindingMessageHandler,
 
 		m.toaster.Update,
 		m.footer.Update,
 		m.screen.Update,
 		m.toolbar.Update,
+
+		m.HandleMessages,
+		m.HandleActions,
+		m.actionBindingMessageHandler,
 
 	    chain.OnKey(m.HandleBinding),
 	)

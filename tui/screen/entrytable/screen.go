@@ -1,8 +1,12 @@
 package entrytable
 
 import (
+	"fmt"
+	"log/slog"
+
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
+	"github.com/sidekick-coder/atlas/tui/app/program"
 	"github.com/sidekick-coder/atlas/tui/app/screen"
 	"github.com/sidekick-coder/atlas/tui/components/container"
 	"github.com/sidekick-coder/atlas/tui/components/table"
@@ -67,8 +71,22 @@ func (s *Screen) OpenEntry(cursor int) tea.Cmd {
 		return messages.ToastErrorCmd(err.Error())
 	}
 
+	em := e.ToMap()
+
+	em["update"] = func(payload map[string]any)  {
+		slog.Info("updating entry", slog.String("path", e.Path), slog.Any("payload", payload))
+
+		for k, v := range payload {
+			err := s.app.SetEntryMeta(e.Path, k, fmt.Sprintf("%v", v))
+
+			if err != nil {
+				program.Send(messages.ToastErrorMessage(err.Error()))
+			}
+		}
+	}
+
 	return screen.Add(s.openScreen, map[string]any{
-		"entry": e.ToMap(),
+		"entry": em,
 	})
 }
 

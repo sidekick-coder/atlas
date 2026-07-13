@@ -23,3 +23,13 @@ func (c *Component) OnSelect(f func(cursor int) tea.Cmd) *Component {
 	c.onSelect = f
 	return c
 }
+
+func (c *Component) Init() tea.Cmd {
+	c.LoadBindings()
+	return nil
+}
+
+func (c *Component) Dispose() tea.Cmd {
+	c.UnloadBindings()
+	return nil
+}

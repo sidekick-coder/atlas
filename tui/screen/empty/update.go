@@ -6,5 +6,5 @@ import (
 )
 
 func (s *Screen) Update(msg tea.Msg) tea.Cmd {
-	return  chain.Update(msg, s.list.HandleKeypress)
+	return chain.Update(msg, s.HandleView, s.list.Update, chain.OnKey(s.HandleBinding))
 }

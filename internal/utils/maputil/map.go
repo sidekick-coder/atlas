@@ -2,11 +2,21 @@ package maputil
 
 import "fmt"
 
-func Any[K comparable, V any](src map[K]V) map[any]any {
-	out := map[any]any{}
+func Any[K comparable, V any](src map[K]V) map[K]any {
+	out := map[K]any{}
 
 	for k, v := range src {
 		out[k] = v
+	}
+
+	return out
+}
+
+func KeyString[K comparable, V any](src map[K]V) map[string]any {
+	out := map[string]any{}
+
+	for k, v := range src {
+		out[fmt.Sprintf("%v", k)] = v
 	}
 
 	return out

@@ -53,7 +53,7 @@ func Create() (*App, error) {
 	entryRepo := entry.New(database)
 	entryMetaRepo := entrymeta.New(database)
 
-	s := syncer.Create().SetConfig(config).SetDrive(drive)
+	s := syncer.Create().SetConfig(config).SetDrive(drive).SetDatabase(database)
 
 
 	app := &App{

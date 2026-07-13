@@ -1,6 +1,8 @@
 package screen
 
 import (
+	"log/slog"
+
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/app/program"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
@@ -37,6 +39,24 @@ func (f *Feature) HandleMessages(msg tea.Msg) tea.Cmd {
 
 	if rp, ok := msg.(ReplaceMsg); ok {
 		_, err := f.Replace(rp.Index, rp.Name, rp.Options)
+
+		if err != nil {
+			return toast.Error(err.Error())
+		}
+
+		return f.Size
+	}
+
+	if rc, ok := msg.(ReplaceCurrentMsg); ok {
+		slog.Info("replacing current screen", slog.String("name", rc.Name), slog.Any("options", rc.Options))
+
+		current := f.GetCurrentIndex()
+
+		if current == -1 {
+			return toast.Error("no current screen to replace")
+		}
+
+		_, err := f.Replace(current, rc.Name, rc.Options)
 
 		if err != nil {
 			return toast.Error(err.Error())

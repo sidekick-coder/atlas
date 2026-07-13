@@ -114,7 +114,7 @@ func (h Handler) Set(info *models.EntryInfo, name string, value string) (bool, e
 
 	unflattened := utils.Unflatten(metas)
 
-	newContents, err := Marshal(body, unflattened["frontmatter"].(map[string]any))
+	newContents, err := Marshal(body, unflattened)
 
 	if err != nil {
 		return false, err

@@ -78,23 +78,9 @@ func (c *Component) HandleBindings(msg tea.KeyMsg) tea.Cmd {
 		return messages.SkipCmd()
 	}
 
-	// if key.Matches(Binding.Enter) {
-	// 	if c.onSubmit != nil {
-	// 		values := make(map[string]string) 
-	//
-	// 		for index, field := range c.fields {
-	// 			input := c.inputs[index]
-	//
-	// 			values[field.FielName] = input.GetValue()
-	// 		}
-	//
-	// 		c.onSubmit(values)
-	// 	}
-	//
-	// 	c.Close()
-	//
-	// 	return messages.SkipCmd()
-	// }
+	if key.Matches(Binding.Enter) {
+		return c.submit()
+	}
 
 	return nil
 }

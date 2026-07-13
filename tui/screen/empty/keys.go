@@ -1,22 +1,28 @@
-package empty 
+package empty
 
 import (
-	"charm.land/bubbles/v2/key"
+	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/features/key"
 )
 
-type ScreenKeyMap struct {
-	EntryList key.Binding
+type Keymap struct {
 }
 
-var ScreenBindings = ScreenKeyMap{
-	EntryList: key.NewBinding(
-		key.WithKeys("e"),
-		key.WithHelp("e", "entry list"),
-	),
-}
+var Binding = Keymap{}
 
 func (s *Screen) GetBindings() []key.Binding {
 	return []key.Binding{
-		ScreenBindings.EntryList,
 	}
+}
+
+func (s *Screen) LoadBindings() {
+	key.Register(s.GetBindings()...)
+}
+
+func (s *Screen) UnloadBindings() {
+	key.Unregister(s.GetBindings()...)
+}
+
+func (s *Screen) HandleBinding(km tea.KeyMsg) tea.Cmd {
+	return nil
 }

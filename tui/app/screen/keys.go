@@ -65,7 +65,7 @@ func (f *Feature) HandleBinding(km tea.KeyMsg) tea.Cmd {
 	}
 
 	if key.Matches(Bindings.Add) {
-		return Add("emtpy")
+		return Add("empty")
 	}
 
 	if key.Matches(Bindings.Close) {

@@ -78,6 +78,7 @@ screens:
 
           - type: form
             values: "={{ .entry }}"
+            on_submit: "={{ .entry.update }}"
             fields:
                 - id: title
                   label: "Title"

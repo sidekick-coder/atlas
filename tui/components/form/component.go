@@ -1,6 +1,7 @@
 package form
 
 import (
+
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/utils/maputil"
 	"github.com/sidekick-coder/atlas/tui/components/borderlabel"
@@ -11,13 +12,14 @@ import (
 )
 
 type Component struct {
-	fields []Field
-	values map[string]string
+	fields  []Field
+	values  map[string]string
 	focused bool
-	width  int 
-	height int
+	width   int
+	height  int
 
 	selection *selection.Feature
+	onSubmit  func(values map[string]any)
 	inputs    []*input.Input
 
 	fieldBorder         *borderlabel.Component
@@ -28,7 +30,7 @@ func Create(args ...map[string]any) (*Component, error) {
 
 	c := &Component{
 		fields: []Field{},
-		width: 40,
+		width:  40,
 		height: 20,
 		values: map[string]string{},
 
@@ -68,6 +70,10 @@ func Create(args ...map[string]any) (*Component, error) {
 
 	if v, ok := props["values"].(map[string]any); ok {
 		c.SetValues(maputil.String(v))
+	}
+
+	if os, ok := props["on_submit"].(func(map[string]any)); ok {
+		c.onSubmit = os
 	}
 
 	c.fieldBorder.SetWidth(c.width - 6)

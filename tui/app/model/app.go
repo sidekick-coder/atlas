@@ -110,10 +110,43 @@ func (m *model) LoadUserScreen(screen config.Screen) (models.ScreenFactory, erro
 	return fac, nil
 }
 
+func (m model) EmptyScreenFactory(p models.ScreenPayload) (models.Screen, error) {
+	entries := []empty.Entry{}
+
+	entries = append(entries, empty.Entry{
+		ID:      "entry_list",
+		Options: map[string]any{},
+	})
+
+	entries = append(entries, empty.Entry{
+		ID:      "entry_table",
+		Options: map[string]any{},
+	})
+
+	us, err := m.app.Config().GetScreens()
+
+	if err != nil {
+		return nil, fmt.Errorf("error getting user screens: %w", err)
+	}
+
+	for _, s := range us {
+		entries = append(entries, empty.Entry{
+			ID:      s.ID,
+			Options: s.Options,
+		})
+	}
+
+	p.Options = map[string]any{
+		"entries": entries,
+	}
+
+	return empty.Create(p)
+}
+
 func (m model) InitScreen() tea.Cmd {
 	m.screen.SetApp(m.app)
 
-	m.screen.SetDefinition("empty", empty.Create)
+	m.screen.SetDefinition("empty", m.EmptyScreenFactory)
 	m.screen.SetDefinition("entry_table", entrytable.Create)
 	m.screen.SetDefinition("entry_single", entrysingle.Create)
 	m.screen.SetDefinition("custom", custom.Create)
