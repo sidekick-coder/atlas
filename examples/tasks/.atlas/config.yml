@@ -83,6 +83,9 @@ screens:
             rows: 37
 
           - type: form
+            x: 220
+            cols: 50
+            rows: 37
             values: "={{ .entry }}"
             on_submit: "={{ .entry.update }}"
             fields:
@@ -97,7 +100,3 @@ screens:
                 - id: due
                   label: "Due Date"
                   name: due
-
-            x: 220
-            cols: 50
-            rows: 37

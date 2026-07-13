@@ -2,7 +2,6 @@ package form
 
 import (
 	"fmt"
-
 	"github.com/sidekick-coder/atlas/tui/components/input"
 )
 
@@ -84,7 +83,7 @@ func (c *Component) SetFields(fields []Field) {
 
 	for range fields {
 		input := input.Create()
-		input.SetWidth(c.width - 4) // 4 padding
+		input.SetWidth(c.width + 2) // 4 padding
 
 		inputs = append(inputs, input)
 	}
