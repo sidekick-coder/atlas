@@ -1,6 +1,12 @@
 handlers:
     - type: content
       patterns: ["**/*.md", "**/*.json"]
+      transformers:
+          - type: remove
+            from: "---"
+            to: "---\n"
+
+          - type: trim
 
     - type: stat
       patterns: ["**/*.md", "**/*.json"]

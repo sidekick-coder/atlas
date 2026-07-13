@@ -10,21 +10,34 @@ import (
 	"github.com/sidekick-coder/atlas/internal/utils"
 )
 
+
 type Handler struct {
-	id      string
-	key     string
-	options map[string]any
+	id           string
+	key          string
+	transformers []Transformer
+	options      map[string]any
 }
+
 
 func Create(payload handler.Payload) handler.Handler {
 	key := "content"
+	transformers := []Transformer{}
 
 	if k, ok := payload.Options["key"]; ok {
 		key = k.(string)
 	}
 
+	if t, ok := payload.Options["transformers"].([]any); ok {
+		trs, err := CreateTransformers(t)
+
+		if err == nil {
+			transformers = trs
+		}
+	}
+
 	return Handler{
 		id:      payload.ID,
+		transformers: transformers,
 		options: payload.Options,
 		key:     key,
 	}
@@ -63,7 +76,7 @@ func MarshalToBytes(metas map[string]any) ([]byte, error) {
 }
 
 func (m Handler) ID() string {
-	return "json"
+	return "content"
 }
 
 func (m Handler) Extract(info *models.EntryInfo) (map[string]string, error) {
@@ -74,6 +87,17 @@ func (m Handler) Extract(info *models.EntryInfo) (map[string]string, error) {
 	}
 
 	content := string(contents)
+
+	for _, t := range m.transformers {
+		out, err := t.Apply(content)
+
+		if err != nil {
+			return nil, err
+		}
+
+		content = out
+	}
+
 	result := map[string]string{}
 	result[m.key] = content
 
