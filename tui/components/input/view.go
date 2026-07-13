@@ -12,26 +12,50 @@ func (i *Input) Render() string {
 
 	text := lipgloss.NewStyle().Foreground(lipgloss.Color(theme.Current.Foreground))
 
-	if (!i.enabled) {
+	if !i.enabled {
 		cursorStyle = text
 	}
 
-	// Input row with block cursor.
-	before := text.Render(string(i.buf[:i.cursor]))
+	// Keep cursor visible.
+	if i.cursor < i.offset {
+		i.offset = i.cursor
+	}
+	if i.cursor >= i.offset+i.width {
+		i.offset = i.cursor - i.width + 1
+	}
+
+	start := i.offset
+	end := min(len(i.buf), start+i.width)
+
+	visible := i.buf[start:end]
+
+	cursor := i.cursor - start
+
+	before := ""
+	if cursor > 0 {
+		before = text.Render(string(visible[:cursor]))
+	}
 
 	var cur string
-
-	if i.cursor < len(i.buf) {
-		cur = cursorStyle.Render(string(i.buf[i.cursor]))
+	if cursor >= 0 && cursor < len(visible) {
+		cur = cursorStyle.Render(string(visible[cursor]))
 	} else {
 		cur = cursorStyle.Render(" ")
 	}
 
 	after := ""
-
-	if i.cursor < len(i.buf) {
-		after = text.Render(string(i.buf[i.cursor+1:]))
+	if cursor+1 < len(visible) {
+		after = text.Render(string(visible[cursor+1:]))
 	}
 
-	return before + cur + after
+	rendered := before + cur + after
+
+	// Pad so the rendered width is always i.width.
+	if len(visible) < i.width {
+		for j := 0; j < i.width-len(visible); j++ {
+			rendered += text.Render(" ")
+		}
+	}
+
+	return rendered
 }

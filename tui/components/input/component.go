@@ -3,10 +3,9 @@ package input
 type Component struct {
 	buf     []rune
 	cursor  int
-
 	width   int
 	height  int
-
+	offset  int
 	enabled bool
 }
 
