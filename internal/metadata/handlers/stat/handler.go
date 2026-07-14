@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/sidekick-coder/atlas/internal/metadata/handler"
 	"github.com/sidekick-coder/atlas/internal/models"
@@ -69,7 +70,7 @@ func (m Handler) ID() string {
 func (m Handler) Extract(info *models.EntryInfo) (map[string]string, error) {
 	result := map[string]string{}
 
-	result["ext"] = info.Ext
+	result["ext"] = strings.TrimPrefix(filepath.Ext(info.BaseName), ".")
 	result["basename"] = info.BaseName
 	result["type"] = info.Type
 	result["path"] = info.Path

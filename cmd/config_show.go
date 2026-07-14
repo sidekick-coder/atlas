@@ -30,18 +30,19 @@ var configShowCmd = &cobra.Command{
 
 		keys := slices.Collect(maps.Keys(entries))
 
-	slices.SortFunc(keys, func(a, b string) int {
-		if len(a) != len(b) {
-			return len(a) - len(b)
-		}
+		slices.SortFunc(keys, func(a, b string) int {
+			if len(a) != len(b) {
+				return len(a) - len(b)
+			}
 
-		return strings.Compare(a, b)
-	})
+			return strings.Compare(a, b)
+		})
 
 		for _, key := range keys {
 			s := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("12"))
+			v := strings.ReplaceAll(entries[key], "\n", "\\n")
 
-			fmt.Printf("%s: %s\n", s.Render(key), entries[key])
+			fmt.Printf("%s: %s\n", s.Render(key), v)
 		}
 	},
 }

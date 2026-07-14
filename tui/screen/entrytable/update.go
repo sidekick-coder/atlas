@@ -17,6 +17,7 @@ func (s *Screen) Update(msg tea.Msg) tea.Cmd {
 		s.table.Update,
 		s.HandleSize,
 		s.HandleMessage,
+		s.userKeymaps.Update,
 		chain.OnKey(s.HadleBinding),
 	)
 }

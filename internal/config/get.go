@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/sidekick-coder/atlas/internal/utils"
@@ -20,7 +21,6 @@ func (c *Config) Get(key string) (string, bool) {
 	return v, true
 }
 
-
 func (c *Config) GetByPrefix(prefix string) map[string]string {
 	result := make(map[string]string)
 
@@ -29,7 +29,6 @@ func (c *Config) GetByPrefix(prefix string) map[string]string {
 			result[k] = v
 		}
 	}
-
 
 	return result
 }
@@ -75,6 +74,19 @@ func (c *Config) GetMap(key string) map[string]any {
 		return map[string]any{}
 	}
 
+	// convert array of maps to map 
+	if arr, ok := result.([]any); ok {
+		rm := map[string]any{}
+
+		for i, v := range arr {
+			if m, ok := v.(map[string]any); ok {
+				rm[fmt.Sprintf("%d", i)] = m
+			}
+		}
+
+		return rm
+	}
+
 	rm, ok := result.(map[string]any)
 
 	if !ok {
@@ -86,7 +98,6 @@ func (c *Config) GetMap(key string) map[string]any {
 
 func (c *Config) GetArrayString(key string) []string {
 	entries := c.GetArray(key)
-
 
 	result := []string{}
 

@@ -47,11 +47,13 @@ func (s *Screen) GetBindings() []key.Binding {
 
 func (s *Screen) LoadBindings() tea.Cmd {
 	key.Register(s.GetBindings()...)
+	s.userKeymaps.Load()
 	return nil
 }
 
 func (s *Screen) UnloadBindings() tea.Cmd {
 	key.Unregister(s.GetBindings()...)
+	s.userKeymaps.Unload()
 	return nil
 }
 

@@ -13,10 +13,10 @@ type ActionManager struct {
 }
 
 func New(c *config.Config) (*ActionManager, error) {
-	configActions := c.GetArray("actions")
+	configActions := c.GetMap("actions")
 	actions := make(map[string]Action)
 
-	for _, action := range configActions {
+	for key, action := range configActions {
 		actionMap, ok := action.(map[string]any)
 
 		if !ok {
@@ -32,7 +32,7 @@ func New(c *config.Config) (*ActionManager, error) {
 		actionID, ok := actionMap["id"].(string)
 
 		if !ok {
-			return nil, fmt.Errorf("action id is not a string")
+			actionID = key
 		}
 
 		if (actionType == "shell") {

@@ -3,9 +3,11 @@ package entrytable
 import (
 	"fmt"
 	"log/slog"
+	"path/filepath"
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
+	"github.com/sidekick-coder/atlas/internal/models"
 	"github.com/sidekick-coder/atlas/tui/app/program"
 	"github.com/sidekick-coder/atlas/tui/app/screen"
 	"github.com/sidekick-coder/atlas/tui/components/container"
@@ -14,6 +16,8 @@ import (
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/entryloader"
+	"github.com/sidekick-coder/atlas/tui/features/selection"
+	"github.com/sidekick-coder/atlas/tui/features/userkeymaps"
 	"github.com/sidekick-coder/atlas/tui/messages"
 	tuimodels "github.com/sidekick-coder/atlas/tui/models"
 )
@@ -27,10 +31,12 @@ type Screen struct {
 	openScreen  string
 	openOptions map[string]any
 
-	loader    *entryloader.Feature
-	table     *table.Component
-	container *container.Component
-	dialog    *inputdialog.Component
+	selection   *selection.Feature
+	loader      *entryloader.Feature
+	table       *table.Component
+	container   *container.Component
+	dialog      *inputdialog.Component
+	userKeymaps *userkeymaps.Feature
 }
 
 func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
@@ -48,10 +54,12 @@ func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 
 		openScreen: openScreen,
 
-		loader:    entryloader.Create(*p.App.EntryRepo()),
-		table:     table.Create(),
-		container: container.Create(),
-		dialog:    inputdialog.Create(),
+		loader:      entryloader.Create(*p.App.EntryRepo()),
+		table:       table.Create(),
+		selection:   selection.Create(),
+		container:   container.Create(),
+		dialog:      inputdialog.Create(),
+		userKeymaps: userkeymaps.Create(),
 	}
 
 	return s, nil
@@ -67,15 +75,9 @@ func (s *Screen) Title() string {
 	return "tables"
 }
 
-func (s *Screen) OpenEntry(cursor int) tea.Cmd {
-
-	e, err := s.loader.GetEntry(cursor)
-
-	if err != nil {
-		return messages.ToastErrorCmd(err.Error())
-	}
-
+func (s *Screen) CreateEntryContext(e models.Entry) map[string]any {
 	em := e.ToMap()
+	em["absolute_path"] = filepath.Join(s.app.Config().GetWorkspaceDir(), e.Path)
 
 	em["update"] = func(payload map[string]any) {
 		slog.Info("updating entry", slog.String("path", e.Path), slog.Any("payload", payload))
@@ -89,8 +91,19 @@ func (s *Screen) OpenEntry(cursor int) tea.Cmd {
 		}
 	}
 
+	return em
+}
+
+func (s *Screen) OpenEntry(cursor int) tea.Cmd {
+
+	e, err := s.loader.GetEntry(cursor)
+
+	if err != nil {
+		return messages.ToastErrorCmd(err.Error())
+	}
+
 	return screen.Add(s.openScreen, map[string]any{
-		"entry": em,
+		"entry": s.CreateEntryContext(e),
 	})
 }
 
@@ -102,7 +115,7 @@ func (s *Screen) OnSubmit(value string) tea.Cmd {
 	if err != nil {
 		return toast.Error(err.Error())
 	}
-	
+
 	return nil
 }
 
@@ -114,12 +127,31 @@ func (s *Screen) InitDialog() tea.Cmd {
 
 func (s *Screen) Init() tea.Cmd {
 	s.table.OnSelect(s.OpenEntry)
+	s.table.SetItemSelection(s.selection)
 
 	q := s.options["query"]
 
 	if q != nil {
 		s.loader.SetQuery([]string{q.(string)})
 	}
+
+	s.userKeymaps.SetApp(s.app)
+	s.userKeymaps.AddGroup("screen_id=entry_table")
+	s.userKeymaps.OnBeforeActions(func() error {
+		cursor := s.selection.GetCursor()
+
+		if cursor >= 0 {
+			e, err := s.loader.GetEntry(cursor)
+
+			if err != nil {
+				return err
+			}
+
+			s.userKeymaps.AddContext("entry", s.CreateEntryContext(e))
+		}
+
+		return nil
+	})
 
 	return chain.Init(
 		s.loader.Init,
@@ -131,6 +163,7 @@ func (s *Screen) Init() tea.Cmd {
 }
 
 func (s *Screen) Dispose() tea.Cmd {
+
 	return chain.Dispose(
 		s.table.Dispose,
 		s.dialog.Dispose,

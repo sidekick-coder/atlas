@@ -36,6 +36,10 @@ func (c *Component) UnloadBindings() tea.Cmd {
 }
 
 func (c *Component) HadleBinding(msg tea.KeyMsg) tea.Cmd {
+	if !c.dialog.IsOpen() {
+		return nil
+	}
+
 	if key.Matches(Bindings.Submit) {
 		return c.submit()
 	}

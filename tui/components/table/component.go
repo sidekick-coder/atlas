@@ -24,7 +24,7 @@ type Component struct {
 	column *column.Feature
 	columnList columnlist.Component
 
-	itemSelection selection.Feature
+	itemSelection *selection.Feature
 }
 
 func Create() *Component {
@@ -37,8 +37,13 @@ func Create() *Component {
 		column: column.Create(),
 		columnList: *columnlist.Create(),
 
-		itemSelection: *selection.Create(),
+		itemSelection: selection.Create(),
 	}
+}
+
+func (c *Component) SetItemSelection(selection *selection.Feature) *Component {
+	c.itemSelection = selection
+	return c
 }
 
 func (c *Component) OnSelect(f func(cursor int) tea.Cmd) *Component {

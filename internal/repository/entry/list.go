@@ -1,7 +1,6 @@
 package entry
 
 import (
-	"log/slog"
 	"strings"
 
 	"github.com/sidekick-coder/atlas/internal/models"
@@ -45,8 +44,6 @@ func (r *Repository) List(payload ...ListOptions) ([]models.Entry, error) {
 			options.LoadMetas = false
 		}
 	}
-
-	slog.Info("listing entries", "query", options.Query, "limit", options.Limit, "offset", options.Offset, "load_metas", options.LoadMetas)
 
 	stmt := []string{
 		"SELECT entries.id, entries.path",

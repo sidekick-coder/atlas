@@ -2,7 +2,6 @@ package entryloader
 
 import (
 	"fmt"
-	"log/slog"
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/models"
@@ -68,8 +67,6 @@ func (f *Feature) Load() error {
 
 	f.count = count
 	f.entries = entries
-
-	slog.Info("loader.Load", "options", options, "count", f.count, "entries", len(f.entries))
 
 	return nil
 }

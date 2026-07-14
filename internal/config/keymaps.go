@@ -57,7 +57,7 @@ func ConfigKeymapFromMap(m map[string]any) Keymap {
 }
 
 func (c *Config) GetKeymaps() []Keymap {
-	entries := c.GetArray("keymaps")
+	entries := c.GetMap("keymaps")
 	keymaps := make([]Keymap, 0)
 
 	for _, v := range entries {
