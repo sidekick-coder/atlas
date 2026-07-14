@@ -73,5 +73,13 @@ func (c *Component) Render() string {
 		rows = append(rows, rendered)
 	}
 
+	if len(c.items) == 0 {
+		emtpyText := rowStyle.Foreground(lipgloss.Color(theme.Current.Muted)).Render("No items found")
+
+		emtpy := lipgloss.Place(c.width, c.height-6, lipgloss.Center, lipgloss.Center, emtpyText)
+
+		rows = append(rows, emtpy)
+	}
+
 	return lipgloss.JoinVertical(lipgloss.Left, rows...)
 }
