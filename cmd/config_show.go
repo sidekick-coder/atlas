@@ -1,14 +1,17 @@
 /*
 Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
 	"fmt"
+	"maps"
+	"slices"
+	"strings"
+
 	"charm.land/lipgloss/v2"
-	"github.com/spf13/cobra"
 	"github.com/sidekick-coder/atlas/internal/config"
+	"github.com/spf13/cobra"
 )
 
 // config:showCmd represents the config:show command
@@ -23,10 +26,22 @@ var configShowCmd = &cobra.Command{
 			return
 		}
 
-		for key, value := range config.GetAll() {
+		entries := config.GetAll()
+
+		keys := slices.Collect(maps.Keys(entries))
+
+	slices.SortFunc(keys, func(a, b string) int {
+		if len(a) != len(b) {
+			return len(a) - len(b)
+		}
+
+		return strings.Compare(a, b)
+	})
+
+		for _, key := range keys {
 			s := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("12"))
 
-			fmt.Printf("%s: %s\n", s.Render(key), value)
+			fmt.Printf("%s: %s\n", s.Render(key), entries[key])
 		}
 	},
 }

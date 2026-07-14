@@ -69,7 +69,7 @@ var syncAllCmd = &cobra.Command{
 
 		if detail {
 			s.OnSuccess(func(path string) {
-				fmt.Printf("%s\n", green.Render(path))
+				fmt.Printf("%s%s\n", green.Render("✓ "), path)
 			})
 		}
 
