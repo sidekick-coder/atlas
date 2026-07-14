@@ -1,6 +1,7 @@
 package writter
 
 import (
+	"fmt"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -11,17 +12,17 @@ import (
 )
 
 type Worker struct {
-	database  *database.Database
-	processed atomic.Int32
-	count	 atomic.Int32
-	onSuccess func(e extractor.ExtractEntry)
+	database        *database.Database
+	processed       atomic.Int32
+	count           atomic.Int32
+	onSuccess       func(e extractor.ExtractEntry)
 	onBatchComplete func(batch batcher.Batch)
-	onError   func(e extractor.ExtractEntry, err error)
+	onError         func(e extractor.ExtractEntry, err error)
 }
 
 func Create() *Worker {
 	return &Worker{
-		count:    atomic.Int32{},
+		count: atomic.Int32{},
 	}
 }
 
@@ -93,7 +94,7 @@ func (w *Worker) Execute(batch batcher.Batch) error {
 
 	if err != nil {
 		tx.Rollback()
-		return err
+		return fmt.Errorf("failed to insert entries: %w", err)
 	}
 
 	smtmt = []string{}
@@ -109,14 +110,19 @@ func (w *Worker) Execute(batch batcher.Batch) error {
 		}
 	}
 
+	if len(values) == 0 {
+		return tx.Commit()
+	}
+
 	smtmt = append(smtmt, strings.Join(values, ",\n"))
 	smtmt = append(smtmt, ";")
+	query := strings.Join(smtmt, " ")
 
-	_, err = tx.Exec(strings.Join(smtmt, " "), params...)
+	_, err = tx.Exec(query, params...)
 
 	if err != nil {
 		tx.Rollback()
-		return err
+		return fmt.Errorf("failed to insert entry metas: \nSQL:%v\nPARAMS:%s\nERROR:%w", query, params, err)
 	}
 
 	return tx.Commit()

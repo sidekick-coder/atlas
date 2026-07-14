@@ -59,8 +59,8 @@ var syncAllCmd = &cobra.Command{
 		s.OnComplete(onComplete)
 
 		s.OnError(func(path string, err error) {
-			fmt.Printf("%s\n", red.Render(path))
-			fmt.Printf("Error: %v\n", err)
+			fmt.Printf("%s\n", path)
+			fmt.Println(red.Render(err.Error()))
 		})
 
 		if !detail {
