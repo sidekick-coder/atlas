@@ -2,8 +2,6 @@ package screen
 
 import (
 	"fmt"
-	"log/slog"
-
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/tui/features/key"
 	"github.com/sidekick-coder/atlas/tui/features/selection"
@@ -87,8 +85,6 @@ func (f *Feature) Add(name string, options ...map[string]any) (models.Screen, er
 
 	f.Selection.SetTotal(len(f.screens))
 
-	slog.Info("added screen", slog.String("name", name))
-
 	return nil, nil
 }
 
@@ -106,8 +102,6 @@ func (f *Feature) Replace(index int, name string, options ...map[string]any) (mo
 	f.screens[index] = s
 
 	f.SetCurrent(index)
-
-	slog.Info("replaced screen", slog.Int("index", index), slog.String("name", name))
 
 	return nil, nil
 }
@@ -130,8 +124,6 @@ func (f *Feature) Remove(index int) error {
 	key.Unregister(binding)
 
 	f.bindings = append(f.bindings[:index], f.bindings[index+1:]...)
-
-	slog.Info("removed screen", slog.Int("index", index))
 
 	return nil
 }

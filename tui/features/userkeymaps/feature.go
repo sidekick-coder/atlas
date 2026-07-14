@@ -1,6 +1,8 @@
 package userkeymaps
 
 import (
+	"log/slog"
+
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/actionmanager"
 	"github.com/sidekick-coder/atlas/internal/app"
@@ -77,7 +79,8 @@ func (f *Feature) LoadKeymaps() {
 		b := key.CreateBinding(action.Keys...).
 			SetDescription(action.Description).
 			SetTags("user").
-			SetHelp(action.Keys[0])
+			SetHelp(action.Keys[0]). 
+			SetID(action.ID)
 
 		bindings = append(bindings, b)
 	}
@@ -97,8 +100,7 @@ func (f *Feature) Load() {
 
 func (f *Feature) Unload() {
 	key.Unregister(f.bindings...)
-	f.bindings = []key.Binding{}
-	f.keymaps = []config.Keymap{}
+	slog.Info("unloaded user keymaps", "groups", f.groups, "bindings", len(f.bindings))
 }
 
 func (f *Feature) ExecuteKeymap(km config.Keymap) error {

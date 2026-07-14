@@ -1,8 +1,6 @@
 package model
 
 import (
-	"log/slog"
-
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
@@ -39,7 +37,6 @@ func (m *model) LoadHome(msg tea.Msg) tea.Cmd {
 
 func (m *model) HandleMessages(msg tea.Msg) tea.Cmd {
 	if wm, ok := msg.(tea.WindowSizeMsg); ok {
-		slog.Info("window size changed", slog.Int("width", wm.Width), slog.Int("height", wm.Height))
 		m.SetSize(wm.Width, wm.Height)
 	}
 

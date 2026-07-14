@@ -1,8 +1,6 @@
 package layer
 
 import (
-	"log/slog"
-
 	"charm.land/lipgloss/v2"
 )
 
@@ -12,14 +10,12 @@ var ScreenHeight int
 
 func Add(l *Layer) {
 	layers = append(layers, l)
-	slog.Info("Adding layer", "id", l.ID, "x", l.X, "y", l.Y, "z", l.Z)
 }
 
 func Remove(layer *Layer) {
 	for i, l := range layers {
 		if l.ID == layer.ID {
 			layers = append(layers[:i], layers[i+1:]...)
-			slog.Info("Remove layer", "id", l.ID, "x", l.X, "y", l.Y, "z", l.Z)
 			break
 		}
 	}

@@ -180,7 +180,7 @@ function randomTitle() {
 
 function randomParagraphs() {
     return Array.from(
-        { length: randInt(2, 5) },
+        { length: randInt(5, 10) },
         () => sample(paragraphs)
     ).join("\n\n");
 }

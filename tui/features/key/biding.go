@@ -129,6 +129,11 @@ func CreateBinding(keys ...string) Binding {
 	}
 }
 
+func (b Binding) SetID(id string) Binding {
+	b.id = id
+	return b
+}
+
 func (b Binding) SetHelp(help string) Binding {
 	b.help = help
 	return b

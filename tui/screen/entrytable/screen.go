@@ -168,5 +168,6 @@ func (s *Screen) Dispose() tea.Cmd {
 		s.table.Dispose,
 		s.dialog.Dispose,
 		s.UnloadBindings,
+		chain.OnVoid(s.userKeymaps.Unload),
 	)
 }

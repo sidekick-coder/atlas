@@ -2,9 +2,12 @@ package config
 
 import (
 	"slices"
+
+	"github.com/sidekick-coder/atlas/internal/utils/sliceutil"
 )
 
 type Keymap struct {
+	ID          string   `json:"id"`
 	Description string   `json:"description"`
 	Keys        []string `json:"keys"`
 	Action      string   `json:"action"`
@@ -28,39 +31,36 @@ func toStringSlice(v any) []string {
 }
 
 func ConfigKeymapFromMap(m map[string]any) Keymap {
-	keys := []string{}
-	action := ""
-	groups := []string{}
-	description := ""
+	km := Keymap{}
 
-	keys = toStringSlice(m["keys"])
-	groups = toStringSlice(m["groups"])
-
-	a, ok := m["action"].(string)
-
-	if ok {
-		action = a
+	if id, ok := m["id"].(string); ok {
+		km.ID = id
 	}
 
-	d, ok := m["description"].(string)
-
-	if ok {
-		description = d
+	if a, ok := m["action"].(string); ok {
+		km.Action = a
 	}
 
-	return Keymap{
-		Description: description,
-		Keys:        keys,
-		Action:      action,
-		Groups:      groups,
+	if d, ok := m["description"].(string); ok {
+		km.Description = d
 	}
+
+	if keys, ok := m["keys"].([]any); ok {
+		km.Keys = sliceutil.MapString(keys)
+	}
+
+	if groups, ok := m["groups"].([]any); ok {
+		km.Groups = sliceutil.MapString(groups)
+	}
+
+	return km
 }
 
 func (c *Config) GetKeymaps() []Keymap {
 	entries := c.GetMap("keymaps")
 	keymaps := make([]Keymap, 0)
 
-	for _, v := range entries {
+	for key, v := range entries {
 		vm, ok := v.(map[string]any)
 
 		if !ok {
@@ -68,6 +68,10 @@ func (c *Config) GetKeymaps() []Keymap {
 		}
 
 		k := ConfigKeymapFromMap(vm)
+
+		if k.ID == "" {
+			k.ID = key
+		}
 
 		keymaps = append(keymaps, k)
 	}
