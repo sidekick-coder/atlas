@@ -1,0 +1,5 @@
+keymaps:
+    - keys: [v]
+      action: vi
+      description: vim
+      groups: [screen_id=entry_table]

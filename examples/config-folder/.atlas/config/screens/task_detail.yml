@@ -1,0 +1,26 @@
+type: custom
+title: "{{ .entry.title }}"
+components:
+    - type: text
+      content: "{{ .entry.content }}"
+      cols: 220
+      rows: 37
+
+    - type: form
+      x: 220
+      cols: 50
+      rows: 37
+      values: "={{ .entry }}"
+      on_submit: "={{ .entry.update }}"
+      fields:
+          - id: title
+            label: "Title"
+            name: title
+
+          - id: status
+            label: "Status"
+            name: status
+
+          - id: due
+            label: "Due Date"
+            name: due

@@ -1,0 +1,4 @@
+type: stat
+patterns: 
+    - "**/*.md"
+    - "**/*.json"
