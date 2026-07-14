@@ -59,6 +59,31 @@ func (c *Config) GetArray(key string) []any {
 	return ra
 }
 
+func (c *Config) GetMap(key string) map[string]any {
+	entries := c.GetByPrefix(key)
+
+	input := make(map[string]any)
+
+	for k, v := range entries {
+		input[k] = v
+	}
+
+	flattend := utils.Unflatten(input)
+	result := utils.Get(flattend, key)
+
+	if result == nil {
+		return map[string]any{}
+	}
+
+	rm, ok := result.(map[string]any)
+
+	if !ok {
+		return map[string]any{}
+	}
+
+	return rm
+}
+
 func (c *Config) GetArrayString(key string) []string {
 	entries := c.GetArray(key)
 

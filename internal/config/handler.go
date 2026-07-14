@@ -44,10 +44,10 @@ func ParseHandler(entry map[string]any) (Handler, error) {
 }
 
 func (c *Config) GetConfigHandlers() ([]Handler, error) {
-	entries := c.GetArray("handlers")
+	entries := c.GetMap("handlers")
 	handlers := []Handler{}
 
-	for _, entry := range entries {
+	for key, entry := range entries {
 		em , ok := entry.(map[string]any)
 
 		if !ok {
@@ -55,6 +55,10 @@ func (c *Config) GetConfigHandlers() ([]Handler, error) {
 		}
 
 		h, err := ParseHandler(em)
+
+		if h.ID == "" {
+			h.ID = key
+		}
 
 		if err != nil {
 			return nil, fmt.Errorf("error parsing handler entry: %v", err)

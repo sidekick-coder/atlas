@@ -33,10 +33,10 @@ func ParseScreen(entry map[string]any) (Screen, error) {
 }
 
 func (c *Config) GetScreens() ([]Screen, error) {
-	entries := c.GetArray("screens")
+	entries := c.GetMap("screens")
 	screens := []Screen{}
 
-	for _, entry := range entries {
+	for key, entry := range entries {
 		em , ok := entry.(map[string]any)
 
 		if !ok {
@@ -44,6 +44,10 @@ func (c *Config) GetScreens() ([]Screen, error) {
 		}
 
 		s, err := ParseScreen(em)
+
+		if s.ID == "" {
+			s.ID = key
+		}
 
 		if err != nil {
 			return nil, fmt.Errorf("error parsing screen entry: %v", err)
