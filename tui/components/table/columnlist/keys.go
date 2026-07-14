@@ -22,27 +22,27 @@ var Binding = Keymap{
 	Up: key.CreateBinding("k", "<Up>").
 		SetHelp("k/up").
 		SetTags(tags...).
-		SetDescription("Move up"),
+		SetDescription("up"),
 	Down: key.CreateBinding("j", "<Down>").
 		SetHelp("j/down").
 		SetTags(tags...).
-		SetDescription("Move down"),
+		SetDescription("down"),
 	Enter: key.CreateBinding("<enter>").
 		SetHelp("enter").
 		SetTags(tags...).
-		SetDescription("Select column"),
+		SetDescription("select"),
 	Add: key.CreateBinding("a").
 		SetHelp("a").
 		SetTags(tags...).
-		SetDescription("Add column"),
+		SetDescription("add"),
 	Remove: key.CreateBinding("d").
 		SetHelp("d").
 		SetTags(tags...).
-		SetDescription("Remove column"),
-	Close: key.CreateBinding("<Esc>").
+		SetDescription("remove"),
+	Close: key.CreateBinding("<esc>", "q").
 		SetHelp("esc").
 		SetTags(tags...).
-		SetDescription("Close column list"),
+		SetDescription("close"),
 }
 
 func (c *Component) GetBindings() []key.Binding {

@@ -16,7 +16,7 @@ var tags = []string{"global"}
 var Binding = Keymap{
 	Toggle: key.CreateBinding("?", "<f1>").
 		SetHelp("?").
-		SetDescription("Open help").
+		SetDescription("help").
 		SetTags(tags...),
 }
 

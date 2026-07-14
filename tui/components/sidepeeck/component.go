@@ -53,18 +53,22 @@ func (c *Component) IsOpen() bool {
 	return c.open
 }
 
-func (c *Component) Init() tea.Cmd {
-	c.height = layer.ScreenHeight 
+func (c *Component) LoadSize() {
+	sh := max(100, layer.ScreenHeight)
+	sw := max(100, layer.ScreenWidth)
 
-	x := layer.ScreenWidth - c.width
+	c.height = sh
+
+	x := sw - c.width
 
 	c.layer.SetPosition(x, 0)
 	c.layer.SetZIndex(2)
+}
+
+func (c *Component) Init() tea.Cmd {
 	c.layer.SetRender(c.Render)
 	c.layer.SetID("sidepeek-" + c.layer.ID)
-
 	c.LoadDefaultStyle()
-
 	layer.Add(c.layer)
 	return nil
 }

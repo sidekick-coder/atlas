@@ -19,7 +19,7 @@ func (c *Component) InitView() tea.Cmd {
 }
 
 func (c *Component) Update(msg tea.Msg) tea.Cmd {
-	return chain.Update(msg, c.dialog.Update, chain.OnKey(c.HandleBindings))
+	return chain.Update(msg, c.dialog.Update, c.sidepeeck.Update, chain.OnKey(c.HandleBindings))
 }
 
 func (c *Component) Open() {

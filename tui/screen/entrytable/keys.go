@@ -21,11 +21,11 @@ var Bindings = Keymap{
 	Next: key.CreateBinding("n", "l").
 		SetTags(tags...).
 		SetDescription("Next page").
-		SetHelp("n/l"),
+		SetHelp("l"),
 	Prev: key.CreateBinding("p", "h").
 		SetTags(tags...).
-		SetDescription("Previous page").
-		SetHelp("p/h"),
+		SetDescription("Prev page").
+		SetHelp("h"),
 	Search: key.CreateBinding("/").
 		SetTags(tags...).
 		SetDescription("Search").

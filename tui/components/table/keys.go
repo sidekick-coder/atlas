@@ -16,21 +16,21 @@ var tags = []string{"component:table"}
 
 var Binding = Keymap{
 	Up: key.CreateBinding("k", "<Up>").
-		SetHelp("k/up").
+		SetHelp("k").
 		SetTags(tags...).
-		SetDescription("Move up"),
+		SetDescription("up"),
 	Down: key.CreateBinding("j", "<Down>").
-		SetHelp("j/down").
+		SetHelp("j").
 		SetTags(tags...).
-		SetDescription("Move down"),
+		SetDescription("down"),
 	Enter: key.CreateBinding("<enter>").
 		SetHelp("enter").
 		SetTags(tags...).
-		SetDescription("Select item"),
-	EditColumns: key.CreateBinding("<leader>ec").
-		SetHelp("<leader>ec").
+		SetDescription("select"),
+	EditColumns: key.CreateBinding("ec").
+		SetHelp("ec").
 		SetTags(tags...).
-		SetDescription("Edit columns"),
+		SetDescription("columns"),
 }
 
 func (c *Component) GetBindings() []key.Binding {

@@ -20,11 +20,11 @@ var Binding = Keymap{
 	Up: key.CreateBinding("k", "<up>").
 		SetTags(tags...).
 		SetHelp("k").
-		SetDescription("Move up"),
+		SetDescription("up"),
 	Down: key.CreateBinding("j").
 		SetTags(tags...).
 		SetHelp("j").
-		SetDescription("Move down"),
+		SetDescription("down"),
 	Select: key.CreateBinding("<enter>").
 		SetTags(tags...).
 		SetHelp("<enter>").
