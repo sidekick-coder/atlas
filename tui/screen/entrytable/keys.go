@@ -1,62 +1,79 @@
 package entrytable
 
 import (
+	"strings"
+
 	tea "charm.land/bubbletea/v2"
 
-	bkey "charm.land/bubbles/v2/key"
-	tkey "github.com/sidekick-coder/atlas/tui/features/key"
+	key "github.com/sidekick-coder/atlas/tui/features/key"
 )
 
 type Keymap struct {
-	Next tkey.Binding
-	Prev tkey.Binding
+	Next key.Binding
+	Prev key.Binding
+	Search key.Binding
+	Reload key.Binding
 }
 
 var tags = []string{"screen:entry_table"}
 
 var Bindings = Keymap{
-	Next: tkey.CreateBinding("n", "l").
+	Next: key.CreateBinding("n", "l").
 		SetTags(tags...).
 		SetDescription("Next page").
 		SetHelp("n/l"),
-	Prev: tkey.CreateBinding("p", "h").
+	Prev: key.CreateBinding("p", "h").
 		SetTags(tags...).
 		SetDescription("Previous page").
 		SetHelp("p/h"),
+	Search: key.CreateBinding("/").
+		SetTags(tags...).
+		SetDescription("Search").
+		SetHelp("/"),
+	Reload: key.CreateBinding("r").
+		SetTags(tags...).
+		SetDescription("reload").
+		SetHelp("r"),
 }
 
-func (s *Screen) GetBindings() []bkey.Binding {
-	bindings := []bkey.Binding{}
-
-	return bindings
-}
-
-func (s *Screen) Bindings() []tkey.Binding {
-	return []tkey.Binding{
+func (s *Screen) GetBindings() []key.Binding {
+	return []key.Binding{
 		Bindings.Next,
 		Bindings.Prev,
+		Bindings.Search,
+		Bindings.Reload,
 	}
 }
 
 func (s *Screen) LoadBindings() tea.Cmd {
-	tkey.Register(s.Bindings()...)
+	key.Register(s.GetBindings()...)
 	return nil
 }
 
 func (s *Screen) UnloadBindings() tea.Cmd {
-	tkey.Unregister(s.Bindings()...)
+	key.Unregister(s.GetBindings()...)
 	return nil
 }
 
 func (s *Screen) HadleBinding(msg tea.KeyMsg) tea.Cmd {
-	if (tkey.Matches(Bindings.Next)) {
+	if (key.Matches(Bindings.Next)) {
 		s.loader.Next()
 		s.loader.Load()
 	}
 
-	if (tkey.Matches(Bindings.Prev)) {
+	if (key.Matches(Bindings.Prev)) {
 		s.loader.Prev()
 		s.loader.Load()
 	}
+
+	if (key.Matches(Bindings.Search)) {
+		s.dialog.SetContent(strings.Join(s.loader.GetQuery(), " "))
+		s.dialog.Open()
+	}
+
+	if (key.Matches(Bindings.Reload)) {
+		return Reload
+	}
+
 	return nil
 }

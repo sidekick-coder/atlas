@@ -2,6 +2,8 @@ package entryloader
 
 import (
 	"fmt"
+	"log/slog"
+
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/models"
 	"github.com/sidekick-coder/atlas/internal/repository/entry"
@@ -49,10 +51,11 @@ func (f *Feature) Load() error {
 		LoadMetas: true,
 	}
 
+
 	entries, err := f.repository.List(options)
 
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to list entries: %w", err)
 	}
 
 	count, err := f.repository.Count(entry.CountOptions{
@@ -60,11 +63,13 @@ func (f *Feature) Load() error {
 	})
 
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to count entries: %w", err)
 	}
 
 	f.count = count
 	f.entries = entries
+
+	slog.Info("loader.Load", "options", options, "count", f.count, "entries", len(f.entries))
 
 	return nil
 }
@@ -89,6 +94,10 @@ func (f *Feature) SetOffset(offset int) {
 
 func (f *Feature) SetQuery(query []string) {
 	f.query = query 
+}
+
+func (f *Feature) GetQuery() []string {
+	return f.query
 }
 
 func (f *Feature) GetCount() int {

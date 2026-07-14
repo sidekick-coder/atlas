@@ -63,12 +63,16 @@ func (i *Input) HandleKeypress(msg tea.Msg) tea.Cmd {
 		if i.cursor > 0 {
 			i.cursor--
 		}
+
+		return messages.SkipCmd()
 	}
-	
+
 	if key.Matches(Binding.Right) {
 		if i.cursor < len(i.buf) {
 			i.cursor++
 		}
+
+		return messages.SkipCmd()
 	}
 
 	code := textMsg.Code
@@ -78,26 +82,37 @@ func (i *Input) HandleKeypress(msg tea.Msg) tea.Cmd {
 			i.buf = append(i.buf[:i.cursor-1], i.buf[i.cursor:]...)
 			i.cursor--
 		}
+
+		return messages.SkipCmd()
 	}
 
 	if code == tea.KeyDelete {
 		if i.cursor < len(i.buf) {
 			i.buf = append(i.buf[:i.cursor], i.buf[i.cursor+1:]...)
 		}
+
+		return messages.SkipCmd()
 	}
 
 	if code == tea.KeyHome {
 		i.cursor = 0
+
+		return messages.SkipCmd()
 	}
 
 	if code == tea.KeyEnd {
 		i.cursor = len(i.buf)
+
+		return messages.SkipCmd()
 	}
 
 	if textMsg.Text != "" {
 		i.buf = append(i.buf[:i.cursor], append([]rune(textMsg.Text), i.buf[i.cursor:]...)...)
 		i.cursor += len([]rune(textMsg.Text))
+
+		return messages.SkipCmd()
 	}
 
-	return messages.SkipCmd()
+	return nil
+
 }

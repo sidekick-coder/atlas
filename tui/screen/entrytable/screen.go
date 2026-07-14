@@ -9,7 +9,9 @@ import (
 	"github.com/sidekick-coder/atlas/tui/app/program"
 	"github.com/sidekick-coder/atlas/tui/app/screen"
 	"github.com/sidekick-coder/atlas/tui/components/container"
+	"github.com/sidekick-coder/atlas/tui/components/inputdialog"
 	"github.com/sidekick-coder/atlas/tui/components/table"
+	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/entryloader"
 	"github.com/sidekick-coder/atlas/tui/messages"
@@ -25,9 +27,10 @@ type Screen struct {
 	openScreen  string
 	openOptions map[string]any
 
-	loader    entryloader.Feature
-	table     table.Component
-	container container.Component
+	loader    *entryloader.Feature
+	table     *table.Component
+	container *container.Component
+	dialog    *inputdialog.Component
 }
 
 func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
@@ -45,9 +48,10 @@ func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 
 		openScreen: openScreen,
 
-		loader:    *entryloader.Create(*p.App.EntryRepo()),
-		table:     *table.Create(),
-		container: *container.Create(),
+		loader:    entryloader.Create(*p.App.EntryRepo()),
+		table:     table.Create(),
+		container: container.Create(),
+		dialog:    inputdialog.Create(),
 	}
 
 	return s, nil
@@ -73,7 +77,7 @@ func (s *Screen) OpenEntry(cursor int) tea.Cmd {
 
 	em := e.ToMap()
 
-	em["update"] = func(payload map[string]any)  {
+	em["update"] = func(payload map[string]any) {
 		slog.Info("updating entry", slog.String("path", e.Path), slog.Any("payload", payload))
 
 		for k, v := range payload {
@@ -90,6 +94,24 @@ func (s *Screen) OpenEntry(cursor int) tea.Cmd {
 	})
 }
 
+func (s *Screen) OnSubmit(value string) tea.Cmd {
+	s.dialog.Close()
+	s.loader.SetQuery([]string{value})
+	err := s.loader.Load()
+
+	if err != nil {
+		return toast.Error(err.Error())
+	}
+	
+	return nil
+}
+
+func (s *Screen) InitDialog() tea.Cmd {
+	s.dialog.SetTitle("Search")
+	s.dialog.OnSubmit(s.OnSubmit)
+	return s.dialog.Init()
+}
+
 func (s *Screen) Init() tea.Cmd {
 	s.table.OnSelect(s.OpenEntry)
 
@@ -104,12 +126,14 @@ func (s *Screen) Init() tea.Cmd {
 		s.LoadBindings,
 		s.LoadColumns,
 		s.table.Init,
+		s.InitDialog,
 	)
 }
 
 func (s *Screen) Dispose() tea.Cmd {
 	return chain.Dispose(
 		s.table.Dispose,
+		s.dialog.Dispose,
 		s.UnloadBindings,
 	)
 }

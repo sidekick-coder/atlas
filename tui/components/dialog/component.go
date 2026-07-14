@@ -4,30 +4,31 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/tui/components/borderlabel"
+	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/layer"
 )
 
 type Component struct {
-	open bool 
-	width int 
+	open   bool
+	width  int
 	height int
-	title string
+	title  string
 
 	onRender func() string
-	onClose func()
-	onOpen func()
+	onClose  func()
+	onOpen   func()
 
-	style lipgloss.Style
-	layer *layer.Layer
+	style  lipgloss.Style
+	layer  *layer.Layer
 	border *borderlabel.Component
 }
 
 func Create() *Component {
 	return &Component{
-		open: false,
-		width: 100,
+		open:   false,
+		width:  100,
 		height: 20,
-		title: "",
+		title:  "",
 		border: borderlabel.Create(),
 
 		layer: layer.Create(),
@@ -67,6 +68,7 @@ func (c *Component) OnRender(f func() string) *Component {
 
 func (c *Component) Open() {
 	c.open = true
+	c.LoadBindings()
 
 	if c.onOpen != nil {
 		c.onOpen()
@@ -75,6 +77,7 @@ func (c *Component) Open() {
 
 func (c *Component) Close() {
 	c.open = false
+	c.UnloadBindings()
 
 	if c.onClose != nil {
 		c.onClose()
@@ -108,6 +111,12 @@ func (c *Component) Init() tea.Cmd {
 	return nil
 }
 
+func (c *Component) Update(msg tea.Msg) tea.Cmd {
+	return chain.Update(
+		msg,
+		chain.OnKey(c.HadleBinding),
+	)
+}
 func (c *Component) Dispose() tea.Cmd {
 	layer.Remove(c.layer)
 

@@ -15,7 +15,7 @@ var Bindings = Keymap{
 	Close: key.CreateBinding("q", "<c-c>").
 		SetDescription("close").
 		SetTags(tags...).
-		SetHelp("q/crtl+c"),
+		SetHelp("q"),
 }
 
 func (m *model) GetBindings() []key.Binding {

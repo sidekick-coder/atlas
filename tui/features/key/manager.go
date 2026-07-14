@@ -24,8 +24,29 @@ func NewManager() Manager {
 	}
 }
 
+func (m *Manager) GetBindingByID(id string) (Binding, bool) {
+	for _, b := range m.registered {
+		if b.id == id {
+			return b, true
+		}
+	}
+
+	return Binding{}, false
+}
+
 func (m *Manager) Register(bindings ...Binding) {
-	m.registered = append(manager.registered, bindings...)
+
+	for _, b := range bindings {
+		// check if binding already registered
+		if _, exists := m.GetBindingByID(b.id); exists {
+			if m.debug {
+				log.Printf("Binding already registered: %s -> %s (%v)\n", b.keys, b.GetDescription(), b.GetTags())
+			}
+			continue
+		}
+
+		m.registered = append(m.registered, b)
+	}
 
 	if !m.debug {
 		return

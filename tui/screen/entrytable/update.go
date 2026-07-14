@@ -13,8 +13,10 @@ import (
 func (s *Screen) Update(msg tea.Msg) tea.Cmd {
 	return chain.Update(
 		msg,
+		s.dialog.Update,
 		s.table.Update,
 		s.HandleSize,
+		s.HandleMessage,
 		chain.OnKey(s.HadleBinding),
 	)
 }

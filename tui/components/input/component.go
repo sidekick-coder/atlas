@@ -49,6 +49,11 @@ func (i *Input) Disable() *Input {
 	return i
 }
 
+func (i *Input) SetValue(v string) {
+	i.buf = []rune(v)
+	i.cursor = len(i.buf)
+}
+
 func (i *Input) SetInitialValue(initialValue string) {
 	i.buf = []rune(initialValue)
 	i.cursor = len(i.buf)
