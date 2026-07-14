@@ -6,18 +6,32 @@ type CountOptions struct {
 
 func (r *Repository) Count(options ...CountOptions) (int, error) {
 	stmt := "SELECT COUNT(*) FROM entries WHERE 1=1"
-	params := []interface{}{}
+	params := []any{}
 
-	if len(options) > 0 && len(options[0].Query) > 0 {
-		node, err := ParseQuery(options[0].Query)
+	query := []string{}
+
+	if len(options) > 0 {
+		for _, q := range options[0].Query {
+			if len(q) > 0 {
+				query = append(query, q)
+			}
+		}
+	}
+
+	if len(query) > 0 {
+		node, err := ParseQuery(query)
+
 		if err != nil {
 			return 0, err
 		}
+
 		if node != nil {
 			condition, err := BuildSQL(node, &params)
+
 			if err != nil {
 				return 0, err
 			}
+
 			stmt += " AND " + condition
 		}
 	}
