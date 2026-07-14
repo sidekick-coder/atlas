@@ -126,7 +126,8 @@ func (f *Feature) ParseColumnText(column *Column, text string) string {
 	var result string
 
 	if len(text) > colw {
-		result = text[:colw-3] + "..."
+		end := max(0, colw-3)
+		result = text[:end] + "..."
 	}
 
 	if len(text) < colw {

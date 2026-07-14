@@ -19,6 +19,10 @@ func (r *Repository) GetEntryMetasMap(entryMetas []models.EntryMeta, entryId int
 }
 
 func (r *Repository) ListMetas(entries ...models.Entry) ([]models.EntryMeta, error) {
+	if len(entries) == 0 {
+		return []models.EntryMeta{}, nil
+	}
+
 	// SELECT ...
 	smtmt := []string{}
 	params := []any{}
