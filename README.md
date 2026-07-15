@@ -1,143 +1,243 @@
-## todo
-- [x] tui: query filter in the list screen
-- [x] tui: entry single page defulat page for entry with a list of metas
-- [x] tui: sync page
-- [x] sync all multithreaded
-- [x] bug in single page not able to edit metas
-- [x] load metadata handlers from config
-- [x] config option to tell what files scan
-- [x] tui: move queries data to components instead of the screen
-- [x] tui: columns in the list screen
-- [ ] custom metadata handler (probably comunicate via stdin/stdout)
-- [ ] config option to tell database filename (usefyul for wsl)
-- [ ] tui: custom screens
+# Atlas (alpha phase)
 
-## ideas 
+A command line and terminal user interface (TUI) tool to manage files, folders and custom metadata.
 
-- tui: keymaps per filetype using groups 
-- - ext:md  for entry markdown files
-- - hasmeta:frontmatter.status if entry has a meta key called frontmatter.status
-- - meta:frontmatter.status when meta is available, eg editin a meta
-- tui: customize what screen to use for each entry type, for example a markdown file can be opened in a single markdown screen or in a single text screen.
-- tui: manualy open a screen and pass its params
-- entry single text: screen to view text files with a metas sidebar and a body
-- entry single markdown: screen to view markdown files with a frontmatter sidebar and a body
-- entry kanban: view entries in a kanban board, with columns based on a meta key
-- user predefined screens: user can define screens with a set of filters and a layout, for example a kanban board with columns based on a meta key, or a list of entries with a sidebar showing the metas of the selected entry.
-- components: elements that the user can use to compose a screen, entry list, kanba, chart, etc.
-- - custom componets are sheel scripts than recieve width and height and print the text to show in the screen
-- - buint-int components can be used too like, meta field input
-- - the components will have its own keymaps that are active when the component is focused
-- screens: screens are a list of components 
-- - define x,y,width,height and render in the screen area
-- - scroll support for each component
+![](./screenshots/01.png)
 
-- action handlers: type of actions to execute actions in the app 
-- - toast: show a toast message 
-- - open-screen: open a screen with a set of options
-- - action-group: execute a set of actions in order
+## Entry and Metas
 
+Atlas is based on `entries` that are simple files or folders.
 
-## Open 
+And `metas` that are "data" related to a entry.
 
-You can defined witch command use to open an entry, for example you can use `code` to open a file in VSCode or `nvim` to open it in Neovim.
+Metas can be any data that can be associated to an entry like file stats(type, ext, size) or more data related to the entry contens like a `frontmatter` of a markdwon file or a json file properties for example
 
-```toml 
-open.handlers.markdown.pattern=*.md
-open.handlers.markdown.command="code {{entry.path}}"
+```
+tasks/010_implement_efficient_dashboard.md
+
+id: task-010
+due: 2026-10-02T11:10:20.541Z
+ext: md
+path: tasks/010_implement_efficient_dashboard.md
+type: file
+title: Implement efficient dashboard
+parent: tasks
+source: generated
+status: blocked
+...
 ```
 
-Or integrate with tmux for example:
+## Metadata handlers
 
-```toml
-open.handlers.markdown.pattern=*.md
-open.handlers.markdown.command="tmux new-window -n {{entry.name}} 'nvim {{entry.path}}'"
+These are services to handle get, set, unset metas from the entries the workspace.
+
+For example the `frontmmater` extract all fields in the contents of a markdown file and convert they in metas for the entry, and when the app ask for an update it update the frontmatter in the file contents
+
+Current we have 3 buit-in handlers and each handler has its won options
+
+- `json`: get file properties as metas
+- `frontmatter`: get file frontmatter as properties
+- `content`: get file contens as text
+- `stat`: get filesystem properties (type, ext, basename, parent)
+
+To use they you just need to configure in the `config.yml` file
+
+```yml
+handlers:
+    - type: content
+      patterns: ["**/*.md", "**/*.json"]
+      transformers:
+          - type: remove
+            from: "---"
+            to: "---\n"
+
+          - type: trim
+
+    - type: stat
+      patterns: ["**/*.md", "**/*.json"]
+
+    - type: frontmatter
+      patterns: ["**/*.md"]
+      prefix: ""
+
+    - type: json
+      patterns: ["**/*.json"]
 ```
+
+Examples:
+
+- [tasks/.atlas/config.yml](./examples/tasks/.atlas/config.yml)
+- [config-folder/.atlas/config/handlers/content.yml](./examples/config-folder/.atlas/config/handlers/content.yml)
+- [config-folder/.atlas/config/handlers/fm.yml](./examples/config-folder/.atlas/config/handlers/fm.yml)
+- [config-folder/.atlas/config/handlers/stat.yml](./examples/config-folder/.atlas/config/handlers/stat.yml)
+
+### Custom metadata handler
+
+You can also make your own metadata handler using the `shell` type.
+
+This handle executes a file and use the output to create the metas.
+
+You can technically any language but keep in mind that if the execution speed will affect the sync speed too.
+
+```yml
+handlers:
+    - type: shell
+      bin: "{{ .workspace.atlas_path }}/handlers/task_id.sh"
+      patterns: ["**/*.md"]
+```
+
+```bash
+#!/bin/sh
+
+input=$(cat)
+
+basename=$(printf '%s' "$input" | jq -r '.entry_info.basename')
+
+id=${basename%%_*}
+
+if [ "$basename" = "$id" ]; then
+    slug=""
+else
+    slug=${basename#*_}
+fi
+
+jq -n \
+    --arg id "$id" \
+    --arg slug "$slug" \
+    '{
+        metas: {
+            task_id: $id,
+            slug: $slug
+        }
+    }'
+```
+
+Examples:
+- [tasks/.atlas/config.yml](./examples/tasks/.atlas/config.yml)
+- [.atlas/handlers/task_id.sh](./examples/tasks/.atlas/handlers/task_id.sh)
+
+## Entries table
+
+Entry table is a list of entries in the workspace, it have columns that can be customized to display the metas of an entry as a column
+
+
+![](./screenshots/03.png)
+
+You can customize the columns in the tui but it is more easy to add a new screen that extend the entry_table with the columns you want in the config file:
+
+```yml
+screens:
+    - id: task_table
+      type: entry_table
+      title: "Tasks"
+      columns:
+          - id: id
+            label: "ID"
+            field: task_id
+            width: 10
+
+          - id: title
+            label: "Title"
+            field: title
+```
+
+Examples: 
+
+- [tasks/.atlas/config.yml](./examples/tasks/.atlas/config.yml)
+- [config-folder/.atlas/config/screens/tasks.yml](./examples/config-folder/.atlas/config/screens/tasks.yml)
+
+
+## Custom screens
+
+![](./screenshots/02.png)
+
+By default the tui a `entry_table` screen and `entry_single` screen
+
+But you can add `custom` screens to the app by config file
+
+> warning: it still a working in progress feature
+
+```yml
+type: custom
+components:
+    - type: text
+      content: "{{ .entry.content }}"
+      cols: 220
+      rows: 37
+```
+
+Examples:
+
+- [config-folder/.atlas/config/screens/task_detail.yml](./examples/config-folder/.atlas/config/screens/task_detail.yml)
 
 ## Sync 
 
-To query entries correctly, the tool needs to have a local database that is synced with the workspace.
+For speed and query purposes the tool use a SQL database that is syncronized with the current workspace.
 
-The first time you use the toll you will be required to sync all entries available.
+But it is a disposable database, the `source of true` will always be files and folders and the metadata handlers, the database is only a facilitator
 
+To syncronize all entries you can run
 ```sh
-atlas sync-all
+atlas sync:all
 ```
 
-This need to happen only once, and then every time you modify something via the tool, the database will be updated automatically.
+Or sync only a individual entry
 
-If you modify something outside the tool, you don't need to sync all again you can make a focus sync with run `atlas sync`.
-
-```sh 
-atlas sync tasks/001.md
+```sh
+atlas sync tasks/001_word_domination.md
 ```
 
 ## Search entries 
 
-You can query entries using a special syntax, for example:
+You can query entries using a special syntax for the tool:
 
 ```sh
-atlas list -q "type=file ext=md frontmatter.id=001"
+atlas list -q "parent=tasks id=001"
 ```
 
-This returns all entries that are files, have the extension `.md`, and have a frontmatter tag of `project`.
+The syntax follows a `key=value` pattern where the `key` is the metadata name
 
-## Filters 
+## Actions
 
-### type 
+You can declare app actions that are scripts that can be used later with keybinds.
 
-Filter by entry type, for example `type=file` or `type=directory`.
+```yml
+actions:
+    - id: vi
+      type: shell
+      description: open vi in a tmux popup to edit the entry
+      command: tmux popup -E -h 90% -w 90% -x C -y C "vi {{ .entry.path }}"
 
-### ext 
+    - id: generate-tasks
+      type: shell
+      description: generate ramdom tasks
+      command: "{{ .workspace.atlas_path }}/bin/tasks.js 100"
+```
+Examples:
 
-Filter by file extension, for example `ext=md` or `ext=txt`.
+- [tasks/.atlas/config.yml](./examples/tasks/.atlas/config.yml)
+- [config-folder/.atlas/config/actions/vi.yml](./examples/config-folder/.atlas/config/actions/vi.yml)
 
-### frontmatter 
+## Keybinds
 
-This is a filter that exists for markdown files that have frontmatter. You can filter by frontmatter tags, for example `frontmatter.tag=project` or `frontmatter.status=active`.
+You can add custom keymaps similar to `vim` in the tool.
 
-### Others 
+And also it is possible to filter the places when they will be active like screens, components or a specifict entry
 
-Basic you can query any metadata that is stored in the entry_metas table, for example `myspecialmeta=somevalue`.
+```yml
+keymaps:
+    - keys: [g]
+      action: generate-tasks
+      description: Generate tasks
+      groups: [global]
 
-## JSON output 
-
-You can output the results in JSON format using the `-j` flag:
-
-```sh
-atlas list -q "type=file ext=md frontmatter.tag=project" -j
+    - keys: [o]
+      action: vi
+      description: open
+      groups: [ext=md, ext=json]
 ```
 
-## entities 
-
-Define some entities that live in the workspace, normally it is a list of files in folder or something like that 
-
-And entity have a glob pattern that matches the entries in the workspace.
-
-Also the entities have a set of fields that map to entry metas
-
-## Metadata handler 
-
-This are scripts to handle extraction and updates of metadata from entries. 
-
-For example the markdown handler is responsible for extracting frontmatter from markdown files and saving it in the entry_metas table.
-
-The metas are store this way: 
-
-```tom
-frontmatter.id=00 
-frontmatter.status=active 
-frontmatter.tags[0]=project
-frontmatter.tags[1]=important
 ```
-
-The metas follow a dot notation, and arrays are represented with square brackets.
-
-This is to help with the search queries, for example you can query `frontmatter.tags[0]=project` or `frontmatter.tags[1]=important`.
-
-## Keybinds 
-
-``` 
 <C-s>        -> ctrl+s
 <C-c>        -> ctrl+c
 <A-x>        -> alt+x
@@ -148,3 +248,8 @@ This is to help with the search queries, for example you can query `frontmatter.
 <leader>ff   -> <leader>, f, f
 gg           -> g, g
 ```
+
+Examples:
+
+- [tasks/.atlas/config.yml](./examples/tasks/.atlas/config.yml)
+- [config-folder/.atlas/config.yml](./examples/config-folder/.atlas/config.yml)

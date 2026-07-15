@@ -52,7 +52,6 @@ screens:
       description: "List of tasks"
       query: "parent=tasks"
       open_screen: task_detail
-      limit: 100
       columns:
           - id: id
             label: "ID"

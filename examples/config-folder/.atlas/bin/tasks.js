@@ -185,6 +185,12 @@ function randomParagraphs() {
     ).join("\n\n");
 }
 
+function formatDate(date) {
+    const d = date.toISOString().split("T")[0];
+    const t = date.toTimeString().split(" ")[0];
+    return `${d} ${t}`;
+}
+
 for (let i = 1; i <= TOTAL_TASKS; i++) {
     const number = String(i).padStart(3, "0");
 
@@ -229,8 +235,8 @@ estimateHours: ${randInt(1, 40)}
 progress: ${randInt(0, 100)}
 tags:
 ${tags.map((t) => `  - ${t}`).join("\n")}
-created: ${created.toISOString()}
-updated: ${updated.toISOString()}
+created: ${formatDate(created)}
+updated: ${formatDate(updated)}
 due: ${due ? due.toISOString() : "null"}
 completed: ${completed ? completed.toISOString() : "null"}
 assignee: ${randomName()}

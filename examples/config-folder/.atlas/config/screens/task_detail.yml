@@ -21,6 +21,58 @@ components:
             label: "Status"
             name: status
 
-          - id: due
-            label: "Due Date"
-            name: due
+          - id: priority
+            label: "Priority"
+            name: priority
+
+          - id: project
+            label: "Project"
+            name: project
+
+          - id: context
+            label: "Context"
+            name: context
+
+          - id: favorite
+            label: "Favorite"
+            name: favorite
+
+          - id: archived
+            label: "Archived"
+            name: archived
+
+          - id: estimateHours
+            label: "Estimate Hours"
+            name: estimateHours
+
+          - id: progress
+            label: "Progress"
+            name: progress
+
+          # - id: tags
+          #   label: "Tags"
+          #   name: tags
+
+          - id: created
+            label: "Created"
+            name: created
+
+          - id: updated
+            label: "Updated"
+            name: updated
+
+          # - id: due
+          #   label: "Due Date"
+          #   name: due
+          #
+          # - id: completed
+          #   label: "Completed"
+          #   name: completed
+          #
+          # - id: assignee
+          #   label: "Assignee"
+          #   name: assignee
+          #
+          # - id: reviewer
+          #   label: "Reviewer"
+          #   name: reviewer
