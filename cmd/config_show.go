@@ -28,6 +28,11 @@ var configShowCmd = &cobra.Command{
 
 		entries := config.GetAll()
 
+		if len(entries) == 0 {
+			fmt.Println("No configuration entries found.")
+			return
+		}
+
 		keys := slices.Collect(maps.Keys(entries))
 
 		slices.SortFunc(keys, func(a, b string) int {

@@ -9,6 +9,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
+	"github.com/sidekick-coder/atlas/tui/app/screen"
 	"github.com/sidekick-coder/atlas/tui/features/key"
 	"github.com/sidekick-coder/atlas/tui/features/layer"
 	"github.com/sidekick-coder/atlas/tui/features/theme"
@@ -23,7 +24,7 @@ func (c *Component) LoadSize() {
 }
 
 func (c *Component) HandleView(msg tea.Msg) tea.Cmd {
-	if _, ok := msg.(tea.WindowSizeMsg); ok {
+	if _, ok := msg.(screen.SizeMsg); ok {
 		c.LoadSize()
 	}
 
