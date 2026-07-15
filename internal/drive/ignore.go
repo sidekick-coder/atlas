@@ -11,11 +11,13 @@ var requiredIgnores = []string{
 }
 
 var defaultIgnores = []string{
-	"node_modules",
-	"package-lock.json",
-	"vendor",
-	".git",
-	".DS_Store",
+	"**/node_modules",
+	"**/package-lock.json",
+	"**/vendor",
+	"**/.git",
+	"**/.DS_Store",
+	"$RECYCLE.BIN",
+	"System Volume Information",
 }
 
 func CreateIgnorePatterns(ignores ...string) []string {
