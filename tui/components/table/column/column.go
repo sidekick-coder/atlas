@@ -51,6 +51,10 @@ func (f *Feature) SetColumnSize() {
 		}
 	}
 
+	if withWidthCount == len(f.columns) {
+		return
+	}
+
 	wihoutWidthWidth := remaningWidth / (len(f.columns) - withWidthCount)
 
 	for i, column := range f.columns {
