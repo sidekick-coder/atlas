@@ -1,4 +1,0 @@
-CREATE TABLE entries (
-    id INTEGER PRIMARY KEY,
-    path TEXT NOT NULL UNIQUE
-);

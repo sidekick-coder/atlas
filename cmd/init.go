@@ -21,7 +21,6 @@ var initCmd = &cobra.Command{
 			return nil
 		}
 
-
 		dir, ok := config.Get("workspace.atlas_path")
 
 		if !ok {

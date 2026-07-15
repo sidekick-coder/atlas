@@ -1,64 +1,30 @@
-package database 
-
-import (
-	"os"
-	"path/filepath"
-	"time"
-)
+package database
 
 func (db *Database) Migrate() error {
-	if _, err := db.Connection.Exec(`
-		CREATE TABLE IF NOT EXISTS migrations (
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			name TEXT UNIQUE,
-			applied_at INTEGER
+	smpt := []string{}
+
+	smpt = append(smpt, `
+		CREATE TABLE entries (
+			id INTEGER PRIMARY KEY,
+			path TEXT NOT NULL UNIQUE
 		);
-	`); err != nil {
-		return err
-	}
+	`)
 
-	dir := "internal/database/migrations"
+	smpt = append(smpt, `
+		CREATE TABLE entry_metas (
+			id INTEGER PRIMARY KEY,
+			entry_id INTEGER NOT NULL,
+			name TEXT NOT NULL,
+			value TEXT NOT NULL
+		);
+	`)
 
-	files, err := os.ReadDir(dir)
+	smpt = append(smpt, `CREATE UNIQUE INDEX idx_entrie_metas_entry_id_name ON entry_metas (entry_id, name);`)
 
-	if err != nil {
-		return err
-	}
-
-	for _, f := range files {
-		name := f.Name()
-
-		var exists int
-
-		err := db.Connection.QueryRow(
-			"SELECT 1 FROM migrations WHERE name = ?",
-			name,
-		).Scan(&exists)
-
-		if err == nil {
-			continue // already applied
-		}
-
-		path := filepath.Join(dir, name)
-		content, err := os.ReadFile(path)
-		if err != nil {
-			return err
-		}
-
-		if _, err := db.Connection.Exec(string(content)); err != nil {
-			return err
-		}
-
-		_, err = db.Connection.Exec(
-			"INSERT INTO migrations (name, applied_at) VALUES (?, ?)",
-			name,
-			time.Now().Unix(),
-		)
-		if err != nil {
+	for _, s := range smpt {
+		if _, err := db.Connection.Exec(s); err != nil {
 			return err
 		}
 	}
-
 	return nil
 }
-
