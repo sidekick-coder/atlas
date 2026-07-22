@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"charm.land/lipgloss/v2"
@@ -29,10 +30,11 @@ var configKeymaps = &cobra.Command{
 		s := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("12"))
 		for id, k := range entries {
 
-			fmt.Printf("ID: %s\n", s.Render(string(id)))
-			fmt.Printf("  Keys: %s\n", strings.Join(k.Keys, ", "))
-			fmt.Printf("  Description: %s\n", k.Description)
-			fmt.Printf("  Keys: %s\n", strings.Join(k.Keys, ", "))
+			fmt.Printf("%s\n", s.Render(strconv.Itoa(id)))
+			fmt.Printf("- ID: %s\n", strconv.Itoa(id))
+			fmt.Printf("- Keys: %s\n", strings.Join(k.Keys, ", "))
+			fmt.Printf("- Description: %s\n", k.Description)
+			fmt.Printf("- Keys: %s", strings.Join(k.Keys, ", "))
 			fmt.Printf("\n")
 
 		}
