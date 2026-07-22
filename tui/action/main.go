@@ -32,6 +32,7 @@ func Load(a *app.App) {
 	manager.action.LoadConfigActions(a.Config())
 
 	manager.action.AddDefinition("entry-sync", actions.EntrySyncAction)
+	manager.action.AddDefinition("entry-update", actions.EntryUpdateAction)
 	manager.action.AddDefinition("input", actions.InputAction)
 
 	config := a.Config()

@@ -3,7 +3,6 @@ package group
 import (
 	"errors"
 	"fmt"
-	"log/slog"
 	"maps"
 
 	"github.com/sidekick-coder/atlas/internal/template"
@@ -104,12 +103,7 @@ func (h Handler) Execute(ctx map[string]any) (map[string]any, error) {
 		}
 
 		result[ga.ID] = ar
-
-		slog.Info("Current ctx", "ctx", currentCtx)
-
 	}
-
-	slog.Info("Group action executed", "result", result)
 
 	result["is_group"] = true
 

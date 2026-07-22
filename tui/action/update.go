@@ -13,7 +13,10 @@ func Update(msg tea.Msg) tea.Cmd {
 			return actions.HandleEntrySync(manager.app, msg)
 		},
 		func(msg tea.Msg) tea.Cmd {
-			return  actions.HandleInput(Execute, msg)
+			return actions.HandleEntryUpdate(manager.app, msg)
+		},
+		func(msg tea.Msg) tea.Cmd {
+			return actions.HandleInput(Execute, msg)
 		},
 	)
 }

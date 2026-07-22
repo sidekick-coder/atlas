@@ -16,6 +16,8 @@ actions:
       type: shell
       command: touch "{{ .workspace.path }}/{{ .filename.output }}"
 
-    - id: entry-sync
-      type: entry-sync
+    - type: entry-update
       path: "{{ .filename.output }}"
+      values:
+          title: "{{ .value }}"
+          status: "open"
