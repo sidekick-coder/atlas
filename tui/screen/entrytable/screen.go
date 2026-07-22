@@ -14,11 +14,9 @@ import (
 	"github.com/sidekick-coder/atlas/tui/components/inputdialog"
 	"github.com/sidekick-coder/atlas/tui/components/table"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
-	"github.com/sidekick-coder/atlas/tui/features/action"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/entryloader"
 	"github.com/sidekick-coder/atlas/tui/features/selection"
-	"github.com/sidekick-coder/atlas/tui/features/userkeymaps"
 	"github.com/sidekick-coder/atlas/tui/messages"
 	tuimodels "github.com/sidekick-coder/atlas/tui/models"
 )
@@ -37,7 +35,6 @@ type Screen struct {
 	table       *table.Component
 	container   *container.Component
 	dialog      *inputdialog.Component
-	userKeymaps *userkeymaps.Feature
 }
 
 func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
@@ -60,7 +57,6 @@ func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 		selection:   selection.Create(),
 		container:   container.Create(),
 		dialog:      inputdialog.Create(),
-		userKeymaps: userkeymaps.Create(),
 	}
 
 	return s, nil
@@ -136,40 +132,22 @@ func (s *Screen) Init() tea.Cmd {
 		s.loader.SetQuery([]string{q.(string)})
 	}
 
-	s.userKeymaps.SetApp(s.app)
-	s.userKeymaps.AddGroup("screen_id=entry_table")
-	s.userKeymaps.OnBeforeActions(func() error {
-		cursor := s.selection.GetCursor()
-
-		if cursor >= 0 {
-			e, err := s.loader.GetEntry(cursor)
-
-			if err != nil {
-				return err
-			}
-
-			s.userKeymaps.AddContext("entry", s.CreateEntryContext(e))
-		}
-
-		return nil
-	})
-
 	return chain.Init(
 		s.loader.Init,
 		s.LoadBindings,
 		s.LoadColumns,
 		s.table.Init,
 		s.InitDialog,
+		s.InitSelection,
 	)
 }
 
 func (s *Screen) Dispose() tea.Cmd {
-	action.RemoveContext("entry")
 
 	return chain.Dispose(
+		s.DisposeSelection,
 		s.table.Dispose,
 		s.dialog.Dispose,
 		s.UnloadBindings,
-		chain.OnVoid(s.userKeymaps.Unload),
 	)
 }

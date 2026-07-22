@@ -21,13 +21,9 @@ var Bindings = Keymap{
 var UserBindings = []key.Binding{}
 
 func (m *model) GetBindings() []key.Binding {
-	bindings := []key.Binding{}
-
-	bindings = append(bindings, Bindings.Close)
-
-	bindings = append(bindings, m.GetUserBindings()...)
-
-	return bindings
+	return []key.Binding{
+		Bindings.Close,
+	}
 }
 
 func (m *model) LoadBindings() tea.Cmd {
@@ -40,26 +36,6 @@ func (m *model) UnloadBindings() {
 	key.Unregister(m.GetBindings()...)
 
 	UserBindings = []key.Binding{}
-}
-
-func (m *model) GetUserBindings() []key.Binding {
-	bindings := []key.Binding{}
-
-	keymaps := m.app.Config().GetKeymapsByGroup("global")
-
-	for _, action := range keymaps {
-		b := key.CreateBinding(action.Keys...).
-			SetDescription(action.Description).
-			SetTags(tags...).
-			SetMeta("action", action.Action).
-			SetHelp(action.Keys[0])
-
-		bindings = append(bindings, b)
-	}
-
-	UserBindings = bindings
-
-	return bindings
 }
 
 func (m *model) HandleBinding(km tea.KeyMsg) tea.Cmd {

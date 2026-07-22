@@ -15,6 +15,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/action"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
+	"github.com/sidekick-coder/atlas/tui/features/keymaps"
 	"github.com/sidekick-coder/atlas/tui/models"
 
 	"github.com/sidekick-coder/atlas/tui/screen/custom"
@@ -54,6 +55,7 @@ func Create(a *app.App) model {
 	}
 
 	action.SetManager(a.Action)
+	keymaps.LoadConfigKeymaps(a.Config())
 
 	return m
 }
@@ -179,7 +181,14 @@ func (m model) InitTabbar() tea.Cmd {
 	return nil
 }
 
+func (m model) InitKeymaps() tea.Cmd {
+	keymaps.AddGroup("global", []string{"global"})
+
+	return nil
+}
+
 func (m model) Init() tea.Cmd {
+
 	return chain.Init(
 		m.footer.Init,
 		m.LoadBindings,
@@ -188,5 +197,6 @@ func (m model) Init() tea.Cmd {
 		m.InitTabbar,
 		m.InitScreen,
 		action.Init,
+		m.InitKeymaps,
 	)
 }

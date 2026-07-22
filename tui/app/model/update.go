@@ -5,6 +5,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/key"
+	"github.com/sidekick-coder/atlas/tui/features/keymaps"
 )
 
 func (m *model) LoadHome(msg tea.Msg) tea.Cmd {
@@ -55,9 +56,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.toolbar.Update,
 
 		m.HandleMessages,
-		m.HandleActions,
-		chain.OnKey(m.HandleUserBindings),
 	    chain.OnKey(m.HandleBinding),
+		keymaps.Update,
 	)
 
 	return m, cmd

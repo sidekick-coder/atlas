@@ -12,14 +12,8 @@ bindings:
       groups:
           - global
 
-    - keys: [s]
+    - keys: [S]
       action: set-status
-      description: mark as done
+      description: update status
       groups:
-          - status=todo
-
-    - keys: [s]
-      action: set-status
-      description: mark as done
-      groups:
-          - status=todo
+          - parent=tasks

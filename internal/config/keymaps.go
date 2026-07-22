@@ -14,6 +14,16 @@ type Keymap struct {
 	Groups      []string `json:"groups"`
 }
 
+func (k Keymap) HasGroup(group ...string) bool {
+	for _, g := range group {
+		if slices.Contains(k.Groups, g) {
+			return true
+		}
+	}
+
+	return false
+}
+
 func ConfigKeymapFromMap(m map[string]any) Keymap {
 	km := Keymap{}
 
