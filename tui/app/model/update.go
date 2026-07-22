@@ -48,6 +48,7 @@ func (m *model) HandleMessages(msg tea.Msg) tea.Cmd {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	cmd := chain.Update(msg,
 		key.HandleKeypress,
+		action.Update,
 
 		m.LoadHome,
 
@@ -57,9 +58,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.toolbar.Update,
 
 		m.HandleMessages,
-	    chain.OnKey(m.HandleBinding),
+		chain.OnKey(m.HandleBinding),
 		keymaps.Update,
-		action.Update,
 	)
 
 	return m, cmd

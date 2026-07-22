@@ -5,6 +5,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
+	"github.com/sidekick-coder/atlas/tui/components/toast"
 )
 
 type EntrySyncMsg struct {
@@ -31,9 +32,13 @@ func EntrySyncAction(ctx map[string]any) (map[string]any, error) {
 	return result, nil
 }
 
-func HandleEntrySyncMsg(app *app.App, msg tea.Msg) tea.Cmd {
+func HandleEntrySync(app *app.App, msg tea.Msg) tea.Cmd {
 	if m, ok := msg.(EntrySyncMsg); ok {
-		app.Syncer().One(m.Path)
+		err := app.Syncer().One(m.Path)
+
+		if err != nil {
+			return toast.Error(fmt.Sprintf("Failed to sync entry: %v", err))
+		}
 
 		return func() tea.Msg {
 			return EntrySyncEndMsg{Path: m.Path}

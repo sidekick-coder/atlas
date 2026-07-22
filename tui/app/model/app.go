@@ -7,13 +7,13 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/internal/config"
+	"github.com/sidekick-coder/atlas/tui/action"
 	"github.com/sidekick-coder/atlas/tui/app/footer"
 	"github.com/sidekick-coder/atlas/tui/app/screen"
 	"github.com/sidekick-coder/atlas/tui/app/tabbar"
 	"github.com/sidekick-coder/atlas/tui/app/toaster"
 	"github.com/sidekick-coder/atlas/tui/app/toolbar"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
-	"github.com/sidekick-coder/atlas/tui/action"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/keymaps"
 	"github.com/sidekick-coder/atlas/tui/models"
@@ -197,5 +197,6 @@ func (m model) Init() tea.Cmd {
 		m.InitTabbar,
 		m.InitScreen,
 		m.InitKeymaps,
+		action.Init,
 	)
 }

@@ -8,14 +8,14 @@ import (
 )
 
 type Component struct {
-	dialog *dialog.Component
-	input *input.Component
+	dialog   *dialog.Component
+	input    *input.Component
 	onSubmit func(string) tea.Cmd
 }
 
 func Create() *Component {
 	return &Component{
-		input: input.Create(),
+		input:  input.Create(),
 		dialog: dialog.Create(),
 	}
 }
@@ -34,7 +34,6 @@ func (c *Component) SetSize(width, height int) *Component {
 	c.dialog.SetSize(width, height)
 	return c
 }
-
 
 func (c *Component) Open() {
 	c.dialog.Open()
@@ -55,11 +54,11 @@ func (c *Component) IsOpen() bool {
 func (c *Component) submit() tea.Cmd {
 	value := c.input.GetValue()
 
+	c.dialog.Close()
+
 	if c.onSubmit != nil {
 		return c.onSubmit(value)
 	}
-
-	c.dialog.Close()
 
 	return nil
 }

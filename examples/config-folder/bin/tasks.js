@@ -3,7 +3,7 @@
 import fs from "fs";
 import path from "path";
 
-const OUTPUT_DIR = path.resolve(import.meta.dirname, "..", "..", "tasks");
+const OUTPUT_DIR = path.resolve(import.meta.dirname, "..", "tasks");
 const TOTAL_TASKS = Number(process.argv[2]) || 10;
 
 fs.rmSync(OUTPUT_DIR, { recursive: true, force: true });

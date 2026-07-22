@@ -8,6 +8,7 @@ import (
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/tui/action/actions"
 	tc "github.com/sidekick-coder/atlas/tui/components/toast"
+	"github.com/sidekick-coder/atlas/tui/features/chain"
 )
 
 type ActionContext struct {
@@ -31,6 +32,17 @@ func Load(a *app.App) {
 	manager.action.LoadConfigActions(a.Config())
 
 	manager.action.AddDefinition("entry-sync", actions.EntrySyncAction)
+	manager.action.AddDefinition("input", actions.InputAction)
+
+	config := a.Config()
+
+	AddContext("workspace", map[string]any{
+		"workspace": config.GetMap("workspace"),
+	})
+}
+
+func Init() tea.Cmd {
+	return chain.Init(actions.InitInputDialog)
 }
 
 func AddDefinition(id string, fn func(map[string]any) (map[string]any, error)) {
@@ -50,8 +62,12 @@ func RemoveContext(id string) {
 	delete(manager.context, id)
 }
 
-func Execute(id string) tea.Cmd {
+func Execute(id string, extraCtx ...map[string]any) tea.Cmd {
 	ctx := make(map[string]any)
+
+	for _, c := range extraCtx {
+		maps.Copy(ctx, c)
+	}
 
 	for _, c := range manager.context {
 		maps.Copy(ctx, c.Context)
@@ -67,7 +83,7 @@ func Execute(id string) tea.Cmd {
 
 	resultList := make([]map[string]any, 0)
 
-	isGroup, ok := result["$is_group"].(bool)
+	isGroup, ok := result["is_group"].(bool)
 
 	if ok && isGroup {
 		for _, v := range result {

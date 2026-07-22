@@ -6,7 +6,7 @@ open_screen: task_detail
 columns:
     - id: id
       label: "ID"
-      field: id
+      field: task_id
       width: 10
 
     - id: title

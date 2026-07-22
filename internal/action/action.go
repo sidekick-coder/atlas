@@ -36,7 +36,7 @@ func Create() *Manager {
 	m.AddDefinition("group", g.Execute)
 
 	s := shell.Create()
-	
+
 	m.AddDefinition("shell", s.Execute)
 
 	return m
@@ -78,16 +78,23 @@ func (m *Manager) Execute(id string, context map[string]any) (map[string]any, er
 		return nil, fmt.Errorf("action handler %s not found", handlerId)
 	}
 
-	opt, err := template.EvaluateMap(options, context)
-
-	if err != nil {
-		return nil, err
-	}
-
 	ctx := make(map[string]any)
 
 	maps.Copy(ctx, context)
-	maps.Copy(ctx, opt)
+
+	if handlerId == "group" {
+		ctx["actions"] = options["actions"]
+	}
+
+	if handlerId != "group" {
+		opt, err := template.EvaluateMap(options, context)
+
+		if err != nil {
+			return nil, err
+		}
+
+		maps.Copy(ctx, opt)
+	}
 
 	return def.Execute(ctx)
 

@@ -3,12 +3,15 @@ package group
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"maps"
 
+	"github.com/sidekick-coder/atlas/internal/template"
 	"github.com/sidekick-coder/atlas/internal/utils/maputil"
 )
 
 type GroupAction struct {
+	ID      string
 	Type    string
 	Options map[string]any
 }
@@ -38,6 +41,10 @@ func ParseGroupAction(payload any) (GroupAction, error) {
 		return ga, errors.New("missing or invalid 'type' in group action")
 	}
 
+	if id, ok := action["id"].(string); ok {
+		ga.ID = id
+	}
+
 	ga.Type = typeVal
 
 	ga.Options = maputil.Except(action, "type")
@@ -56,11 +63,15 @@ func (h Handler) Execute(ctx map[string]any) (map[string]any, error) {
 
 	groupActions := make([]GroupAction, 0, len(actions))
 
-	for _, action := range actions {
+	for index, action := range actions {
 		ga, err := ParseGroupAction(action)
 
 		if err != nil {
 			return result, err
+		}
+
+		if ga.ID == "" {
+			ga.ID = fmt.Sprintf("%d", index)
 		}
 
 		groupActions = append(groupActions, ga)
@@ -68,21 +79,39 @@ func (h Handler) Execute(ctx map[string]any) (map[string]any, error) {
 
 	currentCtx := map[string]any{}
 
-	for index, ga := range groupActions {
-		maps.Copy(currentCtx, ga.Options)
-		maps.Copy(currentCtx, ctx)
+	maps.Copy(currentCtx, maputil.Except(ctx, "actions"))
 
-		actionResult, err := h.ExecuteAction(ga.Type, currentCtx)
+	for _, ga := range groupActions {
+		if ga.Type == "group" {
+			return result, errors.New("nested group actions are not allowed")
+		}
+
+
+		maps.Copy(currentCtx, result)
+
+		opts, err := template.EvaluateMap(maputil.Except(ga.Options, "id"), currentCtx)
 
 		if err != nil {
 			return result, err
 		}
 
-		maps.Copy(currentCtx, actionResult)
-		result[fmt.Sprintf("%d", index)] = actionResult
+		maps.Copy(currentCtx, opts)
+
+		ar, err := h.ExecuteAction(ga.Type, currentCtx)
+
+		if err != nil {
+			return result, err
+		}
+
+		result[ga.ID] = ar
+
+		slog.Info("Current ctx", "ctx", currentCtx)
+
 	}
 
-	result["$is_group"] = true
+	slog.Info("Group action executed", "result", result)
+
+	result["is_group"] = true
 
 	return result, nil
 }

@@ -1,4 +1,12 @@
 bindings:
+    - keys: [a]
+      action: input
+      action_options:
+          label: "Task name"
+          submit: create-task
+      description: create task
+      groups: [global]
+
     - keys: [v]
       action: vi
       description: vim

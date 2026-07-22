@@ -5,8 +5,8 @@ import (
 	"github.com/sidekick-coder/atlas/internal/config"
 	"github.com/sidekick-coder/atlas/internal/utils"
 	"github.com/sidekick-coder/atlas/internal/utils/maputil"
-	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/action"
+	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/key"
 )
@@ -18,7 +18,7 @@ type Manager struct {
 }
 
 type ManagerGroup struct {
-	ID string
+	ID     string
 	Values []string
 }
 
@@ -48,7 +48,7 @@ func AddGroup(id string, groups []string) {
 	UnloadBindings()
 
 	mg := ManagerGroup{
-		ID: id,
+		ID:     id,
 		Values: groups,
 	}
 
@@ -97,6 +97,7 @@ func LoadBindings() {
 			SetTags("user").
 			SetHelp(action.Keys[0]).
 			SetMeta("action", action.Action).
+			SetMeta("options", action.ActionOptions).
 			SetID(action.ID)
 
 		bindings = append(bindings, b)
@@ -114,12 +115,21 @@ func HandleBinding(msg tea.KeyMsg) tea.Cmd {
 	for _, b := range manager.bindings {
 		if key.Matches(b) {
 			actionId := b.GetMeta("action")
+			options := b.GetMeta("options")
 
 			if actionId == nil {
 				return toast.Error("No action defined for key binding: " + b.GetDescription())
 			}
 
-			return action.Execute(actionId.(string))
+			ctx := map[string]any{}
+
+			if options != nil {
+				if opts, ok := options.(map[string]any); ok {
+					ctx = opts
+				}
+			}
+
+			return action.Execute(actionId.(string), ctx)
 		}
 	}
 

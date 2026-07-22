@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"strings"
 
-	"charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/internal/config"
 	"github.com/spf13/cobra"
 )
@@ -27,14 +26,22 @@ var configKeymaps = &cobra.Command{
 
 		entries := config.GetKeymaps()
 
-		s := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("12"))
 		for id, k := range entries {
-
-			fmt.Printf("%s\n", s.Render(strconv.Itoa(id)))
 			fmt.Printf("- ID: %s\n", strconv.Itoa(id))
 			fmt.Printf("- Keys: %s\n", strings.Join(k.Keys, ", "))
 			fmt.Printf("- Description: %s\n", k.Description)
-			fmt.Printf("- Keys: %s", strings.Join(k.Keys, ", "))
+			fmt.Printf("- Keys: %s\n", strings.Join(k.Keys, ", "))
+
+			for _, g := range k.Groups {
+				fmt.Printf("- Group: %v\n", g)
+			}
+
+			fmt.Printf("- Action: %v\n", k.Action)
+
+			if len(k.ActionOptions) > 0 {
+				fmt.Printf("- ActionOptions: %v\n", k.ActionOptions)
+			}
+
 			fmt.Printf("\n")
 
 		}
