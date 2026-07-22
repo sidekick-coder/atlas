@@ -23,5 +23,7 @@ func EvaluateMap(payload map[string]any, context map[string]any) (map[string]any
 		result[key] = ev
 	}
 
-	return result, nil
+	unflattened := utils.Unflatten(result)
+
+	return unflattened, nil
 }

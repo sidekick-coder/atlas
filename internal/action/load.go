@@ -1,6 +1,8 @@
 package action
 
-import "github.com/sidekick-coder/atlas/internal/config"
+import (
+	"github.com/sidekick-coder/atlas/internal/config"
+)
 
 func (m *Manager) LoadConfigActions(config *config.Config) error {
 	actions, err := config.GetActions()

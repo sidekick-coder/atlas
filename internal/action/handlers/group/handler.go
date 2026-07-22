@@ -1,46 +1,55 @@
-package action
+package group
 
 import (
 	"errors"
-	"github.com/sidekick-coder/atlas/internal/template"
-	"os/exec"
-	"strings"
+	"fmt"
+	"maps"
+
+	"github.com/sidekick-coder/atlas/internal/utils/maputil"
 )
 
 type GroupAction struct {
-	ID	  string 
-	Options map[string]string
+	Type    string
+	Options map[string]any
 }
 
 type Handler struct {
-	ExecuteAction func(ctx map[string]any) (map[string]any, error)
-	Options map[string]string
+	ExecuteAction func(id string, ctx map[string]any) (map[string]any, error)
 }
 
-func ParseGroupAction(action map[string]any) (GroupAction, error) {
-	id, ok := action["id"].(string)
+func Create(executeAction func(id string, ctx map[string]any) (map[string]any, error)) Handler {
+	return Handler{
+		ExecuteAction: executeAction,
+	}
+}
+
+func ParseGroupAction(payload any) (GroupAction, error) {
+	action, ok := payload.(map[string]any)
 
 	if !ok {
-		return GroupAction{}, errors.New("invalid or missing 'id' in group action")
+		return GroupAction{}, errors.New("invalid group action format")
 	}
 
-	options, ok := action["options"].(map[string]string)
+	ga := GroupAction{}
+
+	typeVal, ok := action["type"].(string)
+
 	if !ok {
-		return GroupAction{}, errors.New("invalid or missing 'options' in group action")
+		return ga, errors.New("missing or invalid 'type' in group action")
 	}
 
-	ga := GroupAction{
-		ID:      id,
-		Options: options,
-	}
+	ga.Type = typeVal
+
+	ga.Options = maputil.Except(action, "type")
 
 	return ga, nil
 }
 
-func (c Handler) Execute(ctx map[string]any) (map[string]any, error) {
+func (h Handler) Execute(ctx map[string]any) (map[string]any, error) {
 	result := make(map[string]any)
 
-	actions, ok := ctx["actions"].([]map[string]any)
+	actions, ok := ctx["actions"].([]any)
+
 	if !ok {
 		return result, errors.New("invalid or missing 'actions' in context")
 	}
@@ -55,6 +64,22 @@ func (c Handler) Execute(ctx map[string]any) (map[string]any, error) {
 		}
 
 		groupActions = append(groupActions, ga)
+	}
+
+	currentCtx := map[string]any{}
+
+	for index, ga := range groupActions {
+		maps.Copy(currentCtx, ga.Options)
+		maps.Copy(currentCtx, ctx)
+
+		actionResult, err := h.ExecuteAction(ga.Type, currentCtx)
+
+		if err != nil {
+			return result, err
+		}
+
+		maps.Copy(currentCtx, actionResult)
+		result[fmt.Sprintf("%d", index)] = actionResult
 	}
 
 	return result, nil

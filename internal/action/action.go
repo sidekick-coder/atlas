@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"maps"
 
+	"github.com/sidekick-coder/atlas/internal/action/handlers/group"
+	"github.com/sidekick-coder/atlas/internal/action/handlers/shell"
 	"github.com/sidekick-coder/atlas/internal/template"
 )
 
@@ -24,10 +26,20 @@ type Manager struct {
 }
 
 func Create() *Manager {
-	return &Manager{
+	m := &Manager{
 		data:        make(map[string]ActionData),
 		definitions: make(map[string]ActionHandler),
 	}
+
+	g := group.Create(m.Execute)
+
+	m.AddDefinition("group", g.Execute)
+
+	s := shell.Create()
+	
+	m.AddDefinition("shell", s.Execute)
+
+	return m
 }
 
 func (m *Manager) Add(id string, actionType string, options map[string]any) ActionData {
@@ -50,19 +62,23 @@ func (m *Manager) AddDefinition(id string, execute func(map[string]any) (map[str
 }
 
 func (m *Manager) Execute(id string, context map[string]any) (map[string]any, error) {
+	handlerId := id
+	options := make(map[string]any)
+
 	data, exists := m.data[id]
 
-	if !exists {
-		return nil, fmt.Errorf("action with ID %s not found", id)
+	if exists {
+		handlerId = data.Type
+		options = data.Options
 	}
 
-	def, exists := m.definitions[data.Type]
+	def, exists := m.definitions[handlerId]
 
 	if !exists {
-		return nil, fmt.Errorf("action definition for type %s not found", data.Type)
+		return nil, fmt.Errorf("action handler %s not found", handlerId)
 	}
 
-	opt, err := template.EvaluateMap(data.Options, context)
+	opt, err := template.EvaluateMap(options, context)
 
 	if err != nil {
 		return nil, err
@@ -74,6 +90,7 @@ func (m *Manager) Execute(id string, context map[string]any) (map[string]any, er
 	maps.Copy(ctx, opt)
 
 	return def.Execute(ctx)
+
 }
 
 func (m *Manager) List() ([]ActionData, error) {

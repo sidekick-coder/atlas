@@ -1,4 +1,4 @@
-package action
+package shell
 
 import (
 	"errors"
@@ -7,15 +7,18 @@ import (
 	"strings"
 )
 
-type Handler struct {
-	Options map[string]string
+type Handler struct {}
+
+func Create() Handler {
+	return Handler{}
 }
 
 func (c Handler) Execute(ctx map[string]any) (map[string]any, error) {
-	command := c.Options["command"]
 	result := make(map[string]any)
 
-	if command == "" {
+	command, ok := ctx["command"].(string)
+
+	if !ok || command == "" {
 		return result, errors.New("command not specified in action options")
 	}
 

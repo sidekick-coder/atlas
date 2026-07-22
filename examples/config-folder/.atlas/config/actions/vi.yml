@@ -1,5 +1,5 @@
 type: group
-subactions:
+actions:
     - type: shell
       command: tmux popup -E -h 90% -w 90% -x C -y C "vi {{ .entry.absolute_path }}"
 
