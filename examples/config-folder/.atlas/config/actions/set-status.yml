@@ -1,0 +1,5 @@
+type: entry-update
+name: status
+path: "{{ .entry.path }}"
+value: "{{ .values.status }}"
+

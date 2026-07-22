@@ -14,22 +14,6 @@ type Keymap struct {
 	Groups      []string `json:"groups"`
 }
 
-func toStringSlice(v any) []string {
-	arr, ok := v.([]any)
-	if !ok {
-		return nil
-	}
-
-	out := make([]string, 0, len(arr))
-	for _, x := range arr {
-		if s, ok := x.(string); ok {
-			out = append(out, s)
-		}
-	}
-
-	return out
-}
-
 func ConfigKeymapFromMap(m map[string]any) Keymap {
 	km := Keymap{}
 

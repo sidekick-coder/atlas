@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/sidekick-coder/atlas/internal/action"
 	"github.com/sidekick-coder/atlas/internal/actionmanager"
 	"github.com/sidekick-coder/atlas/internal/config"
 	"github.com/sidekick-coder/atlas/internal/database"
@@ -20,6 +21,8 @@ type App struct {
 
 	actionManager *actionmanager.ActionManager
 	syncer        *syncer.Syncer
+
+	Action *action.Manager
 }
 
 func Create() (*App, error) {
@@ -49,12 +52,13 @@ func Create() (*App, error) {
 		return nil, err
 	}
 
-
 	entryRepo := entry.New(database)
 	entryMetaRepo := entrymeta.New(database)
 
 	s := syncer.Create().SetConfig(config).SetDrive(drive).SetDatabase(database)
+	a := action.Create()
 
+	a.LoadConfigActions(config)
 
 	app := &App{
 		config:   config,
@@ -67,6 +71,8 @@ func Create() (*App, error) {
 		entryMetaRepo: entryMetaRepo,
 
 		syncer: s,
+
+		Action: a,
 	}
 
 	return app, nil

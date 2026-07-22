@@ -1,2 +1,7 @@
-type: shell
-command: tmux popup -E -h 90% -w 90% -x C -y C "vi {{ .entry.absolute_path }}"
+type: group
+subactions:
+    - type: shell
+      command: tmux popup -E -h 90% -w 90% -x C -y C "vi {{ .entry.absolute_path }}"
+
+    - type: entry-sync
+      path: "{{ .entry.path }}"

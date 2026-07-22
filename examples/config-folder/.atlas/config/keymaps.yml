@@ -1,0 +1,19 @@
+bindings:
+    - keys: [v]
+      action: vi
+      description: vim
+      groups:
+          - ext=md
+          - ext=json
+
+    - keys: [s]
+      action: set-status
+      description: mark as todo
+      groups:
+          - status=done
+
+    - keys: [s]
+      action: set-status
+      description: mark as done
+      groups:
+          - status=todo
