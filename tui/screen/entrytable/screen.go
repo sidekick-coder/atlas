@@ -69,7 +69,7 @@ func (s *Screen) Title() string {
 		return pt
 	}
 
-	return "tables"
+	return "entries"
 }
 
 func (s *Screen) CreateEntryContext(e models.Entry) map[string]any {

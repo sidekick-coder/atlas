@@ -70,18 +70,19 @@ func (m Handler) ID() string {
 func (m Handler) Extract(info *models.EntryInfo) (map[string]string, error) {
 	result := map[string]string{}
 
-	result["ext"] = strings.TrimPrefix(filepath.Ext(info.BaseName), ".")
 	result["basename"] = info.BaseName
 	result["type"] = info.Type
 	result["path"] = info.Path
 
-	parent := filepath.Dir(info.Path)
-	
-	if parent == "." {
-		parent = ""
+	if info.Type == "file" {
+		result["ext"] = strings.TrimPrefix(filepath.Ext(info.BaseName), ".")
 	}
 
-	result["parent"] = parent
+	parent := filepath.Dir(filepath.Clean(info.Path))
+
+	if parent != "." {
+		result["parent"] = parent
+	}
 
 	return result, nil
 }

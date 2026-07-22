@@ -1,5 +1,5 @@
 type: entry_table
-title: "Tasks"
+title: "tasks"
 description: "List of tasks"
 query: "parent=tasks"
 open_screen: task_detail

@@ -16,15 +16,15 @@ type Keymap struct {
 var tags = []string{"global", "screen"}
 
 var Bindings = Keymap{
-	Next: key.CreateBinding("<leader><tab>").
+	Next: key.CreateBinding("<leader><n>").
 		SetTags(tags...).
 		SetHidden(true).
-		SetHelp("<leader>tab").
+		SetHelp("<leader>n").
 		SetDescription("Next screen"),
-	Prev: key.CreateBinding("<leader><s-tab>").
+	Prev: key.CreateBinding("<leader>p").
 		SetTags(tags...).
 		SetHidden(true).
-		SetHelp("<leader><shift+tab>").
+		SetHelp("<leader>p").
 		SetDescription("Previous screen"),
 	Add: key.CreateBinding("<leader>a").
 		SetTags(tags...).

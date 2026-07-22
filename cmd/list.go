@@ -2,10 +2,13 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
+	"strings"
+
+	"charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/internal/repository/entry"
-	"github.com/sidekick-coder/atlas/internal/utils"
+	"github.com/sidekick-coder/atlas/tui/features/theme"
+	"github.com/spf13/cobra"
 )
 
 // listCmd represents the list command
@@ -13,10 +16,12 @@ var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List entries in the workspace",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		app, err := app.Create()
-		showMetas, _ := cmd.Flags().GetStringArray("metas")
+		showMetas, _ := cmd.Flags().GetBool("metas")
 		limit, _ := cmd.Flags().GetInt("limit")
 		offset, _ := cmd.Flags().GetInt("offset")
+		query, _ := cmd.Flags().GetStringSlice("query")
+
+		app, err := app.Create()
 
 		if err != nil {
 			fmt.Println(err)
@@ -27,9 +32,13 @@ var listCmd = &cobra.Command{
 		entryMetaRepo := app.EntryMetaRepo()
 
 		options := entry.ListOptions{
-			Query:  args,
+			Query:  []string{},
 			Limit:  limit,
 			Offset: offset,
+		}
+
+		if len(query) > 0 {
+			options.Query = query
 		}
 
 		entries, err := entryRepo.List(options)
@@ -39,10 +48,13 @@ var listCmd = &cobra.Command{
 			return nil
 		}
 
+		ks := lipgloss.NewStyle().Width(20).Bold(true).Foreground(lipgloss.Color(theme.Current.Primary))
+		vs := lipgloss.NewStyle().Foreground(lipgloss.Color(theme.Current.Secondary))
+
 		for _, entry := range entries {
 			fmt.Printf("%s\n", entry.Path)
 
-			if len(showMetas) > 0 {
+			if showMetas {
 				metas, err := entryMetaRepo.ListByEntryID(entry.ID)
 
 				if err != nil {
@@ -50,7 +62,17 @@ var listCmd = &cobra.Command{
 					continue
 				}
 
-				utils.PrintMetas(metas)
+				for _, m := range metas {
+					v := m.Value
+
+					v = strings.ReplaceAll(v, "\n", "\\n")
+
+					if len(v) > 60 {
+						v = v[:60] + "..."
+					}
+
+					fmt.Printf("  %s: %s\n", ks.Render(m.Name), vs.Render(v))
+				}
 			}
 		}
 
@@ -61,7 +83,8 @@ var listCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(listCmd)
 
-	rootCmd.PersistentFlags().StringArrayP("metas", "m", []string{}, "Show metadata for the entries")
+	rootCmd.PersistentFlags().StringSliceP("query", "q", []string{}, "Query to filter entries")
+	rootCmd.PersistentFlags().BoolP("metas", "m", false, "Show metadata for each entry")
 	rootCmd.PersistentFlags().IntP("limit", "l", 0, "Limit the number of entries to list")
 	rootCmd.PersistentFlags().IntP("offset", "o", 0, "Offset the entries to list")
 }

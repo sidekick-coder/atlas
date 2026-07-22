@@ -16,7 +16,7 @@ type ListOptions struct {
 func (r *Repository) List(payload ...ListOptions) ([]models.Entry, error) {
 	options := ListOptions{
 		Query:     []string{},
-		Limit:     10,
+		Limit:     100,
 		Offset:    0,
 		LoadMetas: true,
 	}

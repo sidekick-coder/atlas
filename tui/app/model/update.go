@@ -20,16 +20,24 @@ func (m *model) LoadHome(msg tea.Msg) tea.Cmd {
 		return nil
 	}
 
-	hs, ok := m.app.Config().Get("tui.home_screen")
+	op := m.app.Config().GetArrayString("tui.open_screens")
 
-	if !ok {
-		return m.AddScreenEmpty()
+	for _, s := range op {
+		_, err := m.screen.Add(s)
+
+		if err != nil {
+			return toast.Error(err.Error())
+		}
 	}
 
-	_, err := m.screen.Add(hs)
+	index, ok := m.app.Config().GetInt("tui.initial_screen_index")
 
-	if err != nil {
-		return toast.Error(err.Error())
+	if ok {
+		err := m.screen.SetCurrent(index)
+
+		if err != nil {
+			return toast.Error(err.Error())
+		}
 	}
 
 	m.ready = true

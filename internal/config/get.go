@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/sidekick-coder/atlas/internal/utils"
@@ -108,4 +109,20 @@ func (c *Config) GetArrayString(key string) []string {
 	}
 
 	return result
+}
+
+func (c *Config) GetInt(key string) (int, bool) {
+	v, ok := c.entries[key]
+
+	if !ok {
+		return 0, false
+	}
+
+	i, err := strconv.Atoi(v)
+
+	if err != nil {
+		return 0, false
+	}
+
+	return i, true
 }
