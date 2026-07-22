@@ -5,3 +5,6 @@ actions:
 
     - type: entry-sync
       path: "{{ .entry.path }}"
+
+    - type: toast
+      message: entry updated

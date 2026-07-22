@@ -63,6 +63,8 @@ func Execute(id string) tea.Cmd {
 		return tc.Error(err.Error())
 	}
 
+	cmds := make([]tea.Cmd, 0)
+
 	resultList := make([]map[string]any, 0)
 
 	isGroup, ok := result["$is_group"].(bool)
@@ -81,10 +83,16 @@ func Execute(id string) tea.Cmd {
 
 	for _, r := range resultList {
 		if rmsg, ok := r["tea_message"].(tea.Msg); ok {
-			return func() tea.Msg {
+			cmd := func() tea.Msg {
 				return rmsg
 			}
+
+			cmds = append(cmds, cmd)
 		}
+	}
+
+	if len(cmds) > 0 {
+		return tea.Batch(cmds...)
 	}
 
 	return nil
