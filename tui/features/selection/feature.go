@@ -7,6 +7,7 @@ type Feature struct {
 	loop    bool
 }
 
+
 func Create() *Feature {
 	return &Feature{
 		cursor:  -1,

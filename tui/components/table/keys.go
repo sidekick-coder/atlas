@@ -57,10 +57,14 @@ func (c *Component) UnloadBindings() tea.Cmd {
 func (c *Component) HandleBindings(msg tea.KeyMsg) tea.Cmd {
 	if key.Matches(Binding.Up) {
 		c.itemSelection.Prev()
+
+		return SelectionChangeCmd(c.itemSelection.GetCursor())
 	}
 
 	if key.Matches(Binding.Down) {
 		c.itemSelection.Next()
+
+		return SelectionChangeCmd(c.itemSelection.GetCursor())
 	}
 
 	if key.Matches(Binding.EditColumns) {

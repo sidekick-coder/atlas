@@ -14,11 +14,27 @@ type Binding struct {
 	tags   []string
 	help   string
 	desc   string
+	metas  map[string]any
 }
 
 type BindingKey struct {
 	original string
 	tokens   []string
+}
+
+func (b Binding) GetMeta(key string) any {
+	meta, ok := b.metas[key]
+
+	if !ok {
+		return nil
+	}
+
+	return meta
+}
+
+func (b Binding) SetMeta(name string, meta any) Binding {
+	b.metas[name] = meta
+	return b
 }
 
 func (bk BindingKey) GetTokens() []string {
@@ -123,9 +139,10 @@ func CreateBinding(keys ...string) Binding {
 	}
 
 	return Binding{
-		id:   id,
-		keys: bkeys,
-		tags: []string{},
+		id:    id,
+		keys:  bkeys,
+		tags:  []string{},
+		metas: map[string]any{},
 	}
 }
 

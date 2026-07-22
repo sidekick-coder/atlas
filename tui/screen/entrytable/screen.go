@@ -14,6 +14,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/components/inputdialog"
 	"github.com/sidekick-coder/atlas/tui/components/table"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
+	"github.com/sidekick-coder/atlas/tui/features/action"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/entryloader"
 	"github.com/sidekick-coder/atlas/tui/features/selection"
@@ -163,6 +164,7 @@ func (s *Screen) Init() tea.Cmd {
 }
 
 func (s *Screen) Dispose() tea.Cmd {
+	action.RemoveContext("entry")
 
 	return chain.Dispose(
 		s.table.Dispose,

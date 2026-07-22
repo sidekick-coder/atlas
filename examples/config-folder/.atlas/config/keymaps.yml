@@ -6,11 +6,17 @@ bindings:
           - ext=md
           - ext=json
 
+    - keys: [t]
+      action: hello
+      description: toast
+      groups:
+          - global
+
     - keys: [s]
       action: set-status
-      description: mark as todo
+      description: mark as done
       groups:
-          - status=done
+          - status=todo
 
     - keys: [s]
       action: set-status

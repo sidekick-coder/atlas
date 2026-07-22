@@ -18,6 +18,8 @@ var Bindings = Keymap{
 		SetHelp("q"),
 }
 
+var UserBindings = []key.Binding{}
+
 func (m *model) GetBindings() []key.Binding {
 	bindings := []key.Binding{}
 
@@ -36,6 +38,8 @@ func (m *model) LoadBindings() tea.Cmd {
 
 func (m *model) UnloadBindings() {
 	key.Unregister(m.GetBindings()...)
+
+	UserBindings = []key.Binding{}
 }
 
 func (m *model) GetUserBindings() []key.Binding {
@@ -47,10 +51,13 @@ func (m *model) GetUserBindings() []key.Binding {
 		b := key.CreateBinding(action.Keys...).
 			SetDescription(action.Description).
 			SetTags(tags...).
+			SetMeta("action", action.Action).
 			SetHelp(action.Keys[0])
 
 		bindings = append(bindings, b)
 	}
+
+	UserBindings = bindings
 
 	return bindings
 }

@@ -2,33 +2,27 @@ package model
 
 import (
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/components/toast"
+	"github.com/sidekick-coder/atlas/tui/features/action"
+	"github.com/sidekick-coder/atlas/tui/features/key"
 	"github.com/sidekick-coder/atlas/tui/messages"
-	"github.com/charmbracelet/bubbles/key"
 )
 
-func (m *model) actionBindingMessageHandler(mgs tea.Msg) tea.Cmd {
-	keyMsg, ok := mgs.(tea.KeyMsg)
+func (m *model) HandleUserBindings(mgs tea.KeyMsg) tea.Cmd {
+	for _, b := range UserBindings {
+		if key.Matches(b) {
+			actionId := b.GetMeta("action")
 
-	if !ok {
-		return nil
-	}
+			if actionId == nil {
+				return toast.Error("No action defined for key binding: " + b.GetDescription())
+			}
 
-	keymaps := m.app.Config().GetKeymapsByGroup("global")
-
-	for _, km := range keymaps {
-		b := key.NewBinding(
-			key.WithKeys(km.Keys...),
-			key.WithHelp(km.Keys[0], km.Description),
-		)
-
-		if key.Matches(keyMsg, b) {
-			return messages.ActionCmd(km.Action)
+			return action.Execute(actionId.(string))
 		}
 	}
 
 	return nil
 }
-
 
 func (m *model) HandleActions(msg tea.Msg) tea.Cmd {
 	a, ok := msg.(messages.Action)
@@ -37,15 +31,15 @@ func (m *model) HandleActions(msg tea.Msg) tea.Cmd {
 		return nil
 	}
 
-    am := m.app.ActionManager()
+	am := m.app.ActionManager()
 
 	ctx := am.CreateContext()
 
 	err := am.Execute(a.Name, ctx)
 
-	if (err != nil) {
+	if err != nil {
 		return messages.ToastErrorCmd("Error executing action: " + err.Error())
 	}
 
-	return  nil
+	return nil
 }

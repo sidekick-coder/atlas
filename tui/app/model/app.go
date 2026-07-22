@@ -13,6 +13,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/app/toaster"
 	"github.com/sidekick-coder/atlas/tui/app/toolbar"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
+	"github.com/sidekick-coder/atlas/tui/features/action"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/models"
 
@@ -30,9 +31,9 @@ type model struct {
 	height int
 	ready  bool
 
-	screen *screen.Feature
-	tabbar *tabbar.Component
-	footer *footer.Component
+	screen  *screen.Feature
+	tabbar  *tabbar.Component
+	footer  *footer.Component
 	toolbar *toolbar.Component
 	toaster *toaster.Component
 }
@@ -51,6 +52,8 @@ func Create(a *app.App) model {
 		screen: screen.Create(),
 		tabbar: tabbar.Create(),
 	}
+
+	action.SetManager(a.Action)
 
 	return m
 }
@@ -184,5 +187,6 @@ func (m model) Init() tea.Cmd {
 		chain.OnError(m.screen.Init),
 		m.InitTabbar,
 		m.InitScreen,
+		action.Init,
 	)
 }

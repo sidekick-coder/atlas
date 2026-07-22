@@ -56,8 +56,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		m.HandleMessages,
 		m.HandleActions,
-		m.actionBindingMessageHandler,
-
+		chain.OnKey(m.HandleUserBindings),
 	    chain.OnKey(m.HandleBinding),
 	)
 

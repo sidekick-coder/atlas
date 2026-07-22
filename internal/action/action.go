@@ -1,6 +1,11 @@
 package action
 
-import "fmt"
+import (
+	"fmt"
+	"maps"
+
+	"github.com/sidekick-coder/atlas/internal/template"
+)
 
 type ActionData struct {
 	ID      string
@@ -8,20 +13,20 @@ type ActionData struct {
 	Options map[string]any
 }
 
-type ActionDefinition struct {
+type ActionHandler struct {
 	ID      string
-	Execute func(map[string]string) (map[string]any, error)
+	Execute func(map[string]any) (map[string]any, error)
 }
 
 type Manager struct {
 	data        map[string]ActionData
-	definitions map[string]ActionDefinition
+	definitions map[string]ActionHandler
 }
 
 func Create() *Manager {
 	return &Manager{
 		data:        make(map[string]ActionData),
-		definitions: make(map[string]ActionDefinition),
+		definitions: make(map[string]ActionHandler),
 	}
 }
 
@@ -37,11 +42,14 @@ func (m *Manager) Add(id string, actionType string, options map[string]any) Acti
 	return ad
 }
 
-func (m *Manager) AddDefinition(def ActionDefinition) {
-	m.definitions[def.ID] = def
+func (m *Manager) AddDefinition(id string, execute func(map[string]any) (map[string]any, error)) {
+	m.definitions[id] = ActionHandler{
+		ID:      id,
+		Execute: execute,
+	}
 }
 
-func (m *Manager) Execute(id string, ctx map[string]string) (map[string]any, error) {
+func (m *Manager) Execute(id string, context map[string]any) (map[string]any, error) {
 	data, exists := m.data[id]
 
 	if !exists {
@@ -53,6 +61,17 @@ func (m *Manager) Execute(id string, ctx map[string]string) (map[string]any, err
 	if !exists {
 		return nil, fmt.Errorf("action definition for type %s not found", data.Type)
 	}
+
+	opt, err := template.EvaluateMap(data.Options, context)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ctx := make(map[string]any)
+
+	maps.Copy(ctx, context)
+	maps.Copy(ctx, opt)
 
 	return def.Execute(ctx)
 }
