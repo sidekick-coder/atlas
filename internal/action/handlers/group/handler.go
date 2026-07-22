@@ -82,5 +82,7 @@ func (h Handler) Execute(ctx map[string]any) (map[string]any, error) {
 		result[fmt.Sprintf("%d", index)] = actionResult
 	}
 
+	result["$is_group"] = true
+
 	return result, nil
 }

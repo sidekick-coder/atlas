@@ -6,7 +6,7 @@ import (
 	"github.com/sidekick-coder/atlas/internal/utils"
 	"github.com/sidekick-coder/atlas/internal/utils/maputil"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
-	"github.com/sidekick-coder/atlas/tui/features/action"
+	"github.com/sidekick-coder/atlas/tui/action"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/key"
 )

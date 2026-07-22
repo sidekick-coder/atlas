@@ -46,7 +46,7 @@ func (s *Syncer) One(path string) error {
 		return err
 	}
 
-	slog.Info("Syncer: One", "path", path, "entry", e)
+	slog.Info("Syncer: One", "path", path)
 
 	return nil
 }

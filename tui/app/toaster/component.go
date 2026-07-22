@@ -30,6 +30,8 @@ func (c *Component) Init() tea.Cmd {
 	c.layer.SetID("toaster")
 	c.layer.SetRender(c.Render)
 	c.layer.SetZIndex(3)
+	c.InitAction()
+
 	layer.Add(c.layer)
 
 	return nil

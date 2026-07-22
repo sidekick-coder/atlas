@@ -2,6 +2,7 @@ package model
 
 import (
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/action"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/key"
@@ -58,6 +59,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.HandleMessages,
 	    chain.OnKey(m.HandleBinding),
 		keymaps.Update,
+		action.Update,
 	)
 
 	return m, cmd

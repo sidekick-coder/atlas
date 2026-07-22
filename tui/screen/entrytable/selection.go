@@ -6,11 +6,12 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/components/table"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
-	"github.com/sidekick-coder/atlas/tui/features/action"
+	"github.com/sidekick-coder/atlas/tui/action"
 	"github.com/sidekick-coder/atlas/tui/features/keymaps"
 )
 
 func (s *Screen) InitSelection() tea.Cmd {
+	s.selection.SetCursor(-1)
 	return nil
 }
 

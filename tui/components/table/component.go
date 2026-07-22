@@ -17,7 +17,6 @@ type Item struct {
 type Component struct {
 	width    int
 	height   int
-	cursor int
 	onSelect func(cursor int) tea.Cmd
 	items    []Item
 
@@ -31,7 +30,6 @@ func Create() *Component {
 	return &Component{
 		width:    100,
 		height:   100,
-		cursor: 0,
 		items:    []Item{},
 
 		column: column.Create(),

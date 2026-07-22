@@ -1,24 +1,13 @@
-package toast
+package toaster
 
 import (
 	"fmt"
 
+	"github.com/sidekick-coder/atlas/tui/action"
 	"github.com/sidekick-coder/atlas/tui/messages"
 )
 
-type Handler struct {
-	ID      string
-	Options map[string]string
-}
-
-func Create() *Handler {
-	return &Handler{
-		ID:      "toast",
-		Options: map[string]string{},
-	}
-}
-
-func (h *Handler) Execute(ctx map[string]any) (map[string]any, error) {
+func HandleAction(ctx map[string]any) (map[string]any, error) {
 	result := make(map[string]any)
 
 	message, ok := ctx["message"].(string)
@@ -33,3 +22,8 @@ func (h *Handler) Execute(ctx map[string]any) (map[string]any, error) {
 
 	return result, nil
 }
+
+func (c * Component) InitAction() {
+	action.AddDefinition("toast", HandleAction)
+}
+

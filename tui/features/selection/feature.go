@@ -29,7 +29,7 @@ func (f *Feature) SetTotal(total int) {
 	}
 
 	if f.cursor < 0 && total > 0 {
-		f.cursor = 0
+		f.cursor = -1
 	}
 }
 
@@ -82,5 +82,5 @@ func (f *Feature) Prev() {
 }
 
 func (f *Feature) Clear() {
-	f.cursor = 0
+	f.cursor = -1
 }

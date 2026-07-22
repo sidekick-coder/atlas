@@ -5,8 +5,9 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/action"
+	"github.com/sidekick-coder/atlas/internal/app"
+	"github.com/sidekick-coder/atlas/tui/action/actions"
 	tc "github.com/sidekick-coder/atlas/tui/components/toast"
-	ta "github.com/sidekick-coder/atlas/tui/features/action/actions/toast"
 )
 
 type ActionContext struct {
@@ -15,25 +16,25 @@ type ActionContext struct {
 }
 
 type Manager struct {
+	app     *app.App
 	action  *action.Manager
 	context map[string]ActionContext
 }
 
 var manager *Manager = &Manager{
 	context: map[string]ActionContext{},
-	action:  nil,
 }
 
-func SetManager(m *action.Manager) {
-	manager.action = m
+func Load(a *app.App) {
+	manager.action = a.Action
+	manager.app = a
+	manager.action.LoadConfigActions(a.Config())
+
+	manager.action.AddDefinition("entry-sync", actions.EntrySyncAction)
 }
 
-func Init() tea.Cmd {
-	t := ta.Create()
-
-	manager.action.AddDefinition(t.ID, t.Execute)
-
-	return nil
+func AddDefinition(id string, fn func(map[string]any) (map[string]any, error)) {
+	manager.action.AddDefinition(id, fn)
 }
 
 func AddContext(id string, context map[string]any) {
@@ -62,11 +63,27 @@ func Execute(id string) tea.Cmd {
 		return tc.Error(err.Error())
 	}
 
-	resultMsg, ok := result["tea_message"].(tea.Msg)
+	resultList := make([]map[string]any, 0)
 
-	if ok {
-		return func() tea.Msg {
-			return resultMsg
+	isGroup, ok := result["$is_group"].(bool)
+
+	if ok && isGroup {
+		for _, v := range result {
+			if vMap, ok := v.(map[string]any); ok {
+				resultList = append(resultList, vMap)
+			}
+		}
+	}
+
+	if !ok || !isGroup {
+		resultList = append(resultList, result)
+	}
+
+	for _, r := range resultList {
+		if rmsg, ok := r["tea_message"].(tea.Msg); ok {
+			return func() tea.Msg {
+				return rmsg
+			}
 		}
 	}
 
