@@ -57,7 +57,7 @@ func Create(a *app.App) model {
 		ready:  false,
 
 		toolbar: toolbar.Create(a),
-		footer:  footer.Create(),
+		footer:  footer.Create(a),
 		toaster: toaster.Create(),
 
 		screen: screen.Create(),

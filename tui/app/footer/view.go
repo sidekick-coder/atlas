@@ -67,9 +67,10 @@ func (f *Component) Render() string {
 
 	row := lipgloss.NewStyle().
 		Background(lipgloss.Color(theme.Current.Primary)).
-		Width(3).
+		Foreground(lipgloss.Color(theme.Current.Background)).
 		Align(lipgloss.Center).
-		Render("󰆧")
+		Padding(0, 1).
+		Render(strings.Join([]string{"󰆧", f.label}, " "))
 
 	sep := textStyle.Render(" · ")
 
