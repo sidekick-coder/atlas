@@ -15,7 +15,7 @@ func (f *Feature) Size() tea.Msg {
 	slog.Info("sending size message", slog.Int("width", f.windowWidth), slog.Int("height", f.windowHeight-7))
 	return SizeMsg{
 		Width:  f.windowWidth,
-		Height: f.windowHeight - 7,
+		Height: f.windowHeight - 2,
 	}
 }
 

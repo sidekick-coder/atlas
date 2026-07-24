@@ -15,7 +15,7 @@ func (c *Component) SetSize(width, height int) *Component {
 }
 
 func (c *Component) Render() string {
-	border := lipgloss.NewStyle().
+	border := theme.BaseStyle().
 		BorderStyle(lipgloss.NormalBorder()).
 		Width(c.Width-4).
 		Height(c.Height).
@@ -26,15 +26,15 @@ func (c *Component) Render() string {
 		border = border.BorderForeground(lipgloss.Color("33"))
 	}
 
-	srs := lipgloss.NewStyle().
+	srs := theme.BaseStyle().
 		Width(c.Width - 4).
 		Background(lipgloss.Color(theme.Current.Primary)).
 		Foreground(lipgloss.Color(theme.Current.Foreground))
 
-	ks := lipgloss.NewStyle().
+	ks := theme.BaseStyle().
 		Foreground(lipgloss.Color(theme.Current.Accent))
 
-	vs := lipgloss.NewStyle().
+	vs := theme.BaseStyle().
 		Foreground(lipgloss.Color(theme.Current.Foreground))
 
 	var items []string
@@ -52,7 +52,9 @@ func (c *Component) Render() string {
 
 		pad = max(pad, 0)
 
-		row := ks.Render(name) + strings.Repeat(" ", pad) + vs.Render(value)
+		spaces := vs.Render(strings.Repeat(" ", pad))
+
+		row := ks.Render(name) + spaces + vs.Render(value)
 
 		if index == c.CurrentIndex {
 			row = srs.Render(name + strings.Repeat(" ", pad) + value)

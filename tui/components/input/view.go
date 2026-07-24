@@ -6,11 +6,11 @@ import (
 )
 
 func (i *Input) Render() string {
-	cursorStyle := lipgloss.NewStyle().
+	cursorStyle := theme.BaseStyle().
 		Foreground(lipgloss.Color(theme.Current.Foreground)).
 		Background(lipgloss.Color(theme.Current.Primary))
 
-	text := lipgloss.NewStyle().Foreground(lipgloss.Color(theme.Current.Foreground))
+	text := theme.BaseStyle().Foreground(lipgloss.Color(theme.Current.Foreground))
 
 	if !i.enabled {
 		cursorStyle = text
@@ -37,6 +37,7 @@ func (i *Input) Render() string {
 	}
 
 	var cur string
+
 	if cursor >= 0 && cursor < len(visible) {
 		cur = cursorStyle.Render(string(visible[cursor]))
 	} else {
@@ -44,6 +45,7 @@ func (i *Input) Render() string {
 	}
 
 	after := ""
+
 	if cursor+1 < len(visible) {
 		after = text.Render(string(visible[cursor+1:]))
 	}

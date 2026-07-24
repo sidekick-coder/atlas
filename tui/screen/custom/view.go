@@ -20,8 +20,8 @@ func (s *Screen) SetSize(width, height int) {
 	s.height = height
 
 	s.container.
-		SetSize(width-4, height).
-		SetMargin(0, 2, 0, 2)
+		SetSize(width-2, height).
+		SetMargin(0, 1, 0, 1)
 }
 
 func (s *Screen) Render() string {

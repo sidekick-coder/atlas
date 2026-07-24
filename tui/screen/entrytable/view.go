@@ -23,8 +23,8 @@ func (s *Screen) HandleSize(msg tea.Msg) tea.Cmd {
 func (s *Screen) SetSize(width, height int) {
 	s.width = width
 	s.height = height
-	s.table.SetSize(width-6, height)
-	s.container.SetSize(width-4, height).SetMargin(0, 2, 0, 2).SetBorder(theme.Current.Primary)
+	s.table.SetSize(width-4, height)
+	s.container.SetSize(width-2, height).SetMargin(0, 1, 0, 1).SetBorder(theme.Current.Primary)
 
 	limit := 10
 
@@ -61,9 +61,12 @@ func (s *Screen) Render() string {
 	limit := s.loader.GetLimit()
 	offset := s.loader.GetOffset()
 
-	footer := lipgloss.NewStyle().
+	footer := theme.BaseStyle().
 		Foreground(lipgloss.Color(theme.Current.Muted)).
-		Padding(1, 0, 0, 1).
+		Height(max(1, s.height-lipgloss.Height(table))-2).
+		Align(lipgloss.Right, lipgloss.Bottom).
+		Width(s.width-4).
+		Padding(0, 2).
 		Render(fmt.Sprintf("Showing %d to %d of %d entries", offset+1, min(offset+limit, total), total))
 
 	content := lipgloss.JoinVertical(lipgloss.Left, table, footer)

@@ -4,11 +4,12 @@ import (
 	"strings"
 
 	"charm.land/lipgloss/v2"
+	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
 
 func (c *Component) Render() string {
-	border := lipgloss.NewStyle().Foreground(lipgloss.Color(c.color))
-	text := lipgloss.NewStyle().Foreground(lipgloss.Color("252"))
+	border := theme.BaseStyle().Foreground(lipgloss.Color(c.color))
+	text := theme.BaseStyle()
 	maxWidth := c.width + 4
 
 	boxWidth := c.width + 4                                 // 2 for padding on each side
@@ -17,6 +18,7 @@ func (c *Component) Render() string {
 
 	// Top border with title.
 	labelPart := "─ " + c.label + " "
+	empty := text.Render(" ")
 
 	topLen := boxWidth - lipgloss.Width(labelPart) - 2 // 2 for the corners
 	topLen = max(topLen, 0)
@@ -31,7 +33,7 @@ func (c *Component) Render() string {
 	for _, line := range lines {
 		pad := max(0, boxWidth - lipgloss.Width(line) - 4) // 4 for the corners and padding
 
-		part := border.Render("│") + " " + line + strings.Repeat(" ", pad) + " " + border.Render("│")
+		part := border.Render("│") + empty + line + strings.Repeat(empty, pad) + empty + border.Render("│")
 
 		rowParts = append(rowParts, part)
 	}

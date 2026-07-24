@@ -2,6 +2,7 @@ package container
 
 import (
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
 
 type Component struct {
@@ -16,7 +17,7 @@ func Create() *Component {
 		content: "",
 		width:   100,
 		height:  100,
-		style: lipgloss.NewStyle(),
+		style: theme.BaseStyle(),
 	}
 
 	return c

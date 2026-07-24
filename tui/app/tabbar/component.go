@@ -28,21 +28,19 @@ func (t *Component) SetScreen(s *screen.Feature) {
 
 func (c *Component) SetWidth(width int) {
 	c.width = width
-	c.viewport.SetSize(width-4, 3)
 }
 
 func (t *Component) Render() string {
-	container := lipgloss.NewStyle().
-		Width(t.width-4).
-		Margin(0, 3)
+	container := theme.BaseStyle().
+		Width(t.width).
+		Height(1)
 
 	items := make([]string, len(t.screen.GetScreens()))
 	screens := t.screen.GetScreens()
 
-	shared := lipgloss.NewStyle().Padding(0, 1)
+	shared := theme.BaseStyle().Padding(0, 1)
 
 	normal := shared.Background(lipgloss.Color(theme.Current.Muted)).Foreground(lipgloss.Color(theme.Current.Background))
-	active := shared.Background(lipgloss.Color(theme.Current.Primary)).Foreground(lipgloss.Color(theme.Current.Background))
 
 	if len(screens) == 0 {
 		return container.Render(normal.Render("No tabs"))
@@ -52,19 +50,14 @@ func (t *Component) Render() string {
 	barWidth := max(1, t.width-6)
 	tabWidth := barWidth / visible
 
-	normal = normal.MaxWidth(tabWidth)
-	active = active.MaxWidth(tabWidth)
+	indexStyle := theme.BaseStyle().Background(lipgloss.Color(theme.Current.Muted)).Foreground(lipgloss.Color(theme.Current.Background))
+	indexActive := theme.BaseStyle().Background(lipgloss.Color(theme.Current.Primary)).Foreground(lipgloss.Color(theme.Current.Background))
 
-	indexStyle := lipgloss.NewStyle().Background(lipgloss.Color(theme.Current.Muted)).Foreground(lipgloss.Color(theme.Current.Background))
-	indexActive := lipgloss.NewStyle().Background(lipgloss.Color(theme.Current.Primary)).Foreground(lipgloss.Color(theme.Current.Background))
-
-	textStyle := lipgloss.
-		NewStyle().
+	textStyle := theme.BaseStyle().
 		Background(lipgloss.Color(theme.Current.Placeholder)).
-		Foreground(lipgloss.Color(theme.Current.Foreground)). 
-		MaxWidth(tabWidth - 4).
-		Padding(0, 1). 
-		MarginRight(1)
+		Foreground(lipgloss.Color(theme.Current.Foreground)).
+		MaxWidth(tabWidth-4).
+		Padding(0, 1)
 
 	for i, item := range screens {
 		title := item.Title()
@@ -78,6 +71,7 @@ func (t *Component) Render() string {
 
 		items[i] = row
 	}
+
 
 	content := lipgloss.JoinHorizontal(lipgloss.Top, items...)
 

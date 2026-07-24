@@ -10,22 +10,27 @@ import (
 )
 
 func (f *Component) Render() string {
+	bg := lipgloss.Color(theme.Current.Background)
+
 	container := lipgloss.NewStyle().
-		BorderStyle(lipgloss.NormalBorder()).
-		Width(f.width-4).
-		Margin(0, 2).
-		Padding(0, 2).
-		BorderForeground(lipgloss.Color(theme.Current.Primary))
+		Width(f.width).
+		Background(bg).
+		Height(1).
+		AlignVertical(lipgloss.Center)
 
 	keyStyle := lipgloss.NewStyle().
 		Foreground(lipgloss.Color(theme.Current.Primary)).
+		Background(bg).
+		PaddingRight(1).
 		Bold(true)
 
 	textStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color(theme.Current.Foreground))
+		Foreground(lipgloss.Color(theme.Current.Foreground)).
+		Background(bg)
 
-	var parts []string
+	parts := []string{}
 
+	// icon
 	remaningWidth := f.width
 
 	for _, b := range tkey.GetBindings() {
@@ -40,11 +45,18 @@ func (f *Component) Render() string {
 			continue
 		}
 
-		part := fmt.Sprintf("%s %s", keyStyle.Render(k), textStyle.Render(d))
+		key := keyStyle.Render(k)
+		desc := textStyle.Render(d)
+
+		if len(parts) == 0 {
+			key = keyStyle.PaddingLeft(1).Render(k)
+		}
+
+		part := fmt.Sprintf("%s%s", key, desc)
 
 		remaningWidth -= lipgloss.Width(part)
 
-		parts = append(parts, fmt.Sprintf("%s %s", keyStyle.Render(k), textStyle.Render(d)))
+		parts = append(parts, part)
 
 		if remaningWidth <= 80 {
 			parts = append(parts, textStyle.Render(fmt.Sprintf("... and %d more", len(tkey.GetBindings())-len(parts))))
@@ -53,9 +65,15 @@ func (f *Component) Render() string {
 
 	}
 
+	row := lipgloss.NewStyle().
+		Background(lipgloss.Color(theme.Current.Primary)).
+		Width(3).
+		Align(lipgloss.Center).
+		Render("󰆧")
+
 	sep := textStyle.Render(" · ")
-	row := strings.Join(parts, sep)
+
+	row += strings.Join(parts, sep)
 
 	return container.Render(row)
 }
-

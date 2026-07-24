@@ -12,7 +12,7 @@ func (c *Component) SetSize(w, h int) {
 }
 
 func (c *Component) Render() string {
-	colstyle := lipgloss.NewStyle().
+	colstyle := theme.BaseStyle().
 		Foreground(lipgloss.Color(theme.Current.Muted)).
 		Border(lipgloss.NormalBorder(), false, false, true, false).
 		BorderForeground(lipgloss.Color(theme.Current.Muted))
@@ -22,10 +22,10 @@ func (c *Component) Render() string {
 		BorderForeground(lipgloss.Color(theme.Current.Primary)).
 		Bold(true)
 
-	rowStyle := lipgloss.NewStyle().
+	rowStyle := theme.BaseStyle().
 		Foreground(lipgloss.Color(theme.Current.Foreground))
 
-	rowFocusStyle := lipgloss.NewStyle().
+	rowFocusStyle := theme.BaseStyle().
 		Background(lipgloss.Color(theme.Current.Primary)).
 		Bold(true)
 

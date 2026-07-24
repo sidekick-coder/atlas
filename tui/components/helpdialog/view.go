@@ -39,13 +39,16 @@ func prefix(tag string) string {
 }
 
 func (c *Component) Render() string {
-	tagStyle := lipgloss.NewStyle().
+	tagStyle := theme.BaseStyle().
+	    Width(c.dialog.GetWidth()).
 		Foreground(lipgloss.Color(theme.Current.Primary))
 
-	textStyle := lipgloss.NewStyle().
+	textStyle := theme.BaseStyle().
+	    Width(c.dialog.GetWidth()).
 		Foreground(lipgloss.Color(theme.Current.Foreground))
 
-	descStyle := lipgloss.NewStyle().
+	descStyle := theme.BaseStyle().
+	    Width(c.dialog.GetWidth()).
 		Foreground(lipgloss.Color(theme.Current.Muted))
 
 	var parts []string

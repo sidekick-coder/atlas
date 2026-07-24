@@ -1,5 +1,7 @@
 package theme
 
+import "charm.land/lipgloss/v2"
+
 type Theme struct {
 	Primary   string
 	Secondary string
@@ -38,4 +40,13 @@ var Current = Theme{
 	Selection:   "#FFD700",
 	Highlight:   "#FFA500",
 	Placeholder: "#696969",
+}
+
+func BaseStyle() lipgloss.Style {
+	return lipgloss.NewStyle().
+		Background(lipgloss.Color(Current.Background)).
+		Foreground(lipgloss.Color(Current.Foreground)).
+		BorderBackground(lipgloss.Color(Current.Background)).
+		BorderForeground(lipgloss.Color(Current.Border)).
+		MarginBackground(lipgloss.Color(Current.Background))
 }

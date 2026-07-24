@@ -8,10 +8,9 @@ import (
 	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
 
-
 func (m *model) SetSize(width int, height int) {
-	layer.ScreenHeight = height 
-	layer.ScreenWidth = width 
+	layer.ScreenHeight = height
+	layer.ScreenWidth = width
 
 	m.width = width
 	m.height = height
@@ -21,7 +20,7 @@ func (m *model) SetSize(width int, height int) {
 }
 
 func (m model) View() tea.View {
-	body := container.Create().SetSize(m.width-4, m.height-6).SetContent("No screen loaded").SetBorder(theme.Current.Primary).SetMargin(0,2).Render()
+	body := container.Create().SetSize(m.width-4, m.height-6).SetContent("No screen loaded").SetBorder(theme.Current.Primary).SetMargin(0, 2).Render()
 
 	if s, ok := m.screen.GetCurrent(); ok {
 		body = s.Screen.Render()
@@ -29,12 +28,17 @@ func (m model) View() tea.View {
 
 	layers := []*lipgloss.Layer{}
 
-	layers = append(layers, lipgloss.NewLayer(m.toolbar.Render()).X(0).Y(0).Z(1))
-	layers = append(layers, lipgloss.NewLayer(m.tabbar.Render()).X(0).Y(3).Z(1))
+	y := 0
 
-	layers = append(layers, lipgloss.NewLayer(body).X(0).Y(4).Z(0))
+	tabbar := m.tabbar.Render()
 
-	layers = append(layers, lipgloss.NewLayer(m.footer.Render()).X(0).Y(m.height - 3).Z(1))
+	layers = append(layers, lipgloss.NewLayer(tabbar).X(0).Y(y).Z(1))
+
+	y = lipgloss.Height(tabbar)
+
+	layers = append(layers, lipgloss.NewLayer(body).X(0).Y(y).Z(0))
+
+	layers = append(layers, lipgloss.NewLayer(m.footer.Render()).X(0).Y(m.height-1).Z(1))
 
 	layers = append(layers, layer.GetLipglossLayers()...)
 
