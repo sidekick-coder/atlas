@@ -55,22 +55,26 @@ func (t *Component) Render() string {
 	normal = normal.MaxWidth(tabWidth)
 	active = active.MaxWidth(tabWidth)
 
+	indexStyle := lipgloss.NewStyle().Background(lipgloss.Color(theme.Current.Muted)).Foreground(lipgloss.Color(theme.Current.Background))
+	indexActive := lipgloss.NewStyle().Background(lipgloss.Color(theme.Current.Primary)).Foreground(lipgloss.Color(theme.Current.Background))
+
+	textStyle := lipgloss.
+		NewStyle().
+		Background(lipgloss.Color(theme.Current.Placeholder)).
+		Foreground(lipgloss.Color(theme.Current.Foreground)). 
+		MaxWidth(tabWidth - 4).
+		Padding(0, 1). 
+		MarginRight(1)
+
 	for i, item := range screens {
-
 		title := item.Title()
+		id := fmt.Sprintf(" %d ", i)
 
-		prefix := fmt.Sprintf("[%d] ", i)
-
-		text := prefix + title
-
-		row := normal.Render(text)
+		row := indexStyle.Render(id) + textStyle.Render(title)
 
 		if i == t.screen.GetCurrentIndex() {
-			row = active.Render(text)
-			items[i] = row 
-			continue
+			row = indexActive.Render(id) + textStyle.Render(title)
 		}
-
 
 		items[i] = row
 	}
