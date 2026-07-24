@@ -9,18 +9,19 @@ import (
 	"github.com/sidekick-coder/atlas/internal/models"
 	"github.com/sidekick-coder/atlas/internal/utils/maputil"
 	"github.com/sidekick-coder/atlas/tui/components/entrymeta"
+	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/messages"
 	tuimodels "github.com/sidekick-coder/atlas/tui/models"
 )
 
 type Screen struct {
-	App                *app.App
-	Width              int
-	Height             int
-	Path               string
-	EntryMetaComponent *entrymeta.Component
-	Entry              *models.Entry
-	Metas              map[string]string
+	App    *app.App
+	Width  int
+	Height int
+	Path   string
+	meta   *entrymeta.Component
+	Entry  *models.Entry
+	Metas  map[string]string
 }
 
 func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
@@ -44,16 +45,16 @@ func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 		return nil, fmt.Errorf("failed to load entry by path: %w", err)
 	}
 
-	emc := entrymeta.Create()
+	emc := entrymeta.Create(p.App, path)
 
 	s := &Screen{
-		App:                p.App,
-		Path:               path,
-		EntryMetaComponent: emc,
-		Entry:              e,
-		Width:              100,
-		Height:             100,
-		Metas:              map[string]string{},
+		App:    p.App,
+		Path:   path,
+		meta:   emc,
+		Entry:  e,
+		Width:  100,
+		Height: 100,
+		Metas:  map[string]string{},
 	}
 
 	return s, nil
@@ -78,9 +79,9 @@ func (s *Screen) Init() tea.Cmd {
 		return messages.ToastErrorCmd(err.Error())
 	}
 
-	return s.LoadBindings()
+	return chain.Init(s.meta.Init, s.meta.Init)
 }
 
 func (s *Screen) Dispose() tea.Cmd {
-	return s.UnloadBindings()
+	return chain.Dispose(s.UnloadBindings, s.meta.Dispose)
 }

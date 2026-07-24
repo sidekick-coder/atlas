@@ -154,7 +154,7 @@ func (h Handler) Unset(info *models.EntryInfo, name string) error {
 
 	unflattened := utils.Unflatten(metas)
 
-	newContents, err := Marshal(body, unflattened[h.prefix].(map[string]any))
+	newContents, err := Marshal(body, unflattened)
 
 	if err != nil {
 		return err

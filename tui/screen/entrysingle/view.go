@@ -9,7 +9,7 @@ func (s *Screen) SetSize(width, height int) {
 	s.Width = width
 	s.Height = height
 
-	s.EntryMetaComponent.SetSize(s.Width, s.Height)
+	s.meta.SetSize(s.Width, s.Height)
 }
 
 func (s *Screen) HandleSize(msg tea.Msg) tea.Cmd {
@@ -21,5 +21,5 @@ func (s *Screen) HandleSize(msg tea.Msg) tea.Cmd {
 }
 
 func (s *Screen) Render() string {
-	return s.EntryMetaComponent.Render()
+	return s.meta.Render()
 }

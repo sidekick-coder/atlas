@@ -4,48 +4,14 @@ import (
 	"strings"
 
 	lipgloss "charm.land/lipgloss/v2"
-	"github.com/sidekick-coder/atlas/internal/models"
 	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
-
-type Component struct {
-	Width        int
-	Height       int
-	Focus        bool
-	CurrentIndex int
-	Metas        []models.EntryMeta
-}
-
-func Create() *Component {
-	return &Component{
-		Width:        100,
-		Height:       100,
-		CurrentIndex: 0,
-		Focus:        false,
-		Metas:        []models.EntryMeta{},
-	}
-}
 
 func (c *Component) SetSize(width, height int) *Component {
 	c.Width = width
 	c.Height = height
 
 	return c
-}
-
-func (c *Component) SetFocus(focus bool) *Component {
-	c.Focus = focus
-	return c
-}
-
-func (c *Component) SetMetas(metas []models.EntryMeta) {
-	c.Metas = metas
-
-	maxIndex := len(metas) - 1
-
-	if c.CurrentIndex > maxIndex {
-		c.CurrentIndex = maxIndex
-	}
 }
 
 func (c *Component) Render() string {
@@ -98,24 +64,4 @@ func (c *Component) Render() string {
 	content := lipgloss.JoinVertical(lipgloss.Left, items...)
 
 	return border.Render(content)
-}
-
-func (c *Component) MoveUp() {
-	if c.CurrentIndex > 0 {
-		c.CurrentIndex--
-	}
-}
-
-func (c *Component) MoveDown() {
-	if c.CurrentIndex < len(c.Metas)-1 {
-		c.CurrentIndex++
-	}
-}
-
-func (c *Component) GetSelected() (models.EntryMeta, bool) {
-	if c.CurrentIndex < 0 || c.CurrentIndex >= len(c.Metas) {
-		return models.EntryMeta{}, false
-	}
-
-	return c.Metas[c.CurrentIndex], true
 }

@@ -28,3 +28,9 @@ func Send[T tea.Msg](msg T) error {
 
 	return nil
 }
+
+func Command[T tea.Msg](msg T) tea.Cmd {
+	return func() tea.Msg {
+		return msg
+	}
+}

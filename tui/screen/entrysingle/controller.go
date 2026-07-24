@@ -26,7 +26,7 @@ func (s *Screen) Load() error {
 		return strings.Compare(a.Name, b.Name)
 	})
 
-	s.EntryMetaComponent.SetMetas(metas)
+	s.meta.SetMetas(metas)
 
 	return nil
 }
@@ -42,7 +42,7 @@ func (s *Screen) UnsetMeta(name string) error {
 }
 
 func (s *Screen) UnsetMetaSelected() error {
-	em, ok := s.EntryMetaComponent.GetSelected()
+	em, ok := s.meta.GetSelected()
 
 	if !ok {
 		return fmt.Errorf("no metadata selected to set value")
@@ -62,7 +62,7 @@ func (s *Screen) SetMeta(name string, value string) error {
 }
 
 func (s *Screen) SetValue(value string) error {
-	em, ok := s.EntryMetaComponent.GetSelected()
+	em, ok := s.meta.GetSelected()
 
 	if !ok {
 		return fmt.Errorf("no metadata selected to set value")

@@ -15,6 +15,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/app/toolbar"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
+	"github.com/sidekick-coder/atlas/tui/features/entrycontroller"
 	"github.com/sidekick-coder/atlas/tui/features/keymaps"
 	"github.com/sidekick-coder/atlas/tui/models"
 
@@ -25,6 +26,12 @@ import (
 )
 
 var Program *tea.Program
+
+type RootFeature interface {
+	Init() tea.Cmd
+	Update(msg tea.Msg) tea.Cmd
+	Dispose() tea.Cmd
+}
 
 type model struct {
 	app    *app.App
@@ -37,7 +44,10 @@ type model struct {
 	footer  *footer.Component
 	toolbar *toolbar.Component
 	toaster *toaster.Component
+
+	features []RootFeature
 }
+
 
 func Create(a *app.App) model {
 	m := model{
@@ -52,7 +62,10 @@ func Create(a *app.App) model {
 
 		screen: screen.Create(),
 		tabbar: tabbar.Create(),
+		features: []RootFeature{},
 	}
+
+	m.features = append(m.features, entrycontroller.Create(a))
 
 	action.Load(a)
 
@@ -188,6 +201,7 @@ func (m model) InitKeymaps() tea.Cmd {
 	return nil
 }
 
+
 func (m model) Init() tea.Cmd {
 	return chain.Init(
 		m.footer.Init,
@@ -198,5 +212,6 @@ func (m model) Init() tea.Cmd {
 		m.InitScreen,
 		m.InitKeymaps,
 		action.Init,
+		chain.OnInitList(m.features),
 	)
 }

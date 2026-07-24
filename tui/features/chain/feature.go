@@ -11,6 +11,10 @@ type WithUpdate interface {
 	Update(msg tea.Msg) tea.Cmd
 }
 
+type WithInit interface {
+	Init() tea.Cmd
+}
+
 func Cmd(handlers ...func() tea.Cmd) tea.Cmd {
 	for _, h := range handlers {
 		if cmd := h(); cmd != nil {
@@ -78,6 +82,62 @@ func Update(msg tea.Msg, handlers ...func(msg tea.Msg) tea.Cmd) tea.Cmd {
 }
 
 func OnEntity[T WithUpdate](entities []T) func(msg tea.Msg) tea.Cmd {
+	return func(msg tea.Msg) tea.Cmd {
+		for _, entity := range entities {
+			cmd := entity.Update(msg)
+
+			if cmd != nil {
+				return cmd
+			}
+		}
+
+		return nil
+	}
+}
+
+func InitList[T WithInit](entities []T) tea.Cmd {
+	return func() tea.Msg {
+		for _, entity := range entities {
+			cmd := entity.Init()
+
+			if cmd != nil {
+				return cmd()
+			}
+		}
+
+		return nil
+	}
+}
+
+func OnInitList[T WithInit](entities []T) func() tea.Cmd {
+	return func() tea.Cmd {
+		for _, entity := range entities {
+			cmd := entity.Init()
+
+			if cmd != nil {
+				return cmd
+			}
+		}
+
+		return nil
+	}
+}
+
+func UpdateList[T WithUpdate](entities []T) func(msg tea.Msg) tea.Cmd {
+	return func(msg tea.Msg) tea.Cmd {
+		for _, entity := range entities {
+			cmd := entity.Update(msg)
+
+			if cmd != nil {
+				return cmd
+			}
+		}
+
+		return nil
+	}
+}
+
+func OnUpdateList[T WithUpdate](entities []T) func(msg tea.Msg) tea.Cmd {
 	return func(msg tea.Msg) tea.Cmd {
 		for _, entity := range entities {
 			cmd := entity.Update(msg)

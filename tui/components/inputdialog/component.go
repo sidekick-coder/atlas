@@ -5,6 +5,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/components/dialog"
 	"github.com/sidekick-coder/atlas/tui/components/input"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
+	"github.com/sidekick-coder/atlas/tui/messages"
 )
 
 type Component struct {
@@ -60,7 +61,7 @@ func (c *Component) submit() tea.Cmd {
 		return c.onSubmit(value)
 	}
 
-	return nil
+	return messages.SkipCmd()
 }
 
 func (c *Component) Init() tea.Cmd {

@@ -40,7 +40,9 @@ func (c *Component) HadleBinding(msg tea.KeyMsg) tea.Cmd {
 		return nil
 	}
 
-	if key.Matches(Bindings.Submit) {
+	code := msg.String()
+
+	if code == "enter" {
 		return c.submit()
 	}
 
