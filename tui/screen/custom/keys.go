@@ -19,11 +19,11 @@ var Bindings = KeyMap{
 		SetTags(tags...).
 		SetDescription("unfocus components").
 		SetHelp("esc"),
-	Up: key.CreateBinding("<leader>k", "<leader><up>p").
+	Up: key.CreateBinding("<leader>k").
 		SetTags(tags...).
 		SetDescription("<leader>k").
 		SetHelp("<leader>k"),
-	Down: key.CreateBinding("<leader>j", "<leader><down>", "<leader>n").
+	Down: key.CreateBinding("<leader>j", "<leader><down>").
 		SetTags(tags...).
 		SetDescription("down").
 		SetHelp("<leader>j"),

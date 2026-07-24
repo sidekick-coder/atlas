@@ -66,7 +66,7 @@ func (f *Feature) HandleMessages(msg tea.Msg) tea.Cmd {
 	}
 
 	if s, ok := f.GetCurrent(); ok {
-		return s.Update(msg)
+		return s.Screen.Update(msg)
 	}
 
 	return nil

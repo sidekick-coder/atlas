@@ -4,8 +4,8 @@ bindings:
       action_options:
           label: "Task name"
           submit: create-task
-      description: create task
-      groups: [global]
+      description: add
+      groups: [screen=tasks]
 
     - keys: [v]
       action: vi
@@ -14,13 +14,7 @@ bindings:
           - ext=md
           - ext=json
 
-    - keys: [t]
-      action: hello
-      description: toast
-      groups:
-          - global
-
-    - keys: [S]
+    - keys: [u]
       action: set-status
       description: update status
       groups:

@@ -5,37 +5,41 @@ import (
 	"log/slog"
 
 	"github.com/sidekick-coder/atlas/tui/app/program"
-	"github.com/sidekick-coder/atlas/tui/models"
+	"github.com/sidekick-coder/atlas/tui/features/keymaps"
 )
 
 func (f *Feature) SetCurrent(index int) error {
-	s, ok := f.GetScreenByIndex(index)
+	os, ok := f.GetScreenByIndex(index)
 
 	if !ok {
 		return fmt.Errorf("invalid screen index: %d", index)
 	}
 
-	os, ok := f.GetCurrent()
+	old, ok := f.GetCurrent()
 
 	if ok {
-		slog.Info("close current screen", slog.Int("index", f.Selection.GetCursor()), slog.String("title", os.Title()))
-		os.Dispose()
+		s := old.Screen
+
+		old.Screen.Dispose()
+
+		slog.Info("close current screen", slog.Int("index", f.Selection.GetCursor()), slog.String("title", s.Title()))
 	}
 
 	f.Selection.SetCursor(index)
 
-	s.Init()
+	os.Screen.Init()
+	keymaps.AddGroup("screen", []string{"screen=" + os.DefinitionID})
 
 	program.Send(f.Size())
 
-	slog.Info("set current screen", slog.Int("index", index), slog.String("title", s.Title()))
+	slog.Info("set current screen", slog.Int("index", index), slog.String("title", os.Screen.Title()))
 
 	return nil
 }
 
-func (f *Feature) GetScreenByIndex(index int) (models.Screen, bool) {
+func (f *Feature) GetScreenByIndex(index int) (OpenScreen, bool) {
 	if index < 0 || index >= len(f.screens) {
-		return nil, false
+		return OpenScreen{}, false
 	}
 
 	return f.screens[index], true

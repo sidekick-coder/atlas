@@ -8,11 +8,16 @@ import (
 	"github.com/sidekick-coder/atlas/tui/models"
 )
 
+type OpenScreen struct {
+	DefinitionID string
+	Screen       models.Screen
+}
+
 type Feature struct {
 	app          *app.App
 	windowWidth  int
 	windowHeight int
-	screens      []models.Screen
+	screens      []OpenScreen
 	bindings     []key.Binding // select screens with <leader>[1,2,3...]
 	definitions  map[string]models.ScreenFactory
 
@@ -23,7 +28,7 @@ func Create() *Feature {
 	return &Feature{
 		windowWidth:  100,
 		windowHeight: 100,
-		screens:      []models.Screen{},
+		screens:      []OpenScreen{},
 		bindings:     []key.Binding{},
 		definitions:  make(map[string]models.ScreenFactory),
 
@@ -67,7 +72,12 @@ func (f *Feature) Add(name string, options ...map[string]any) (models.Screen, er
 		return nil, err
 	}
 
-	f.screens = append(f.screens, s)
+	os := OpenScreen{
+		DefinitionID: name,
+		Screen:       s,
+	}
+
+	f.screens = append(f.screens, os)
 
 	index := len(f.screens) - 1
 
@@ -99,7 +109,16 @@ func (f *Feature) Replace(index int, name string, options ...map[string]any) (mo
 		return nil, err
 	}
 
-	f.screens[index] = s
+	if old, ok := f.GetScreenByIndex(index); ok {
+		old.Screen.Dispose()
+	}
+
+	os := OpenScreen{
+		DefinitionID: name,
+		Screen:       s,
+	}
+
+	f.screens[index] = os
 
 	f.SetCurrent(index)
 
@@ -132,12 +151,18 @@ func (f *Feature) GetCurrentIndex() int {
 	return f.Selection.GetCursor()
 }
 
-func (f *Feature) GetCurrent() (models.Screen, bool) {
+func (f *Feature) GetCurrent() (OpenScreen, bool) {
 	return f.GetScreenByIndex(f.GetCurrentIndex())
 }
 
 func (f *Feature) GetScreens() []models.Screen {
-	return f.screens
+	screens := []models.Screen{}
+
+	for _, os := range f.screens {
+		screens = append(screens, os.Screen)
+	}
+
+	return screens
 }
 
 func (f *Feature) SetDefinition(id string, fac models.ScreenFactory) {

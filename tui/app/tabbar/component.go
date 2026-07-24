@@ -55,16 +55,7 @@ func (t *Component) Render() string {
 	normal = normal.MaxWidth(tabWidth)
 	active = active.MaxWidth(tabWidth)
 
-	maxVisibleTabs := t.width / tabWidth
-	currentIndex := t.screen.GetCurrentIndex()
-
-	startIndex := max(0, currentIndex-(maxVisibleTabs/2))
-	endIndex := min(len(screens), startIndex+maxVisibleTabs)
-
 	for i, item := range screens {
-		if i < startIndex || i >= endIndex {
-			continue
-		}
 
 		title := item.Title()
 

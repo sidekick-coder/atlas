@@ -5,6 +5,7 @@ import (
 
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/internal/models"
+	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
 
 type Component struct {
@@ -51,9 +52,9 @@ func (c *Component) Render() string {
 	border := lipgloss.NewStyle().
 		BorderStyle(lipgloss.NormalBorder()).
 		Width(c.Width-4).
-		Height(c.Height-4).
+		Height(c.Height).
 		Margin(0, 2).
-		BorderForeground(lipgloss.Color("12"))
+		BorderForeground(lipgloss.Color(theme.Current.Primary))
 
 	if c.Focus {
 		border = border.BorderForeground(lipgloss.Color("33"))
@@ -61,20 +62,19 @@ func (c *Component) Render() string {
 
 	srs := lipgloss.NewStyle().
 		Width(c.Width - 4).
-		Background(lipgloss.Color("12")).
-		Foreground(lipgloss.Color("0"))
+		Background(lipgloss.Color(theme.Current.Primary)).
+		Foreground(lipgloss.Color(theme.Current.Foreground))
 
 	ks := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("12"))
+		Foreground(lipgloss.Color(theme.Current.Accent))
 
 	vs := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("252"))
-
+		Foreground(lipgloss.Color(theme.Current.Foreground))
 
 	var items []string
 
 	for index, em := range c.Metas {
-		name := em.Name+":"
+		name := em.Name + ":"
 		value := em.Value
 		value = strings.ReplaceAll(value, "\n", "\\n")
 
@@ -84,9 +84,7 @@ func (c *Component) Render() string {
 
 		pad := c.Width - 4 - len([]rune(name)) - len([]rune(value)) - 2
 
-		if pad < 0 {
-			pad = 0
-		}
+		pad = max(pad, 0)
 
 		row := ks.Render(name) + strings.Repeat(" ", pad) + vs.Render(value)
 

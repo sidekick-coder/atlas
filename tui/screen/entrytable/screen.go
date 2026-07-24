@@ -143,7 +143,6 @@ func (s *Screen) Init() tea.Cmd {
 }
 
 func (s *Screen) Dispose() tea.Cmd {
-
 	return chain.Dispose(
 		s.DisposeSelection,
 		s.table.Dispose,

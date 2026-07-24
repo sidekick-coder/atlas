@@ -102,10 +102,20 @@ func (s *Screen) LoadComponents() tea.Cmd {
 	return nil
 }
 
+func (s *Screen) DisposeComponents() tea.Cmd {
+	for _, c := range s.components {
+		c.Definition.Dispose()
+	}
+
+	s.components = []component.Component{}
+
+	return nil
+}
+
 func (s *Screen) Init() tea.Cmd {
 	return chain.Init(s.LoadDefinitions, s.LoadComponents, s.LoadBindings)
 }
 
 func (s *Screen) Dispose() tea.Cmd {
-	return chain.Dispose(s.UnloadBindings)
+	return chain.Dispose(s.UnloadBindings, s.DisposeComponents)
 }

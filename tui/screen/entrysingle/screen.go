@@ -7,6 +7,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/internal/models"
+	"github.com/sidekick-coder/atlas/internal/utils/maputil"
 	"github.com/sidekick-coder/atlas/tui/components/entrymeta"
 	"github.com/sidekick-coder/atlas/tui/messages"
 	tuimodels "github.com/sidekick-coder/atlas/tui/models"
@@ -23,9 +24,17 @@ type Screen struct {
 }
 
 func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
-	path, ok := p.Options["path"].(string)
+	path := ""
 
-	if !ok {
+	if p, ok := p.Options["path"].(string); ok {
+		path = p
+	}
+
+	if p, ok := maputil.GetString(p.Options, "entry.path"); ok {
+		path = p
+	}
+
+	if path == "" {
 		return nil, fmt.Errorf("path option is required for entrysingle screen")
 	}
 
@@ -69,38 +78,9 @@ func (s *Screen) Init() tea.Cmd {
 		return messages.ToastErrorCmd(err.Error())
 	}
 
-	return nil
-}
-
-func (s *Screen) Update(msg tea.Msg) tea.Cmd {
-	handlers := []func(tea.Msg) tea.Cmd{}
-
-	handlers = append(handlers, s.HandleScreenKeymaps, s.HandleUserKeyMaps)
-
-	for _, handler := range handlers {
-		cmd := handler(msg)
-
-		if cmd != nil {
-			return cmd
-		}
-	}
-
-	return nil
-}
-
-func (s *Screen) SetSize(width, height int) {
-	s.Width = width
-	s.Height = height
-
-	s.EntryMetaComponent.SetSize(s.Width, s.Height)
-}
-
-func (s *Screen) Render() string {
-	return s.EntryMetaComponent.
-		SetSize(s.Width, s.Height).
-		Render()
+	return s.LoadBindings()
 }
 
 func (s *Screen) Dispose() tea.Cmd {
-	return nil
+	return s.UnloadBindings()
 }
