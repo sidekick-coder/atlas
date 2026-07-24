@@ -51,7 +51,7 @@ func (t *Component) Render() string {
 	tabWidth := barWidth / visible
 
 	indexStyle := theme.BaseStyle().Background(lipgloss.Color(theme.Current.Muted)).Foreground(lipgloss.Color(theme.Current.Background))
-	indexActive := theme.BaseStyle().Background(lipgloss.Color(theme.Current.Primary)).Foreground(lipgloss.Color(theme.Current.Background))
+	indexActive := theme.BaseStyle().Background(lipgloss.Color(theme.Current.Active)).Foreground(lipgloss.Color(theme.Current.Background))
 
 	textStyle := theme.BaseStyle().
 		Background(lipgloss.Color(theme.Current.Placeholder)).

@@ -2,13 +2,15 @@ package toast
 
 import (
 	// "image/color"
-	lipgloss "charm.land/lipgloss/v2"
 	"strings"
+
+	lipgloss "charm.land/lipgloss/v2"
+	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
 
 func (c *Component) Render() string {
-	border := lipgloss.NewStyle().Foreground(c.Color)
-	text := lipgloss.NewStyle().Foreground(lipgloss.Color("252"))
+	border := theme.BaseStyle().Foreground(c.Color)
+	text := theme.BaseStyle()
 
 	boxWidth := lipgloss.Width(c.Content) + 4 // 2 for padding on each side
 	boxWidth = max(boxWidth, lipgloss.Width(c.Title)+6, 50) // 2 for corners, 4 for padding

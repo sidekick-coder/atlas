@@ -1,6 +1,9 @@
 package messages
 
-import tea "charm.land/bubbletea/v2"
+import (
+	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/features/theme"
+)
 
 type Toast struct {
 	Title   string
@@ -17,7 +20,7 @@ func ToastCmd(mgs Toast) tea.Cmd {
 
 func ToastErrorMessage(message string, seconds ...int) Toast {
 	sec := 5
-	color := "196"
+	color := theme.Current.Error
 	title := "Error"
 
 	if len(seconds) > 0 {
@@ -34,7 +37,7 @@ func ToastErrorMessage(message string, seconds ...int) Toast {
 
 func ToastSuccessMessage(message string, seconds ...int) Toast {
 	sec := 5
-	color := "46"
+	color := theme.Current.Success
 	title := "Success"
 
 	if len(seconds) > 0 {
