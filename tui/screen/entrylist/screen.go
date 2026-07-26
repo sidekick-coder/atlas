@@ -3,6 +3,7 @@ package entrylist
 import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
+	"github.com/sidekick-coder/atlas/internal/utils/maputil"
 	"github.com/sidekick-coder/atlas/tui/components/borderlabel"
 	"github.com/sidekick-coder/atlas/tui/components/entrylist"
 	"github.com/sidekick-coder/atlas/tui/components/entrymeta"
@@ -45,7 +46,7 @@ func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 func (s *Screen) Init() tea.Cmd {
 	return chain.Init(
 		s.LoadBindings,
-		s.list.Init,
+		s.InitList,
 		s.view.Init,
 		s.InitFocus,
 	)
@@ -65,6 +66,18 @@ func (s *Screen) Title() string {
 	}
 
 	return "entries"
+}
+
+func (s *Screen) InitList() tea.Cmd {
+	props := map[string]any{}
+
+	if lk, ok := maputil.GetString(s.options, "label_key"); ok {
+		props["label_key"] = lk
+	}
+
+	s.list.SetProps(props)
+
+	return s.list.Init()
 }
 
 func (s *Screen) InitFocus() tea.Cmd {

@@ -17,8 +17,8 @@ type Component struct {
 	selection *selection.Feature
 	loader    *entryloader.Feature
 
-	list      *list.Component
-	dialog    *inputdialog.Component
+	list   *list.Component
+	dialog *inputdialog.Component
 }
 
 func Create() *Component {
@@ -31,14 +31,14 @@ func Create() *Component {
 		loader:    entryloader.Create(*repo),
 		selection: selection.Create(),
 
-		list:      list.Create(),
-		dialog:    inputdialog.Create(),
+		list:   list.Create(),
+		dialog: inputdialog.Create(),
 	}
 }
 
 func (c *Component) Init() tea.Cmd {
 	return chain.Init(
-		c.InitLoader,
+		c.Load,
 		c.list.Init,
 		c.InitDialog,
 		c.InitSelection,
@@ -69,7 +69,9 @@ func (c *Component) Dispose() tea.Cmd {
 
 func (c *Component) OnSubmit(value string) tea.Cmd {
 	c.dialog.Close()
+
 	c.loader.SetQuery([]string{value})
+
 	err := c.loader.Load()
 
 	if err != nil {
@@ -82,10 +84,11 @@ func (c *Component) OnSubmit(value string) tea.Cmd {
 func (c *Component) InitDialog() tea.Cmd {
 	c.dialog.SetTitle("Search")
 	c.dialog.OnSubmit(c.OnSubmit)
+
 	return c.dialog.Init()
 }
 
-func (c *Component) InitLoader() tea.Cmd {
+func (c *Component) Load() tea.Cmd {
 	q := c.props["query"]
 
 	if q != nil {
@@ -107,4 +110,9 @@ func (c *Component) Focus() tea.Cmd {
 
 func (c *Component) Blur() tea.Cmd {
 	return c.Deactivate()
+}
+
+func (c *Component) SetProps(props map[string]any) tea.Cmd {
+	c.props = props
+	return c.Load()
 }

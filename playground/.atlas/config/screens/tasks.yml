@@ -2,23 +2,4 @@ type: entry_list
 title: "tasks"
 description: "List of tasks"
 query: "parent=tasks"
-open_screen: task_detail
-columns:
-    - id: id
-      label: "ID"
-      field: task_id
-      width: 10
-
-    - id: title
-      label: "Title"
-      field: title
-
-    - id: status
-      label: "Status"
-      field: status
-      width: 20
-
-    - id: due_date
-      label: "Due Date"
-      field: due
-      width: 30
+label_key: title
