@@ -93,6 +93,10 @@ func (f Feature) Current() (Focusable, bool) {
 }
 
 func (f Feature) IsFocused(item Focusable) bool {
+	if item == nil {
+		return false
+	}
+
 	if f.index < 0 || f.index >= len(f.items) {
 		return false
 	}

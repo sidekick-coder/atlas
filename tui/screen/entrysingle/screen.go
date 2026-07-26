@@ -45,7 +45,11 @@ func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 		return nil, fmt.Errorf("failed to load entry by path: %w", err)
 	}
 
-	emc := entrymeta.Create(path)
+	emc := entrymeta.Create()
+
+	emc.SetProps(map[string]any{
+		"entry": e.ToMap(),
+	})
 
 	s := &Screen{
 		App:    p.App,

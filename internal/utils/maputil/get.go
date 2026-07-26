@@ -39,3 +39,19 @@ func GetString(m map[string]any, path string) (string, bool) {
 
 	return s, true
 }
+
+func GetMap(m map[string]any, path string) (map[string]any, bool) {
+	v := Get(m, path)
+
+	if v == nil {
+		return nil, false
+	}
+
+	mm, ok := v.(map[string]any)
+
+	if !ok {
+		return nil, false
+	}
+
+	return mm, true
+}

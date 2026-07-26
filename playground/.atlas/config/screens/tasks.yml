@@ -3,3 +3,6 @@ title: "tasks"
 description: "List of tasks"
 query: "parent=tasks"
 label_key: title
+component:
+    type: "text"
+    content: "{{ .entry.content }}"

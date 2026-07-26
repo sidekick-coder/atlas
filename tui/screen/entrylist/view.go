@@ -25,37 +25,49 @@ func (s *Screen) SetSize(width, height int) {
 	limit = max(limit, s.height)
 }
 
-func (s *Screen) Render() string {
+func (s *Screen) RenderView() string {
 	leftWidth := s.width * 2 / 5          // 40%
 	rightWidth := s.width - leftWidth - 8 // 60%
+	rightColor := theme.Current.Border
+
+	content := ""
+
+	if s.view != nil {
+		if s.focus.IsFocused(s.view) {
+			rightColor = theme.Current.Primary
+		}
+
+		s.view.Resize(rightWidth, s.height)
+		content = s.view.Render()
+	}
+
+	return s.container.
+		SetLabel("Details").
+		SetSize(rightWidth, s.height).
+		SetContent(content).
+		SetColor(rightColor).
+		Render()
+}
+
+func (s *Screen) RenderList() string {
+	leftWidth := s.width * 2 / 5 // 40%
 
 	s.list.SetSize(leftWidth, s.height)
-	s.view.SetSize(rightWidth, s.height)
 
 	letColor := theme.Current.Border
-	rightColor := theme.Current.Border
 
 	if s.focus.IsFocused(s.list) {
 		letColor = theme.Current.Primary
 	}
 
-	if s.focus.IsFocused(s.view) {
-		rightColor = theme.Current.Primary
-	}
-
-	left := s.container.
+	return s.container.
 		SetLabel("Entries").
 		SetColor(letColor).
 		SetSize(leftWidth, s.height).
 		SetContent(s.list.Render()).
 		Render()
+}
 
-	right := s.container.
-		SetLabel("Details").
-		SetSize(rightWidth, s.height).
-		SetContent(s.view.Render()).
-		SetColor(rightColor).
-		Render()
-
-	return lipgloss.JoinHorizontal(lipgloss.Left, left, right)
+func (s *Screen) Render() string {
+	return lipgloss.JoinHorizontal(lipgloss.Left, s.RenderList(), s.RenderView())
 }
