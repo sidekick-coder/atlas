@@ -62,9 +62,8 @@ func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 func (s *Screen) Init() tea.Cmd {
 	return chain.Init(
 		s.LoadBindings,
-		s.InitView,
 		s.InitList,
-		s.InitFocus,
+		s.InitView,
 	)
 }
 
@@ -91,6 +90,8 @@ func (s *Screen) InitList() tea.Cmd {
 	}
 
 	s.list.SetProps(props)
+	s.focus.Add(s.list)
+	s.focus.Focus(s.list)
 
 	return s.list.Init()
 }
@@ -109,16 +110,8 @@ func (s *Screen) InitView() tea.Cmd {
 	}
 
 	s.view = view
-
 	s.focus.Add(s.view)
 
-	return nil
-}
-
-func (s *Screen) InitFocus() tea.Cmd {
-	s.focus.Add(s.list)
-
-	s.focus.Focus(s.list)
 	return nil
 }
 

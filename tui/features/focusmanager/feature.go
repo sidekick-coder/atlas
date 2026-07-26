@@ -75,6 +75,10 @@ func (f *Feature) Next() tea.Cmd {
 }
 
 func (f *Feature) Prev() tea.Cmd {
+	if f.index == -1 {
+		return f.SetIndex(len(f.items) - 1)
+	}
+
 	index := f.index - 1
 
 	if index < 0 {
