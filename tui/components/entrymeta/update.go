@@ -7,12 +7,18 @@ import (
 )
 
 func (c *Component) Update(msg tea.Msg) tea.Cmd {
-	return chain.Update(msg, c.dialog.Update, chain.OnKey(c.HandleBindings), c.HandleUpdate)
+	return chain.Update(msg, c.dialog.Update, c.keyValue.Update, chain.OnKey(c.HandleBindings), c.HandleUpdate)
 }
 
 func (c *Component) HandleUpdate(msg tea.Msg) tea.Cmd {
 	if m, ok := msg.(entrycontroller.UpdatedMsg); ok && m.Path == c.path {
+		index := c.selection.GetCursor()
+
 		c.Load()
+
+		if index >= 0 && index < len(c.metas) {
+			c.selection.SetCursor(index)
+		}
 	}
 
 	return  nil

@@ -17,7 +17,7 @@ func (s *Screen) Load() error {
 		return fmt.Errorf("failed to load metadata for entry %s: %w", s.Path, err)
 	}
 
-	// sort 
+	// sort
 	slices.SortFunc(metas, func(a, b models.EntryMeta) int {
 		if len(a.Name) != len(b.Name) {
 			return len(a.Name) - len(b.Name)
@@ -26,7 +26,7 @@ func (s *Screen) Load() error {
 		return strings.Compare(a.Name, b.Name)
 	})
 
-	s.meta.SetMetas(metas)
+	// s.meta.SetMetas(metas)
 
 	return nil
 }
@@ -38,17 +38,18 @@ func (s *Screen) UnsetMeta(name string) error {
 		return err
 	}
 
-	return s.Load()	
+	return s.Load()
 }
 
 func (s *Screen) UnsetMetaSelected() error {
-	em, ok := s.meta.GetSelected()
-
-	if !ok {
-		return fmt.Errorf("no metadata selected to set value")
-	}
-
-	return s.UnsetMeta(em.Name)
+	return nil
+	// em, ok := s.meta.GetSelected()
+	//
+	// if !ok {
+	// 	return fmt.Errorf("no metadata selected to set value")
+	// }
+	//
+	// return s.UnsetMeta(em.Name)
 }
 
 func (s *Screen) SetMeta(name string, value string) error {
@@ -58,17 +59,19 @@ func (s *Screen) SetMeta(name string, value string) error {
 		return err
 	}
 
-	return s.Load()	
+	return s.Load()
 }
 
 func (s *Screen) SetValue(value string) error {
-	em, ok := s.meta.GetSelected()
+	// em, ok := s.meta.GetSelected()
 
-	if !ok {
-		return fmt.Errorf("no metadata selected to set value")
-	}
+	// if !ok {
+	// 	return fmt.Errorf("no metadata selected to set value")
+	// }
+	//
+	// return s.SetMeta(em.Name, value)
 
-	return s.SetMeta(em.Name, value)
+	return nil
 }
 
 func (s *Screen) Sync() error {

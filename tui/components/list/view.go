@@ -2,28 +2,37 @@ package list
 
 import (
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
 
-func (c *Component) SetSize(w, h int) {
+func (c *Component) SetSize(w, h int) *Component {
 	c.width = w
 	c.height = h
+	return c
+}
+
+func (c *Component) SetWidth(w int) *Component {
+	c.width = w
+	return c
+}
+
+func (c *Component) SetHeight(h int) *Component {
+	c.height = h
+	return c
 }
 
 func (c *Component) Render() string {
-	normal := lipgloss.NewStyle().
-		Width(c.width).
-		Height(c.height)
+	normal := theme.BaseStyle().
+		Width(c.width)
 
-	focus := lipgloss.NewStyle().
+	focus := theme.BaseStyle().
 		Width(c.width).
-		Height(c.height).
-		Background(lipgloss.Color("12")).
-		Foreground(lipgloss.Color("0"))
+		Background(lipgloss.Color(theme.Current.Selection))
 
 	var items []string
 
 	for index, item := range c.items {
-		if index == c.cursor {
+		if c.selection.IsSelected(index) {
 			result := focus.Render(item)
 
 			items = append(items, result)

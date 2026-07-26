@@ -2,8 +2,8 @@ package list
 
 import (
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/app/program"
 	"github.com/sidekick-coder/atlas/tui/features/key"
-	"github.com/sidekick-coder/atlas/tui/messages"
 )
 
 type Keymap struct {
@@ -35,7 +35,6 @@ func (c *Component) GetBindigs() []key.Binding {
 	return []key.Binding{
 		Binding.Up,
 		Binding.Down,
-		Binding.Select,
 	}
 }
 
@@ -49,21 +48,21 @@ func (c *Component) UnloadBindings() {
 
 func (c *Component) HandleBinding(km tea.KeyMsg) tea.Cmd {
 	if key.Matches(Binding.Up) {
-		return c.Up()
+		c.selection.Prev()
+
+		return tea.Batch(
+			program.Command(UpMsg{}),
+			program.Command(MovedMsg{}),
+		)
 	}
 
 	if key.Matches(Binding.Down) {
-		return c.Down()
-	}
+		c.selection.Next()
 
-	if key.Matches(Binding.Select) {
-		index, ok := c.GetCursor()
-
-		if ok && c.onSelect != nil {
-			return c.onSelect(index)
-		}
-
-		return messages.SkipCmd()
+		return tea.Batch(
+			program.Command(DownMsg{}),
+			program.Command(MovedMsg{}),
+		)
 	}
 
 	return nil

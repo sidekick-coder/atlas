@@ -1,5 +1,3 @@
 title: "tasks"
-initial_screen_index: 0
 open_screens:
-    - entry_table
     - tasks

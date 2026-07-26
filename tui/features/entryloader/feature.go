@@ -101,6 +101,28 @@ func (f *Feature) GetCount() int {
 	return f.count
 }
 
+func (f *Feature) GetTotalPages() int {
+	if f.limit == 0 {
+		return 0
+	}
+
+	totalPages := f.count / f.limit
+
+	if f.count%f.limit != 0 {
+		totalPages++
+	}
+
+	return totalPages
+}
+
+func (f *Feature) GetCurrentPage() int {
+	if f.limit == 0 {
+		return 0
+	}
+
+	return (f.offset / f.limit) + 1
+}
+
 func (f *Feature) GetLimit() int {
 	return f.limit
 }

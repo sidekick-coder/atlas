@@ -47,6 +47,20 @@ func (c *Component) SetSize(width, height int) *Component {
 	return c
 }
 
+func (c *Component) SetWidth(width int) *Component {
+	c.style = c.style.Width(width)
+	c.width = width
+	return c
+}
+
+func (c *Component) SetHeight(height int) *Component {
+	c.style = c.style.Height(c.height)
+	c.height = height
+	return c
+}
+
+
+
 func (c *Component) SetContent(content string) *Component {
 	c.content = content
 	return c

@@ -28,6 +28,14 @@ func (c *Component) Render() string {
 
 	lines := strings.Split(inputContent, "\n")
 
+	availableHeight := c.height - 2
+
+	if len(lines) < availableHeight {
+		for i := len(lines); i < availableHeight; i++ {
+			lines = append(lines, "")
+		}
+	}
+
 	rowParts := make([]string, 0, len(lines))
 
 	for _, line := range lines {

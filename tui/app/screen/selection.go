@@ -28,6 +28,7 @@ func (f *Feature) SetCurrent(index int) error {
 	f.Selection.SetCursor(index)
 
 	os.Screen.Init()
+
 	keymaps.AddGroup("screen", []string{"screen=" + os.DefinitionID})
 
 	program.Send(f.Size())

@@ -1,35 +1,60 @@
 package list
 
-import tea "charm.land/bubbletea/v2"
+import (
+	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/features/selection"
+)
 
 type Component struct {
 	width    int
 	height   int
-	cursor int
-	onSelect func(cursor int) tea.Cmd
 	items    []string
+
+	selection *selection.Feature
 }
 
 func Create() *Component {
 	return &Component{
-		width:    100,
-		height:   100,
-		cursor: 0,
-		items:    []string{},
+		width:  100,
+		height: 100,
+		items:  []string{},
+		selection: selection.Create(),
 	}
 }
 
-func (c *Component) OnSelect(f func(cursor int) tea.Cmd) *Component {
-	c.onSelect = f
-	return c
-}
-
 func (c *Component) Init() tea.Cmd {
-	c.LoadBindings()
 	return nil
 }
 
 func (c *Component) Dispose() tea.Cmd {
 	c.UnloadBindings()
 	return nil
+}
+
+func (c *Component) Activate() tea.Cmd {
+	c.LoadBindings()
+	return nil
+}
+
+func (c *Component) Deactive() tea.Cmd {
+	c.UnloadBindings()
+	return nil
+}
+
+func (c *Component) SetItems(items []string) {
+	c.items = items
+
+	c.selection.SetTotal(len(items))
+}
+
+func (c *Component) SetSelection(selection *selection.Feature) {
+	c.selection = selection
+}
+
+func (c *Component) Focus() {
+	c.LoadBindings()
+}
+
+func (c *Component) Blur() {
+	c.UnloadBindings()
 }

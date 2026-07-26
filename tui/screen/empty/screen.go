@@ -72,7 +72,6 @@ func (s *Screen) Init() tea.Cmd {
 	}
 
 	s.list.SetItems(items)
-	s.list.OnSelect(s.Select)
 
 	return chain.Init(chain.OnVoid(s.LoadBindings), s.list.Init)
 }

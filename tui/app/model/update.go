@@ -13,13 +13,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	cmd := chain.Update(msg,
 		key.HandleKeypress,
 
-		m.LoadHome,
-
 		m.toaster.Update,
 		m.footer.Update,
 		m.screen.Update,
 		m.toolbar.Update,
 		action.Update,
+		m.LoadHome,
 
 		m.HandleMessages,
 		chain.OnKey(m.HandleBinding),
@@ -73,4 +72,3 @@ func (m *model) HandleMessages(msg tea.Msg) tea.Cmd {
 
 	return nil
 }
-

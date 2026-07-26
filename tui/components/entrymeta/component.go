@@ -1,78 +1,137 @@
 package entrymeta
 
 import (
+	"fmt"
+	"slices"
+	"strings"
+
 	tea "charm.land/bubbletea/v2"
-	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/internal/models"
+	"github.com/sidekick-coder/atlas/internal/utils/maputil"
+	"github.com/sidekick-coder/atlas/tui/app/program"
 	"github.com/sidekick-coder/atlas/tui/components/inputdialog"
+	"github.com/sidekick-coder/atlas/tui/components/keyvalue"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
+	"github.com/sidekick-coder/atlas/tui/features/selection"
 )
 
 type Component struct {
-	Width        int
-	Height       int
-	Focus        bool
-	CurrentIndex int
-	Metas        []models.EntryMeta
+	metas []models.EntryMeta
+	path  string
+	props map[string]any
 
-	app    *app.App
-	path   string
-	dialog *inputdialog.Component
+	selection *selection.Feature
+
+	dialog   *inputdialog.Component
+	keyValue *keyvalue.Component
 }
 
-func Create(app *app.App, path string) *Component {
+func Create(path string) *Component {
 	return &Component{
-		Width:        100,
-		Height:       100,
-		CurrentIndex: 0,
-		Focus:        false,
-		Metas:        []models.EntryMeta{},
+		metas: []models.EntryMeta{},
+		path:  path,
+		props: map[string]any{},
 
-		app:    app,
-		path:   path,
-		dialog: inputdialog.Create(),
+		selection: selection.Create(),
+
+		dialog:   inputdialog.Create(),
+		keyValue: keyvalue.Create(),
 	}
 }
 
-func (c *Component) SetFocus(focus bool) *Component {
-	c.Focus = focus
-	return c
+func (c *Component) Activate() tea.Cmd {
+	return chain.Cmd(c.LoadBindings, c.keyValue.Init, c.dialog.Init)
 }
 
-func (c *Component) SetMetas(metas []models.EntryMeta) {
-	c.Metas = metas
-
-	maxIndex := len(metas) - 1
-
-	if c.CurrentIndex > maxIndex {
-		c.CurrentIndex = maxIndex
-	}
+func (c *Component) Deactivate() tea.Cmd {
+	return chain.Cmd(c.UnloadBindings, c.keyValue.Dispose, c.dialog.Dispose)
 }
 
-func (c *Component) MoveUp() {
-	if c.CurrentIndex > 0 {
-		c.CurrentIndex--
-	}
+func (c *Component) Focus() tea.Cmd {
+	return c.Activate()
 }
 
-func (c *Component) MoveDown() {
-	if c.CurrentIndex < len(c.Metas)-1 {
-		c.CurrentIndex++
-	}
-}
-
-func (c *Component) GetSelected() (models.EntryMeta, bool) {
-	if c.CurrentIndex < 0 || c.CurrentIndex >= len(c.Metas) {
-		return models.EntryMeta{}, false
-	}
-
-	return c.Metas[c.CurrentIndex], true
+func (c *Component) Blur() tea.Cmd {
+	return c.Deactivate()
 }
 
 func (c *Component) Init() tea.Cmd {
-	return chain.Init(c.LoadBindings, c.dialog.Init)
+	c.keyValue.SetSelection(c.selection)
+	return nil
 }
 
 func (c *Component) Dispose() tea.Cmd {
-	return chain.Dispose(c.UnloadBindings, c.dialog.Dispose)
+	return nil
+}
+
+func (c *Component) SetProps(props map[string]any) {
+	c.props = props
+
+	if p, ok := props["path"].(string); ok {
+		c.path = p
+	}
+
+	if p, ok := maputil.GetString(props, "entry.path"); ok {
+		c.path = p
+	}
+
+	c.Load()
+}
+
+func (c *Component) Load() error {
+	c.keyValue.Clear()
+
+	if c.path == "" {
+		return nil
+	}
+
+	app := program.GetApp()
+
+	repo := app.EntryMetaRepo()
+
+	metas, err := repo.ListByEntryPath(c.path)
+
+	if err != nil {
+		return fmt.Errorf("failed to load metadata for entry %s: %w", c.path, err)
+	}
+
+	// sort
+	slices.SortFunc(metas, func(a, b models.EntryMeta) int {
+		if len(a.Name) != len(b.Name) {
+			return len(a.Name) - len(b.Name)
+		}
+
+		return strings.Compare(a.Name, b.Name)
+	})
+
+	c.metas = metas
+
+	items := []keyvalue.Item{}
+
+	for _, meta := range metas {
+		items = append(items, keyvalue.Item{
+			Key:   meta.Name,
+			Value: meta.Value,
+		})
+	}
+
+	c.keyValue.SetItems(items)
+
+	return nil
+}
+
+func (c *Component) GetSelected() (models.EntryMeta, bool) {
+	item, ok := c.keyValue.GetSelected()
+
+	if !ok {
+		return models.EntryMeta{}, false
+	}
+
+	for _, meta := range c.metas {
+		if meta.Name == item.Key {
+			return meta, true
+		}
+	}
+
+	return models.EntryMeta{}, false
 }

@@ -20,12 +20,6 @@ type Keymap struct {
 }
 
 var Bindings = Keymap{
-	Up: key.CreateBinding("k", "up").
-		SetDescription("up").
-		SetHelp("k/up"),
-	Down: key.CreateBinding("j", "down").
-		SetDescription("down").
-		SetHelp("j/down"),
 	Edit: key.CreateBinding("e").
 		SetDescription("edit").
 		SetHelp("e"),
@@ -66,20 +60,12 @@ func (c *Component) UnloadBindings() tea.Cmd {
 }
 
 func (c *Component) HandleBindings(msg tea.KeyMsg) tea.Cmd {
-	if key.Matches(Bindings.Up) {
-		c.MoveUp()
-	}
-
-	if key.Matches(Bindings.Down) {
-		c.MoveDown()
-	}
-
 	if key.Matches(Bindings.Edit) {
 
 		selected, exists := c.GetSelected()
 
 		if exists {
-			c.dialog.SetTitle("Edit")
+			c.dialog.SetTitle("Edit: " + selected.Name)
 			c.dialog.SetContent(selected.Value)
 			c.dialog.Open()
 

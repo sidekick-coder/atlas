@@ -5,9 +5,12 @@ import (
 	"log/slog"
 
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/internal/app"
+	"github.com/sidekick-coder/atlas/internal/config"
 )
 
 var teaProgram *tea.Program
+var internalApp *app.App
 
 func GetProgram() *tea.Program {
 	return teaProgram
@@ -15,6 +18,18 @@ func GetProgram() *tea.Program {
 
 func SetProgram(p *tea.Program) {
 	teaProgram = p
+}
+
+func GetApp() *app.App {
+	return internalApp
+}
+
+func SetApp(a *app.App) {
+	internalApp = a
+}
+
+func GetConfig() *config.Config {
+	return internalApp.Config()
 }
 
 func Send[T tea.Msg](msg T) error {
@@ -32,5 +47,11 @@ func Send[T tea.Msg](msg T) error {
 func Command[T tea.Msg](msg T) tea.Cmd {
 	return func() tea.Msg {
 		return msg
+	}
+}
+
+func CommandSkip() tea.Cmd {
+	return func() tea.Msg {
+		return nil
 	}
 }

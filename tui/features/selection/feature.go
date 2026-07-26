@@ -84,3 +84,4 @@ func (f *Feature) Prev() {
 func (f *Feature) Clear() {
 	f.cursor = -1
 }
+

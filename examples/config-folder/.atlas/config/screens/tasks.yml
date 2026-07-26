@@ -1,4 +1,4 @@
-type: entry_table
+type: entry_list
 title: "tasks"
 description: "List of tasks"
 query: "parent=tasks"

@@ -21,6 +21,7 @@ import (
 
 	"github.com/sidekick-coder/atlas/tui/screen/custom"
 	"github.com/sidekick-coder/atlas/tui/screen/empty"
+	"github.com/sidekick-coder/atlas/tui/screen/entrylist"
 	"github.com/sidekick-coder/atlas/tui/screen/entrysingle"
 	"github.com/sidekick-coder/atlas/tui/screen/entrytable"
 )
@@ -72,45 +73,6 @@ func Create(a *app.App) model {
 	keymaps.LoadConfigKeymaps(a.Config())
 
 	return m
-}
-
-func (m *model) AddScreenEmpty() tea.Cmd {
-	entries := []empty.Entry{}
-
-	entries = append(entries, empty.Entry{
-		ID:      "entry_list",
-		Options: map[string]any{},
-	})
-
-	entries = append(entries, empty.Entry{
-		ID:      "entry_table",
-		Options: map[string]any{},
-	})
-
-	us, err := m.app.Config().GetScreens()
-
-	if err != nil {
-		return toast.Error(err.Error())
-	}
-
-	for _, s := range us {
-		entries = append(entries, empty.Entry{
-			ID:      s.ID,
-			Options: s.Options,
-		})
-	}
-
-	options := map[string]any{
-		"entries": entries,
-	}
-
-	_, err = m.screen.Add("empty", options)
-
-	if err != nil {
-		return toast.Error(err.Error())
-	}
-
-	return nil
 }
 
 func (m *model) LoadUserScreen(screen config.Screen) (models.ScreenFactory, error) {
@@ -167,6 +129,7 @@ func (m model) InitScreen() tea.Cmd {
 
 	m.screen.SetDefinition("empty", m.EmptyScreenFactory)
 	m.screen.SetDefinition("entry_table", entrytable.Create)
+	m.screen.SetDefinition("entry_list", entrylist.Create)
 	m.screen.SetDefinition("entry_single", entrysingle.Create)
 	m.screen.SetDefinition("custom", custom.Create)
 

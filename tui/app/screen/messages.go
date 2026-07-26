@@ -12,10 +12,13 @@ type SizeMsg struct {
 }
 
 func (f *Feature) Size() tea.Msg {
-	slog.Info("sending size message", slog.Int("width", f.windowWidth), slog.Int("height", f.windowHeight-7))
+	height := f.windowHeight - 2
+
+	slog.Info("sending size message", slog.Int("width", f.windowWidth), slog.Int("height", height))
+
 	return SizeMsg{
 		Width:  f.windowWidth,
-		Height: f.windowHeight - 2,
+		Height: height,
 	}
 }
 

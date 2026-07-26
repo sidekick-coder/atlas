@@ -58,6 +58,7 @@ func (a *App) LoadProgram() error {
 	a.program = p
 
 	program.SetProgram(p)
+	program.SetApp(a.App)
 
 	return nil
 }
