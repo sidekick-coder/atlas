@@ -3,6 +3,7 @@ package list
 import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/tui/features/theme"
+	"github.com/charmbracelet/x/ansi"
 )
 
 func (c *Component) SetSize(w, h int) *Component {
@@ -33,7 +34,8 @@ func (c *Component) Render() string {
 
 	for index, item := range c.items {
 		if c.selection.IsSelected(index) {
-			result := focus.Render(item)
+			unstyled := ansi.Strip(item)
+			result := focus.Render(unstyled)
 
 			items = append(items, result)
 			continue

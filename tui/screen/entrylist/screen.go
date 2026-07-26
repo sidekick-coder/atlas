@@ -83,13 +83,8 @@ func (s *Screen) Title() string {
 }
 
 func (s *Screen) InitList() tea.Cmd {
-	props := map[string]any{}
+	s.list.SetProps(s.options)
 
-	if lk, ok := maputil.GetString(s.options, "label_key"); ok {
-		props["label_key"] = lk
-	}
-
-	s.list.SetProps(props)
 	s.focus.Add(s.list)
 	s.focus.Focus(s.list)
 

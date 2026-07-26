@@ -14,6 +14,7 @@ import (
 
 type RenderOptions struct {
 	AllowMissingKeys bool
+	FuncMap		  template.FuncMap
 }
 
 func Eval(payload string, data map[string]any) (any, error) {
@@ -61,6 +62,10 @@ func Render(payload string, data map[string]any, args ...RenderOptions) (string,
 
 	if !opts.AllowMissingKeys {
 		t = t.Option("missingkey=error")
+	}
+
+	if opts.FuncMap != nil {
+		t = t.Funcs(opts.FuncMap)
 	}
 
 	t, err := t.Parse(payload)

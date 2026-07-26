@@ -2,11 +2,10 @@ type: entry_list
 title: "tasks"
 description: "List of tasks"
 query: "parent=tasks"
-label_key: title
+# label_key: path
+label_template: '󰂔 #{{ color .id "primary" }} {{ .title }} ({{ color_map .status .vars.status_colors }})'
 component:
     type: "shell"
-    # command: echo '{"json":"hello"}' | jq -C
-    command: "echo '{{ .entry.content }}' | CLICOLOR_FORCE=1 COLORTERM=truecolor glow -s dark"
-    # command: glow "{{ .entry.absolute_path }}"
-    # command: printf '\033[31mRED\033[0m\n'
-    # command: echo "{{ .entry.content }}"
+    command: |
+      script -q /dev/null -c "glow -s {{ .workspace.atlas_path }}/glow-style.json {{ .entry.absolute_path }}" |
+      sed '1{/^[[:space:]]*$/d}; ${/^[[:space:]]*$/d;}'

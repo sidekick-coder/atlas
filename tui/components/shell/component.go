@@ -1,11 +1,14 @@
 package shell
 
 import (
+	"fmt"
+	"maps"
 	"os"
 	"os/exec"
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/template"
+	"github.com/sidekick-coder/atlas/tui/app/program"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/components/viewport"
 )
@@ -76,8 +79,10 @@ func Execute(options map[string]any) (string, error) {
 		cmd.Env = append(os.Environ(), "COLOR=always")
 		output, err := cmd.CombinedOutput()
 
+		outputStr := string(output)
+
 		if err != nil {
-			return "", err
+			return "", fmt.Errorf("command execution failed: %w, output: %s", err, outputStr)
 		}
 
 		return string(output), nil
@@ -87,7 +92,16 @@ func Execute(options map[string]any) (string, error) {
 }
 
 func (c *Component) Load() tea.Cmd {
-	computed, err := template.EvaluateMap(c.props, c.props)
+	app := program.GetApp()
+	config := app.Config()
+
+	ctx :=  map[string]any{}
+
+	ctx["workspace"] = config.GetMap("workspace")
+
+	maps.Copy(ctx, c.props)
+
+	computed, err := template.EvaluateMap(c.props, ctx)
 
 	if err != nil {
 		return toast.Error(err.Error())
