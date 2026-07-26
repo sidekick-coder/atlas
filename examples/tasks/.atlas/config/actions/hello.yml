@@ -1,0 +1,2 @@
+type: toast
+message: "Hello #{{ .entry.id }}"

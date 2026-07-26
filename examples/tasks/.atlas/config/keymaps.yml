@@ -1,0 +1,21 @@
+bindings:
+    - keys: [a]
+      action: input
+      action_options:
+          label: "Task name"
+          submit: create-task
+      description: add
+      groups: [screen=tasks]
+
+    - keys: [v]
+      action: vi
+      description: vim
+      groups:
+          - ext=md
+          - ext=json
+
+    - keys: [u]
+      action: set-status
+      description: update status
+      groups:
+          - parent=tasks
