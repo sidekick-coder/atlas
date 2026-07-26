@@ -1,9 +1,16 @@
 package entrymeta
 
+// Deprecated: Use Resize instead
 func (c *Component) SetSize(width, height int) *Component {
-	c.keyValue.SetSize(width, height)
+	c.Resize(width, height)
+
 	return c
 }
+
+func (c *Component) Resize(width, height int) {
+	c.keyValue.SetSize(width, height)
+}
+
 
 func (c *Component) Render() string {
 	mm := map[string]string{}

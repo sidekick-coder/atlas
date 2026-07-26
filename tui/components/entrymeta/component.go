@@ -26,10 +26,10 @@ type Component struct {
 	keyValue *keyvalue.Component
 }
 
-func Create(path string) *Component {
+func Create() *Component {
 	return &Component{
 		metas: []models.EntryMeta{},
-		path:  path,
+		path:  "",
 		props: map[string]any{},
 
 		selection: selection.Create(),
