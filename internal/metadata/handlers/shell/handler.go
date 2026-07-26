@@ -62,7 +62,8 @@ func (m Handler) ID() string {
 	return m.id
 }
 
-func (h Handler) Extract(info *models.EntryInfo) (map[string]string, error) {
+func (h Handler) Extract(payload handler.ExtractPayload) (map[string]string, error) {
+	info := payload.Info
 	ctx := template.Context(
 		template.ContextConfig(*h.config),
 		template.ContextEntryInfo(*info),

@@ -12,6 +12,10 @@ import (
 	"github.com/sidekick-coder/atlas/internal/utils"
 )
 
+type RenderOptions struct {
+	AllowMissingKeys bool
+}
+
 func Eval(payload string, data map[string]any) (any, error) {
 	input := payload
 
@@ -44,10 +48,22 @@ func Eval(payload string, data map[string]any) (any, error) {
 	return buf.String(), nil
 }
 
-func Render(payload string, data map[string]any) (string, error) {
-	t, err := template.New("").
-		Option("missingkey=error").
-		Parse(payload)
+func Render(payload string, data map[string]any, args ...RenderOptions) (string, error) {
+	opts := RenderOptions{
+		AllowMissingKeys: false,
+	}
+
+	if len(args) > 0 {
+		opts = args[0]
+	}
+
+	t := template.New("render")
+
+	if !opts.AllowMissingKeys {
+		t = t.Option("missingkey=error")
+	}
+
+	t, err := t.Parse(payload)
 
 	if err != nil {
 		return "", err

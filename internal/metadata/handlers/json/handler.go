@@ -59,7 +59,8 @@ func (m Handler) ID() string {
 	return "json"
 }
 
-func (m Handler) Extract(info *models.EntryInfo) (map[string]string, error) {
+func (m Handler) Extract(payload handler.ExtractPayload) (map[string]string, error) {
+	info := payload.Info
 	contents, err := os.ReadFile(filepath.Join(info.AbsolutePath))
 
 	if err != nil {

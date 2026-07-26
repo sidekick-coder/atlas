@@ -3,18 +3,25 @@ package metadata
 import (
 	"fmt"
 	"maps"
+
 	// "strings"
+	"github.com/sidekick-coder/atlas/internal/metadata/handler"
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 
 func (m *Meta) ExtractMap() (map[string]string, error) {
 	result := make(map[string]string)
 
-	for _, handler := range m.handlers {
-		data, err := handler.Extract(m.info)
+	for _, h := range m.handlers {
+		payload := handler.ExtractPayload{
+			Info:  m.info,
+			Metas: result,
+		}
+
+		data, err := h.Extract(payload)
 
 		if err != nil {
-			return nil, fmt.Errorf("failed to extract metadata from handler %s(%s): %w", handler.GetID(), handler.GetTypeID(), err)
+			return nil, fmt.Errorf("failed to extract metadata from handler %s(%s): %w", h.GetID(), h.GetTypeID(), err)
 		}
 
 		maps.Copy(result, data)
@@ -43,4 +50,3 @@ func (m *Meta) Extract() ([]models.EntryMeta, error) {
 
 	return result, nil
 }
-

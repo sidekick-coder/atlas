@@ -11,10 +11,15 @@ type Payload struct {
 	Config  *config.Config
 }
 
+type ExtractPayload struct {
+	Info	*models.EntryInfo 
+	Metas	map[string]string
+}
+
 type Handler interface {
 	GetID() string
 	GetTypeID() string
-	Extract(info *models.EntryInfo) (map[string]string, error)
+	Extract(ExtractPayload) (map[string]string, error)
 	Set(info *models.EntryInfo, name string, value string) (bool, error)
 	Unset(info *models.EntryInfo, name string) error
 }

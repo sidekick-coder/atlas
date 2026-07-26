@@ -9,6 +9,7 @@ import (
 	"github.com/sidekick-coder/atlas/internal/metadata/handlers/content"
 	"github.com/sidekick-coder/atlas/internal/metadata/handlers/frontmatter"
 	"github.com/sidekick-coder/atlas/internal/metadata/handlers/json"
+	"github.com/sidekick-coder/atlas/internal/metadata/handlers/setter"
 	"github.com/sidekick-coder/atlas/internal/metadata/handlers/shell"
 	"github.com/sidekick-coder/atlas/internal/metadata/handlers/stat"
 )
@@ -65,6 +66,11 @@ func (m *Meta) SetHandlersFromConfig(config *config.Config) error {
 
 		if hc.Type == "shell" {
 			handlers = append(handlers, shell.Create(payload))
+			continue
+		}
+
+		if hc.Type == "setter" {
+			handlers = append(handlers, setter.Create(payload))
 			continue
 		}
 

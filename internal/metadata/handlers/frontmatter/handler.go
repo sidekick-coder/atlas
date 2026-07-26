@@ -71,7 +71,9 @@ func Marshal(body string, frontmatter map[string]any) (string, error) {
 	return result, nil
 }
 
-func (h Handler) Extract(info *models.EntryInfo) (map[string]string, error) {
+func (h Handler) Extract(payload handler.ExtractPayload) (map[string]string, error) {
+	info := payload.Info 
+
 	contents, err := os.ReadFile(filepath.Join(info.AbsolutePath))
 
 	if err != nil {

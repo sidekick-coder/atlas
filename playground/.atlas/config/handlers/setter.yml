@@ -1,0 +1,5 @@
+type: setter
+patterns: ["**/*.md"]
+keys:
+    - name: preview
+      value: "⌛ {{ .estimateHours  }}"

@@ -1,27 +1,18 @@
 package metadata
 
 import (
-	"fmt"
-	"slices"
-
 	"github.com/sidekick-coder/atlas/internal/metadata/handler"
 	"github.com/sidekick-coder/atlas/internal/models"
 )
 
 type Meta struct {
-	info *models.EntryInfo
+	info     *models.EntryInfo
 	handlers []handler.Handler
-}
-
-var SytemMetaNames = []string{
-	"basename",
-	"type",
-	"ext",
 }
 
 func Handler(info *models.EntryInfo) (*Meta, error) {
 	meta := &Meta{
-		info: info,
+		info:     info,
 		handlers: []handler.Handler{},
 	}
 
@@ -33,12 +24,7 @@ func Create(info *models.EntryInfo) (*Meta, error) {
 	return Handler(info)
 }
 
-
 func (m *Meta) Set(name string, value string) (bool, error) {
-	if slices.Contains(SytemMetaNames, name) {
-		return false, fmt.Errorf("cannot set system meta: %s", name)
-	}
-
 	handlers := m.handlers
 	info := m.info
 
@@ -58,10 +44,6 @@ func (m *Meta) Set(name string, value string) (bool, error) {
 }
 
 func (m *Meta) Unset(name string) (bool, error) {
-	if slices.Contains(SytemMetaNames, name) {
-		return false, fmt.Errorf("cannot unset system meta: %s", name)
-	}
-
 	handlers := m.handlers
 	info := m.info
 
@@ -75,4 +57,3 @@ func (m *Meta) Unset(name string) (bool, error) {
 
 	return true, nil
 }
-
