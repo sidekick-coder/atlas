@@ -4,5 +4,9 @@ description: "List of tasks"
 query: "parent=tasks"
 label_key: title
 component:
-    type: "text"
-    content: "{{ .entry.content }}"
+    type: "shell"
+    # command: echo '{"json":"hello"}' | jq -C
+    command: "echo '{{ .entry.content }}' | CLICOLOR_FORCE=1 COLORTERM=truecolor glow -s dark"
+    # command: glow "{{ .entry.absolute_path }}"
+    # command: printf '\033[31mRED\033[0m\n'
+    # command: echo "{{ .entry.content }}"

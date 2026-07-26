@@ -10,8 +10,8 @@ type FocusMsg struct {
 }
 
 type Focusable interface {
-	Focus() tea.Cmd
-	Blur() tea.Cmd
+	Activate() tea.Cmd
+	Deactivate() tea.Cmd
 }
 
 type Feature struct {
@@ -51,13 +51,13 @@ func (f *Feature) SetIndex(index int) tea.Cmd {
 	cmds := []tea.Cmd{}
 
 	if bi, ok := f.Current(); ok {
-		cmds = append(cmds, bi.Blur())
+		cmds = append(cmds, bi.Deactivate())
 	}
 
 	f.index = index
 
 	if ni, ok := f.Current(); ok {
-		cmds = append(cmds, ni.Focus())
+		cmds = append(cmds, ni.Activate())
 		cmds = append(cmds, program.Command(FocusMsg{Item: ni}))
 	}
 
@@ -110,11 +110,11 @@ func (f Feature) IsFocused(item Focusable) bool {
 
 func (f *Feature) Focus(item Focusable) {
 	for i, v := range f.items {
-		f.items[i].Blur()
+		f.items[i].Deactivate()
 
 		if v == item {
 			f.index = i
-			f.items[i].Focus()
+			f.items[i].Activate()
 			return
 		}
 	}

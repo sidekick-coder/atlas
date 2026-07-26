@@ -12,9 +12,6 @@ type Component interface {
 	Activate() tea.Cmd
 	Deactivate() tea.Cmd
 
-	Focus() tea.Cmd
-	Blur() tea.Cmd
-
 	Resize(width, height int)
 	Render() string
 }

@@ -35,9 +35,10 @@ func (s *Screen) HandleMessage(msg tea.Msg) tea.Cmd {
 		props := map[string]any{}
 
 		if c.Exists {
-			props["entry"] = c.Entry.ToMap()
 
 			e := entrycontroller.CreateContext(c.Entry)
+
+			props["entry"] = e
 
 			ctx := map[string]any{
 				"entry": e,
