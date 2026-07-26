@@ -95,7 +95,9 @@ func (c *Component) Load() tea.Cmd {
 		c.loader.SetQuery([]string{q.(string)})
 	}
 
-	return c.loader.Init()
+	c.loader.Load()
+
+	return c.LoadItems()
 }
 
 func (c *Component) InitSelection() tea.Cmd {

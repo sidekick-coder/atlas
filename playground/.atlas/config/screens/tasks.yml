@@ -3,7 +3,7 @@ title: "tasks"
 description: "List of tasks"
 query: "parent=tasks"
 # label_key: path
-label_template: '󰂔 #{{ color .id "primary" }} {{ .title }} ({{ color_map .status .vars.status_colors }})'
+label_template: '󰂔 #{{ color .task_id "primary" }} {{ .title }} ({{ color_map .status .vars.status_colors }})'
 component:
     type: "shell"
     command: |

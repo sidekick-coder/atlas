@@ -2,8 +2,8 @@ package entrylist
 
 import (
 	"fmt"
-	"log/slog"
 
+	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/internal/template"
 	"github.com/sidekick-coder/atlas/internal/utils/maputil"
@@ -21,6 +21,7 @@ func (c *Component) SetSize(width, height int) {
 	c.loader.SetLimit(limit)
 
 	c.loader.Load()
+	c.LoadItems()
 }
 
 func Color(payload any, color string) string {
@@ -39,9 +40,6 @@ func Color(payload any, color string) string {
 		c = v
 	}
 
-
-	slog.Info("Color", "value", value, "color", color, "c", c)
-
 	return lipgloss.NewStyle().Foreground(lipgloss.Color(c)).Render(value)
 }
 
@@ -55,11 +53,10 @@ func ColorMap(payload any, colorMap map[string]any) string {
 		color = c
 	}
 
-
 	return Color(payload, color)
 }
 
-func (c *Component) Render() string {
+func (c *Component) LoadItems() tea.Cmd {
 	var items []string
 
 	config := program.GetConfig()
@@ -118,6 +115,11 @@ func (c *Component) Render() string {
 	}
 
 	c.list.SetItems(items)
+
+	return nil
+}
+
+func (c *Component) Render() string {
 
 	return c.list.Render()
 }
