@@ -13,9 +13,3 @@ bindings:
       groups:
           - ext=md
           - ext=json
-
-    - keys: [u]
-      action: set-status
-      description: update status
-      groups:
-          - parent=tasks

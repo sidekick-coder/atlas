@@ -2,7 +2,6 @@ package entrytable
 
 import (
 	"fmt"
-	"log/slog"
 	"path/filepath"
 
 	tea "charm.land/bubbletea/v2"
@@ -77,8 +76,6 @@ func (s *Screen) CreateEntryContext(e models.Entry) map[string]any {
 	em["absolute_path"] = filepath.Join(s.app.Config().GetWorkspaceDir(), e.Path)
 
 	em["update"] = func(payload map[string]any) {
-		slog.Info("updating entry", slog.String("path", e.Path), slog.Any("payload", payload))
-
 		for k, v := range payload {
 			err := s.app.SetEntryMeta(e.Path, k, fmt.Sprintf("%v", v))
 

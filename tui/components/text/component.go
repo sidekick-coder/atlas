@@ -1,8 +1,6 @@
 package text
 
 import (
-	"log/slog"
-
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/components/viewport"
 )
@@ -48,6 +46,4 @@ func (c *Component) SetProps(props map[string]any) {
 	if content, ok := props["content"].(string); ok {
 		c.viewport.SetContent(content)
 	}
-
-	slog.Info("text component set props", "props", props)
 }

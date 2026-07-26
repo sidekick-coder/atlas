@@ -6,12 +6,21 @@ import (
 )
 
 type Keymap struct {
+	Enter key.Binding
 }
 
-var Binding = Keymap{}
+var tags = []string{"screen:empty"}
+
+var Binding = Keymap{
+	Enter: key.CreateBinding("<enter>").
+		SetDescription("select").
+		SetHelp("enter").
+		SetTags(tags...),
+}
 
 func (s *Screen) GetBindings() []key.Binding {
 	return []key.Binding{
+		Binding.Enter,
 	}
 }
 
@@ -24,5 +33,9 @@ func (s *Screen) UnloadBindings() {
 }
 
 func (s *Screen) HandleBinding(km tea.KeyMsg) tea.Cmd {
+	if key.Matches(Binding.Enter) {
+		return s.Select(s.selection.GetCursor())
+	}
+
 	return nil
 }
