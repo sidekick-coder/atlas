@@ -6,13 +6,15 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/components/inputdialog"
+	"github.com/sidekick-coder/atlas/tui/components/viewport"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/selection"
 )
 
 type Item struct {
-	Key   string
-	Value string
+	Key    string
+	Value  string
+	Header bool
 }
 
 type Component struct {
@@ -24,7 +26,8 @@ type Component struct {
 
 	selection *selection.Feature
 
-	dialog *inputdialog.Component
+	dialog   *inputdialog.Component
+	viewport *viewport.Component
 }
 
 func Create() *Component {
@@ -37,11 +40,20 @@ func Create() *Component {
 		selection: selection.Create(),
 
 		dialog: inputdialog.Create(),
+		viewport: viewport.Create(),
 	}
 }
 
 func (c *Component) Init() tea.Cmd {
-	return chain.Init(c.LoadBindings, c.dialog.Init)
+	return chain.Init(c.dialog.Init)
+}
+
+func (c *Component) Activate() tea.Cmd {
+	return chain.Cmd(c.LoadBindings)
+}
+
+func (c *Component) Deactivate() tea.Cmd {
+	return chain.Cmd(c.UnloadBindings)
 }
 
 func (c *Component) Dispose() tea.Cmd {
@@ -55,7 +67,6 @@ func (c *Component) SetSelection(selection *selection.Feature) {
 func (c *Component) SetItems(items []Item) {
 	c.items = items
 	c.selection.SetTotal(len(items))
-	c.SortByKey()
 }
 
 func (c *Component) SortByKey() {

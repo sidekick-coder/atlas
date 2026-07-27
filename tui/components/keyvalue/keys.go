@@ -2,13 +2,16 @@ package keyvalue
 
 import (
 	tea "charm.land/bubbletea/v2"
-	"github.com/sidekick-coder/atlas/tui/app/program"
 	"github.com/sidekick-coder/atlas/tui/features/key"
 )
 
 type Keymap struct {
-	Up     key.Binding
-	Down   key.Binding
+	Up         key.Binding
+	Down       key.Binding
+	ScrollUp   key.Binding
+	ScrollDown key.Binding
+	JumpTop    key.Binding
+	JumpBottom key.Binding
 }
 
 var Bindings = Keymap{
@@ -18,12 +21,28 @@ var Bindings = Keymap{
 	Down: key.CreateBinding("j", "down").
 		SetDescription("down").
 		SetHelp("j/down"),
+	ScrollUp: key.CreateBinding("p").
+		SetDescription("scroll up").
+		SetHelp("<pageup>"),
+	ScrollDown: key.CreateBinding("n").
+		SetDescription("scroll down").
+		SetHelp("<pagedown>"),
+	JumpTop: key.CreateBinding("<c-p>").
+		SetDescription("jump to top").
+		SetHelp("<c-p>"),
+	JumpBottom: key.CreateBinding("<c-n>").
+		SetDescription("jump to bottom").
+		SetHelp("<c-n>"),
 }
 
 func (c *Component) GetBindigs() []key.Binding {
 	return []key.Binding{
 		Bindings.Up,
 		Bindings.Down,
+		Bindings.ScrollUp,
+		Bindings.ScrollDown,
+		Bindings.JumpTop,
+		Bindings.JumpBottom,
 	}
 }
 
@@ -41,13 +60,49 @@ func (c *Component) HandleBindings(msg tea.KeyMsg) tea.Cmd {
 	if key.Matches(Bindings.Up) {
 		c.selection.Prev()
 
-		return program.Command(UpMsg{})
+		cursor := c.selection.GetCursor()
+
+		first := c.viewport.GetOffsetY()
+
+		if first == cursor {
+			c.viewport.Up()
+		}
+
 	}
 
 	if key.Matches(Bindings.Down) {
 		c.selection.Next()
 
-		return program.Command(DownMsg{})
+		cursor := c.selection.GetCursor()
+
+		last := c.viewport.GetOffsetY() + c.height
+
+		if last == cursor {
+			c.viewport.Down()
+		}
+
+	}
+
+	if key.Matches(Bindings.ScrollUp) {
+		c.viewport.Up()
+	}
+
+	if key.Matches(Bindings.ScrollDown) {
+		c.viewport.Down()
+	}
+
+	if key.Matches(Bindings.JumpTop) {
+		cursor := max(0, c.selection.GetCursor()-c.height)
+
+		c.viewport.SetOffsetY(cursor)
+		c.selection.SetCursor(cursor)
+	}
+
+	if key.Matches(Bindings.JumpBottom) {
+		cursor := min(c.selection.GetTotal()-1, c.selection.GetCursor()+c.height)
+
+		c.viewport.SetOffsetY(cursor)
+		c.selection.SetCursor(cursor)
 	}
 
 	return nil

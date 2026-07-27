@@ -11,47 +11,61 @@ func (c *Component) SetSize(width, height int) *Component {
 	c.width = width
 	c.height = height
 
+	c.viewport.SetSize(width, height)
+
 	return c
 }
 
 func (c *Component) Render() string {
 	srs := theme.BaseStyle().
 		Width(c.width).
-		Background(lipgloss.Color(theme.Current.Selection))
+		Background(lipgloss.Color(theme.Current.Selection)).
+		Foreground(lipgloss.Color(theme.Current.Foreground))
 
 	ks := theme.BaseStyle().
 		Foreground(lipgloss.Color(theme.Current.Accent))
 
-	vs := theme.BaseStyle().
-		Foreground(lipgloss.Color(theme.Current.Foreground))
+	vs := theme.BaseStyle()
+
+	hs := theme.BaseStyle().
+		Foreground(lipgloss.Color(theme.Current.Primary))
 
 	var items []string
 
 	for index, em := range c.items {
-		name := em.Key + ":"
+		if em.Header {
+			row := hs.Render(em.Key)
+
+			if c.selection.IsSelected(index) {
+				row = srs.Render(em.Key)
+			}
+
+			items = append(items, row)
+			continue
+		}
+
+		name := em.Key + ": "
 		value := em.Value
 		value = strings.ReplaceAll(value, "\n", "\\n")
 
-		if len(value) > 50 {
-			value = value[:50] + "..."
+		vwidth := c.width - lipgloss.Width(name) - 20
+
+		if len(value) >= vwidth {
+			value = value[:vwidth-3] + "..."
 		}
 
-		pad := c.width - len([]rune(name)) - len([]rune(value)) - 2
-
-		pad = max(pad, 0)
-
-		spaces := vs.Render(strings.Repeat(" ", pad))
-
-		row := ks.Render(name) + spaces + vs.Render(value)
+		row := ks.Render(name) + vs.Render(value)
 
 		if c.selection.IsSelected(index) {
-			row = srs.Render(name + strings.Repeat(" ", pad) + value)
+			row = srs.Render(name + value)
 		}
 
 		items = append(items, row)
 	}
 
 	content := lipgloss.JoinVertical(lipgloss.Left, items...)
+
+	content = c.viewport.SetContent(content).Render()
 
 	return content
 }
