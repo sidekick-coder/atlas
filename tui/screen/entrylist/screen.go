@@ -1,14 +1,11 @@
 package entrylist
 
 import (
-	"maps"
-
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/internal/utils/maputil"
 	"github.com/sidekick-coder/atlas/tui/components/borderlabel"
 	"github.com/sidekick-coder/atlas/tui/components/entrylist"
-	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/component"
 	"github.com/sidekick-coder/atlas/tui/features/context"
@@ -24,8 +21,9 @@ type Screen struct {
 	width  int
 	height int
 
-	focus    *focusmanager.Feature
-	ctx      *context.Feature
+	focus *focusmanager.Feature
+	ctx   *context.Feature
+
 	registry *component.Registry
 
 	list      *entrylist.Component
@@ -86,61 +84,3 @@ func (s *Screen) Dispose() tea.Cmd {
 	)
 }
 
-func (s *Screen) Title() string {
-	if pt, ok := s.options["title"].(string); ok {
-		return pt
-	}
-
-	return "entries"
-}
-
-func (s *Screen) InitList() tea.Cmd {
-	lctx := s.list.Context()
-
-	lctx.SetParent(s.ctx)
-
-	s.list.SetProps(s.options)
-
-	s.focus.Add(s.list)
-	s.focus.Focus(s.list)
-
-	s.ctx.SetAll(s.options)
-
-	return s.list.Init()
-}
-
-func (s *Screen) InitView() tea.Cmd {
-	name := "metas"
-
-	if n, ok := maputil.GetString(s.viewComponent, "type"); ok {
-		name = n
-	}
-
-	view, ok := s.registry.Get(name)
-
-	if !ok {
-		return toast.Error("view with name " + name + " not found")
-	}
-
-	vctx := view.Context()
-
-	vctx.SetParent(s.ctx)
-
-	s.view = view
-	s.view.Init()
-	s.focus.Add(s.view)
-
-	return nil
-}
-
-func (s *Screen) SetViewProps(payload map[string]any) {
-	props := map[string]any{}
-
-	maps.Copy(props, payload)
-
-	cp := maputil.Except(s.viewComponent, "type")
-
-	maps.Copy(props, cp)
-
-	s.view.SetProps(props)
-}

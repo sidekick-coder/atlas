@@ -3,6 +3,7 @@ package config
 import (
 	"slices"
 
+	"github.com/sidekick-coder/atlas/internal/utils/maputil"
 	"github.com/sidekick-coder/atlas/internal/utils/sliceutil"
 )
 
@@ -13,6 +14,7 @@ type Keymap struct {
 	Action        string         `json:"action"`
 	ActionOptions map[string]any `json:"action_options"`
 	Groups        []string       `json:"groups"`
+	Options       map[string]any `json:"options"`
 }
 
 func (k Keymap) HasGroup(group ...string) bool {
@@ -51,6 +53,8 @@ func ConfigKeymapFromMap(m map[string]any) Keymap {
 	if options, ok := m["action_options"].(map[string]any); ok {
 		km.ActionOptions = options
 	}
+
+	km.Options = maputil.Except(m, "id", "action", "description", "keys", "groups", "action_options")
 
 	return km
 }

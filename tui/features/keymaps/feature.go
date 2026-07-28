@@ -1,6 +1,9 @@
 package keymaps
 
 import (
+	"log/slog"
+	"maps"
+
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/config"
 	"github.com/sidekick-coder/atlas/internal/utils"
@@ -8,12 +11,15 @@ import (
 	"github.com/sidekick-coder/atlas/tui/action"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
+	"github.com/sidekick-coder/atlas/tui/features/context"
 	"github.com/sidekick-coder/atlas/tui/features/key"
+	"github.com/sidekick-coder/atlas/tui/features/keymaps/trigger"
 )
 
 type Manager struct {
 	keymaps  []config.Keymap
 	bindings []key.Binding
+	triggers []trigger.Trigger
 	groups   map[string]ManagerGroup
 }
 
@@ -25,6 +31,7 @@ type ManagerGroup struct {
 var manager *Manager = &Manager{
 	keymaps:  []config.Keymap{},
 	bindings: []key.Binding{},
+	triggers: []trigger.Trigger{},
 	groups:   map[string]ManagerGroup{},
 }
 
@@ -87,18 +94,21 @@ func LoadBindings() {
 		groups = append(groups, g.Values...)
 	}
 
-	for _, action := range manager.keymaps {
-		if action.HasGroup(groups...) == false {
+	for _, km := range manager.keymaps {
+		t, ok := GetKeymapTrigger(km)
+
+		if !ok {
 			continue
 		}
 
-		b := key.CreateBinding(action.Keys...).
-			SetDescription(action.Description).
+		b := key.CreateBinding(km.Keys...).
+			SetDescription(km.Description).
 			SetTags("user").
-			SetHelp(action.Keys[0]).
-			SetMeta("action", action.Action).
-			SetMeta("options", action.ActionOptions).
-			SetID(action.ID)
+			SetHelp(km.Keys[0]).
+			SetMeta("action", km.Action).
+			SetMeta("options", km.ActionOptions).
+			SetMeta("trigger", t.ID).
+			SetID(km.ID)
 
 		bindings = append(bindings, b)
 	}
@@ -114,22 +124,29 @@ func HandleBinding(msg tea.KeyMsg) tea.Cmd {
 
 	for _, b := range manager.bindings {
 		if key.Matches(b) {
-			actionId := b.GetMeta("action")
-			options := b.GetMeta("options")
+			actionId, ok := b.GetMeta("action").(string)
 
-			if actionId == nil {
+			if !ok {
 				return toast.Error("No action defined for key binding: " + b.GetDescription())
 			}
 
-			ctx := map[string]any{}
+			t, ok := GetTriggerByID(b.GetMeta("trigger").(string))
 
-			if options != nil {
-				if opts, ok := options.(map[string]any); ok {
-					ctx = opts
-				}
+			if !ok {
+				return toast.Error("No trigger defined for key binding: " + b.GetDescription())
 			}
 
-			return action.Execute(actionId.(string), ctx)
+			c := context.GetById(t.ContextID)
+
+			ctx := c.GetEntriesMap()
+
+			if opts, ok := b.GetMeta("options").(map[string]any); ok {
+				maps.Copy(ctx, opts)
+			}
+
+			slog.Info("Executing action", "action", actionId, "context", t.ContextID)
+
+			return action.Execute(actionId, ctx)
 		}
 	}
 

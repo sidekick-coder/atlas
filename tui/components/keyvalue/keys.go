@@ -23,15 +23,19 @@ var Bindings = Keymap{
 		SetHelp("j/down"),
 	ScrollUp: key.CreateBinding("p").
 		SetDescription("scroll up").
+		SetHidden(true).
 		SetHelp("<pageup>"),
 	ScrollDown: key.CreateBinding("n").
 		SetDescription("scroll down").
+		SetHidden(true).
 		SetHelp("<pagedown>"),
 	JumpTop: key.CreateBinding("<c-p>").
 		SetDescription("jump to top").
+		SetHidden(true).
 		SetHelp("<c-p>"),
 	JumpBottom: key.CreateBinding("<c-n>").
 		SetDescription("jump to bottom").
+		SetHidden(true).
 		SetHelp("<c-n>"),
 }
 

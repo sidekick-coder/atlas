@@ -5,7 +5,6 @@ import (
 	"github.com/sidekick-coder/atlas/tui/app/program"
 	"github.com/sidekick-coder/atlas/tui/components/inputdialog"
 	"github.com/sidekick-coder/atlas/tui/components/list"
-	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/context"
 	"github.com/sidekick-coder/atlas/tui/features/entryloader"
@@ -18,9 +17,9 @@ type Component struct {
 	selection *selection.Feature
 	loader    *entryloader.Feature
 
-	list   *list.Component
-	dialog *inputdialog.Component
-	ctx    *context.Feature
+	list    *list.Component
+	dialog  *inputdialog.Component
+	ctx     *context.Feature
 }
 
 func Create() *Component {
@@ -82,27 +81,6 @@ func (c *Component) Context() *context.Feature {
 	return c.ctx
 }
 
-func (c *Component) OnSubmit(value string) tea.Cmd {
-	c.dialog.Close()
-
-	c.loader.SetQuery([]string{value})
-
-	err := c.loader.Load()
-
-	if err != nil {
-		return toast.Error(err.Error())
-	}
-
-	return nil
-}
-
-func (c *Component) InitDialog() tea.Cmd {
-	c.dialog.SetTitle("Search")
-	c.dialog.OnSubmit(c.OnSubmit)
-
-	return c.dialog.Init()
-}
-
 func (c *Component) Load() tea.Cmd {
 	q := c.props["query"]
 
@@ -117,12 +95,6 @@ func (c *Component) Load() tea.Cmd {
 	return c.LoadItems()
 }
 
-
-func (c *Component) InitSelection() tea.Cmd {
-	c.list.SetSelection(c.selection)
-	c.selection.SetCursor(-1)
-	return nil
-}
 
 func (c *Component) SetProps(props map[string]any) tea.Cmd {
 	c.props = props

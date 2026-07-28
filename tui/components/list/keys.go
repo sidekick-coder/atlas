@@ -2,7 +2,7 @@ package list
 
 import (
 	tea "charm.land/bubbletea/v2"
-	"github.com/sidekick-coder/atlas/tui/app/program"
+	// "github.com/sidekick-coder/atlas/tui/app/program"
 	"github.com/sidekick-coder/atlas/tui/features/key"
 )
 
@@ -25,10 +25,6 @@ var Binding = Keymap{
 		SetTags(tags...).
 		SetHelp("j").
 		SetDescription("down"),
-	Select: key.CreateBinding("<enter>").
-		SetTags(tags...).
-		SetHelp("<enter>").
-		SetDescription("Select item"),
 }
 
 func (c *Component) GetBindigs() []key.Binding {
@@ -50,19 +46,19 @@ func (c *Component) HandleBinding(km tea.KeyMsg) tea.Cmd {
 	if key.Matches(Binding.Up) {
 		c.selection.Prev()
 
-		return tea.Batch(
-			program.Command(UpMsg{}),
-			program.Command(MovedMsg{}),
-		)
+		// return tea.Batch(
+		// 	program.Command(UpMsg{}),
+		// 	program.Command(MovedMsg{}),
+		// )
 	}
 
 	if key.Matches(Binding.Down) {
 		c.selection.Next()
 
-		return tea.Batch(
-			program.Command(DownMsg{}),
-			program.Command(MovedMsg{}),
-		)
+		// return tea.Batch(
+		// 	program.Command(DownMsg{}),
+		// 	program.Command(MovedMsg{}),
+		// )
 	}
 
 	return nil

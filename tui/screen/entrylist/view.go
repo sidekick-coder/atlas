@@ -7,6 +7,14 @@ import (
 	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
 
+func (s *Screen) Title() string {
+	if pt, ok := s.options["title"].(string); ok {
+		return pt
+	}
+
+	return "entries"
+}
+
 func (s *Screen) HandleSize(msg tea.Msg) tea.Cmd {
 	if ss, ok := msg.(screen.SizeMsg); ok {
 		s.SetSize(ss.Width, ss.Height)

@@ -135,6 +135,8 @@ func (f *Feature) Next() {
 	if f.offset + f.limit < f.count {
 		f.offset += f.limit
 	}
+
+	f.Load()
 }
 
 func (f *Feature) Prev() {
@@ -143,4 +145,6 @@ func (f *Feature) Prev() {
 	} else {
 		f.offset = 0
 	}
+
+	f.Load()
 }

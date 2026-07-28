@@ -1,12 +1,20 @@
 package selection
 
+import "github.com/sidekick-coder/atlas/tui/features/event"
+
+type ChangeEvent struct {
+	Old int
+	New int
+}
+
 type Feature struct {
 	cursor  int
 	total   int
 	enabled bool
 	loop    bool
-}
 
+	Change *event.Event[ChangeEvent]
+}
 
 func Create() *Feature {
 	return &Feature{
@@ -14,6 +22,8 @@ func Create() *Feature {
 		total:   0,
 		enabled: true,
 		loop:    false,
+
+		Change: event.Create[ChangeEvent](),
 	}
 }
 
@@ -38,7 +48,14 @@ func (f *Feature) GetCursor() int {
 }
 
 func (f *Feature) SetCursor(cursor int) {
+	oldCursor := f.cursor 
+
 	f.cursor = cursor
+
+	f.Change.Emit(ChangeEvent{
+		Old: oldCursor,
+		New: cursor,
+	})
 }
 
 func (f *Feature) IsSelected(index int) bool {
@@ -64,7 +81,7 @@ func (f *Feature) GetNextIndex() int {
 }
 
 func (f *Feature) Next() {
-	f.cursor = f.GetNextIndex()
+	f.SetCursor(f.GetNextIndex())
 }
 
 func (f *Feature) GetPrevIndex() int {
@@ -86,10 +103,9 @@ func (f *Feature) GetPrevIndex() int {
 }
 
 func (f *Feature) Prev() {
-	f.cursor = f.GetPrevIndex()
+	f.SetCursor(f.GetPrevIndex())
 }
 
 func (f *Feature) Clear() {
-	f.cursor = -1
+	f.SetCursor(-1)
 }
-
