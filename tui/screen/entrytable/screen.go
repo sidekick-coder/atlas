@@ -40,6 +40,12 @@ func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 		openScreen = os
 	}
 
+	ctx := context.Create()
+
+	ctx.SetLabel("screen")
+	ctx.SetAll(p.Options)
+	ctx.Activate()
+
 	s := &Screen{
 		app:     p.App,
 		options: p.Options,
@@ -50,7 +56,7 @@ func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 
 		loader:    entryloader.Create(*p.App.EntryRepo()),
 		selection: selection.Create(),
-		ctx:       context.Create(),
+		ctx:      ctx,
 
 		table:     table.Create(),
 		container: container.Create(),
