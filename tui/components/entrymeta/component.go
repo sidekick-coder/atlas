@@ -12,6 +12,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/components/inputdialog"
 	"github.com/sidekick-coder/atlas/tui/components/keyvalue"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
+	"github.com/sidekick-coder/atlas/tui/features/context"
 	"github.com/sidekick-coder/atlas/tui/features/selection"
 )
 
@@ -21,6 +22,7 @@ type Component struct {
 	props map[string]any
 
 	selection *selection.Feature
+	ctx       *context.Feature
 
 	dialog   *inputdialog.Component
 	keyValue *keyvalue.Component
@@ -33,6 +35,7 @@ func Create() *Component {
 		props: map[string]any{},
 
 		selection: selection.Create(),
+		ctx:       context.Create(),
 
 		dialog:   inputdialog.Create(),
 		keyValue: keyvalue.Create(),
@@ -40,28 +43,44 @@ func Create() *Component {
 }
 
 func (c *Component) Activate() tea.Cmd {
-	return chain.Cmd(c.LoadBindings, c.keyValue.Init, c.dialog.Init)
+	return chain.Cmd(
+		c.LoadBindings,
+		c.keyValue.Activate,
+		c.dialog.Init,
+	)
 }
 
 func (c *Component) Deactivate() tea.Cmd {
-	return chain.Cmd(c.UnloadBindings, c.keyValue.Dispose, c.dialog.Dispose)
+	return chain.Cmd(
+		c.UnloadBindings,
+		c.keyValue.Deactivate,
+		c.dialog.Dispose,
+	)
 }
 
-func (c *Component) Focus() tea.Cmd {
-	return c.Activate()
-}
-
-func (c *Component) Blur() tea.Cmd {
-	return c.Deactivate()
-}
-
-func (c *Component) Init() tea.Cmd {
+func (c *Component) InitSelection() tea.Cmd {
 	c.keyValue.SetSelection(c.selection)
 	return nil
 }
 
+func (c *Component) Init() tea.Cmd {
+	return chain.Init(
+		c.dialog.Init,
+		c.keyValue.Init,
+		c.InitSelection,
+	)
+}
+
 func (c *Component) Dispose() tea.Cmd {
-	return nil
+	return chain.Dispose(
+		c.Deactivate,
+		c.dialog.Dispose,
+		c.keyValue.Dispose,
+	)
+}
+
+func (c *Component) Context() *context.Feature {
+	return c.ctx
 }
 
 func (c *Component) SetProps(props map[string]any) {

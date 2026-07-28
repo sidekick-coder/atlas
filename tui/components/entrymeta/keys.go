@@ -9,8 +9,6 @@ import (
 )
 
 type Keymap struct {
-	Up     key.Binding
-	Down   key.Binding
 	Edit   key.Binding
 	Add    key.Binding
 	Delete key.Binding
@@ -39,8 +37,6 @@ var Bindings = Keymap{
 
 func (c *Component) GetBindigs() []key.Binding {
 	return []key.Binding{
-		Bindings.Up,
-		Bindings.Down,
 		Bindings.Edit,
 		Bindings.Add,
 		Bindings.Delete,

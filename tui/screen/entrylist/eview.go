@@ -8,7 +8,6 @@ import (
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 )
 
-
 func (s *Screen) InitView() tea.Cmd {
 	name := "metas"
 
@@ -33,6 +32,23 @@ func (s *Screen) InitView() tea.Cmd {
 	return nil
 }
 
+func (s *Screen) DisposeView() tea.Cmd {
+	if s.view != nil {
+		s.focus.Remove(s.view)
+		s.view.Dispose()
+	}
+
+	return nil
+}
+
+func (s *Screen) UpdateView(msg tea.Msg) tea.Cmd {
+	if s.view != nil {
+		return s.view.Update(msg)
+	}
+
+	return nil
+}
+
 func (s *Screen) SetViewProps(payload map[string]any) {
 	props := map[string]any{}
 
@@ -44,12 +60,3 @@ func (s *Screen) SetViewProps(payload map[string]any) {
 
 	s.view.SetProps(props)
 }
-
-func (s *Screen) UpdateView(msg tea.Msg) tea.Cmd {
-	if s.view != nil {
-		return s.view.Update(msg)
-	}
-
-	return nil
-}
-

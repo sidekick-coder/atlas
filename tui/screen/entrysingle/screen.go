@@ -2,7 +2,6 @@ package entrysingle
 
 import (
 	"fmt"
-	"path/filepath"
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
@@ -10,7 +9,6 @@ import (
 	"github.com/sidekick-coder/atlas/internal/utils/maputil"
 	"github.com/sidekick-coder/atlas/tui/components/entrymeta"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
-	"github.com/sidekick-coder/atlas/tui/messages"
 	tuimodels "github.com/sidekick-coder/atlas/tui/models"
 )
 
@@ -45,16 +43,10 @@ func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 		return nil, fmt.Errorf("failed to load entry by path: %w", err)
 	}
 
-	emc := entrymeta.Create()
-
-	emc.SetProps(map[string]any{
-		"entry": e.ToMap(),
-	})
-
 	s := &Screen{
 		App:    p.App,
 		Path:   path,
-		meta:   emc,
+		meta:   entrymeta.Create(),
 		Entry:  e,
 		Width:  100,
 		Height: 100,
@@ -64,28 +56,25 @@ func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 	return s, nil
 }
 
-func (s *Screen) Title() string {
-	maxLength := 20
-
-	baseName := filepath.Base(s.Path)
-
-	if len(baseName) > maxLength {
-		return baseName[:maxLength] + "..."
-	}
-
-	return baseName
-}
-
 func (s *Screen) Init() tea.Cmd {
-	err := s.Load()
-
-	if err != nil {
-		return messages.ToastErrorCmd(err.Error())
-	}
-
-	return chain.Init(s.meta.Init, s.meta.Init)
+	return chain.Init(
+		s.meta.Init,
+		s.meta.Activate,
+		s.InitMeta,
+	)
 }
 
 func (s *Screen) Dispose() tea.Cmd {
-	return chain.Dispose(s.UnloadBindings, s.meta.Dispose)
+	return chain.Dispose(
+		s.UnloadBindings,
+		s.meta.Deactivate,
+		s.meta.Dispose,
+	)
+}
+
+func (s *Screen) InitMeta() tea.Cmd {
+	s.meta.SetProps(map[string]any{
+		"entry": s.Entry.ToMap(),
+	})
+	return nil
 }

@@ -1,7 +1,7 @@
 package component
 
 import (
-	// "github.com/sidekick-coder/atlas/tui/components/entrymeta"
+	"github.com/sidekick-coder/atlas/tui/components/entrymeta"
 	"github.com/sidekick-coder/atlas/tui/components/shell"
 	// "github.com/sidekick-coder/atlas/tui/components/text"
 	"github.com/sidekick-coder/atlas/tui/features/component/defintion"
@@ -26,7 +26,7 @@ func Register[T defintion.Component](r *Registry, name string, createFn func() T
 }
 
 func LoadDefaultComponents(r *Registry) {
-	// Register(r, "metas", entrymeta.Create)
+	Register(r, "metas", entrymeta.Create)
 	// Register(r, "text", text.Create)
 	Register(r, "shell", shell.Create)
 }

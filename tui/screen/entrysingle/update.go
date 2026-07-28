@@ -6,5 +6,10 @@ import (
 )
 
 func (s *Screen) Update(msg tea.Msg) tea.Cmd {
-	return chain.Update(msg, s.HandleSize, s.meta.Update, chain.OnKey(s.HandleBindings))
+	return chain.Update(
+		msg,
+		s.HandleSize,
+		s.meta.Update,
+		chain.OnKey(s.HandleBindings),
+	)
 }

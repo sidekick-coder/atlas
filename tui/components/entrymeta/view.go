@@ -3,7 +3,6 @@ package entrymeta
 // Deprecated: Use Resize instead
 func (c *Component) SetSize(width, height int) *Component {
 	c.Resize(width, height)
-
 	return c
 }
 

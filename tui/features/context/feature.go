@@ -118,10 +118,10 @@ func (f *Feature) GetParentEntries() []Entry {
 	ids := f.parent
 
 	for _, id := range ids {
-		c := GetById(id)
+		c, ok := GetById(id)
 		pe := []Entry{}
 
-		if c != nil {
+		if ok {
 			pe = c.GetEntries(GetEntryOptions{
 				ExcludeParent: false,
 				ExcludeGlobal: true,
@@ -151,9 +151,9 @@ func (f *Feature) GetGlobalEntries() []Entry {
 
 	entries := []Entry{}
 
-	ctx := GetById("global")
+	ctx, ok := GetById("global")
 
-	if ctx == nil {
+	if !ok {
 		return entries
 	}
 

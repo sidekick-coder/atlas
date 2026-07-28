@@ -1,6 +1,7 @@
 package keymaps
 
 import (
+	"fmt"
 	"log/slog"
 	"maps"
 
@@ -88,11 +89,6 @@ func UnloadBindings() {
 
 func LoadBindings() {
 	bindings := []key.Binding{}
-	groups := []string{}
-
-	for _, g := range manager.groups {
-		groups = append(groups, g.Values...)
-	}
 
 	for _, km := range manager.keymaps {
 		t, ok := GetKeymapTrigger(km)
@@ -114,6 +110,7 @@ func LoadBindings() {
 	}
 
 	key.Register(bindings...)
+
 	manager.bindings = bindings
 }
 
@@ -136,7 +133,11 @@ func HandleBinding(msg tea.KeyMsg) tea.Cmd {
 				return toast.Error("No trigger defined for key binding: " + b.GetDescription())
 			}
 
-			c := context.GetById(t.ContextID)
+			c, ok := context.GetById(t.ContextID)
+
+			if !ok {
+				return toast.Error(fmt.Sprintf("No context defined for key binding: %s, context: %s", b.GetDescription(), t.ContextID))
+			}
 
 			ctx := c.GetEntriesMap()
 

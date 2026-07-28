@@ -74,6 +74,7 @@ func (c *Component) Dispose() tea.Cmd {
 		c.ctx.Dispose,
 		c.dialog.Dispose,
 		c.UnloadBindings,
+		c.DisposeSelection,
 	)
 }
 

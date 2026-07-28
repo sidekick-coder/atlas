@@ -14,28 +14,36 @@ type Keymap struct {
 	JumpBottom key.Binding
 }
 
+var tags = []string{"component:keyvalue"}
+
 var Bindings = Keymap{
-	Up: key.CreateBinding("k", "up").
+	Up: key.CreateBinding("k", "<up>").
 		SetDescription("up").
+		SetTags(tags...).
 		SetHelp("k/up"),
-	Down: key.CreateBinding("j", "down").
+	Down: key.CreateBinding("j", "<down>").
 		SetDescription("down").
+		SetTags(tags...).
 		SetHelp("j/down"),
 	ScrollUp: key.CreateBinding("p").
 		SetDescription("scroll up").
 		SetHidden(true).
+		SetTags(tags...).
 		SetHelp("<pageup>"),
 	ScrollDown: key.CreateBinding("n").
 		SetDescription("scroll down").
 		SetHidden(true).
+		SetTags(tags...).
 		SetHelp("<pagedown>"),
 	JumpTop: key.CreateBinding("<c-p>").
 		SetDescription("jump to top").
 		SetHidden(true).
+		SetTags(tags...).
 		SetHelp("<c-p>"),
 	JumpBottom: key.CreateBinding("<c-n>").
 		SetDescription("jump to bottom").
 		SetHidden(true).
+		SetTags(tags...).
 		SetHelp("<c-n>"),
 }
 

@@ -30,6 +30,8 @@ func GetTriggerByID(id string) (Trigger, bool) {
 }
 
 func RemoveTriggerByID(id string) {
+	UnloadBindings()
+
 	manager.triggers = slices.DeleteFunc(manager.triggers, func(t trigger.Trigger) bool {
 		return t.ID == id
 	})
@@ -38,6 +40,8 @@ func RemoveTriggerByID(id string) {
 }
 
 func RemoveTriggerByContextID(contextID string) {
+	UnloadBindings()
+
 	manager.triggers = slices.DeleteFunc(manager.triggers, func(t trigger.Trigger) bool {
 		return t.ContextID == contextID
 	})

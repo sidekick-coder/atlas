@@ -57,7 +57,7 @@ func (c *Component) Deactivate() tea.Cmd {
 }
 
 func (c *Component) Dispose() tea.Cmd {
-	return chain.Dispose(c.UnloadBindings, c.dialog.Dispose)
+	return chain.Dispose(c.Deactivate, c.dialog.Dispose)
 }
 
 func (c *Component) SetSelection(selection *selection.Feature) {

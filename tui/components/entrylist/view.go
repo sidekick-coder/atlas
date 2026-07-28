@@ -133,6 +133,10 @@ func (c *Component) LoadItems() tea.Cmd {
 		labelTemplate = lt
 	}
 
+	if labelKey == "" && labelTemplate == "" {
+		labelKey = "path"
+	}
+
 	muted := theme.BaseStyle().Foreground(lipgloss.Color(theme.Current.Muted))
 
 	for index, entry := range c.loader.GetEntries() {
@@ -183,6 +187,5 @@ func (c *Component) LoadItems() tea.Cmd {
 }
 
 func (c *Component) Render() string {
-
 	return c.list.Render()
 }

@@ -6,7 +6,6 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/components/table"
-	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/messages"
 )
@@ -18,7 +17,6 @@ func (s *Screen) Update(msg tea.Msg) tea.Cmd {
 		s.table.Update,
 		s.HandleSize,
 		s.HandleMessage,
-		s.HandleSelection,
 		chain.OnKey(s.HadleBinding),
 	)
 }
@@ -93,20 +91,3 @@ func (s *Screen) LoadColumns() tea.Cmd {
 	return nil
 }
 
-func (s *Screen) sync(index int) tea.Cmd {
-	entry, err := s.loader.GetEntry(index)
-
-	if err != nil {
-		return messages.ToastErrorCmd(err.Error())
-	}
-
-	syncer := s.app.Syncer()
-
-	err = syncer.One(entry.Path)
-
-	if err != nil {
-		return toast.Error(err.Error())
-	}
-
-	return Reload
-}

@@ -81,6 +81,7 @@ func (s *Screen) Dispose() tea.Cmd {
 		s.UnloadBindings,
 		s.ctx.Dispose,
 		s.list.Dispose,
+		s.DisposeView,
 	)
 }
 

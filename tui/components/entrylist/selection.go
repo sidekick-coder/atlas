@@ -18,6 +18,11 @@ func (c *Component) InitSelection() tea.Cmd {
 	return nil
 }
 
+func (c *Component) DisposeSelection() tea.Cmd {
+	keymaps.RemoveTriggerByContextID(c.ctx.GetID())
+	return nil
+}
+
 func (c *Component) GetSelection() *selection.Feature {
 	return c.selection
 }
@@ -39,9 +44,9 @@ func (c *Component) LoadTrigger() {
 func (c *Component) GetCurrent() (models.Entry, bool) {
 	cursor := c.selection.GetCursor()
 
-	entry, err := c.loader.GetEntry(cursor)
+	entry, ok := c.loader.GetEntry(cursor)
 
-	if err != nil {
+	if !ok {
 		return models.Entry{}, false
 	}
 

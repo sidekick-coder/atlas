@@ -34,12 +34,12 @@ func (f *Feature) GetEntries() []models.Entry {
 	return f.entries
 }
 
-func (f *Feature) GetEntry(index int) (models.Entry, error) {
+func (f *Feature) GetEntry(index int) (models.Entry, bool) {
 	if index < 0 || index >= len(f.entries) {
-		return models.Entry{}, fmt.Errorf("index %d out of bounds for entries (length: %d)", index, len(f.entries))
+		return models.Entry{}, false
 	}
 
-	return f.entries[index], nil
+	return f.entries[index], true
 }
 
 func (f *Feature) Load() error {

@@ -5,6 +5,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
+	"github.com/sidekick-coder/atlas/tui/features/entrycontroller"
 	key "github.com/sidekick-coder/atlas/tui/features/key"
 )
 
@@ -78,15 +79,16 @@ func (s *Screen) HadleBinding(msg tea.KeyMsg) tea.Cmd {
 	}
 
 	if key.Matches(Bindings.Sync) {
-		current:= s.selection.GetCursor()
+		entry, ok := s.loader.GetEntry(s.selection.GetCursor())
 
-		return s.sync(current)
+		if ok {
+			return entrycontroller.Sync(entry.Path)
+		}
 	}
 
 	if key.Matches(Bindings.Reload) {
 		return Reload
 	}
-
 
 	return nil
 }

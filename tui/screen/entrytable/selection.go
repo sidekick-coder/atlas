@@ -1,49 +1,35 @@
 package entrytable
 
 import (
-	"fmt"
-
 	tea "charm.land/bubbletea/v2"
-	"github.com/sidekick-coder/atlas/tui/components/table"
-	"github.com/sidekick-coder/atlas/tui/components/toast"
-	"github.com/sidekick-coder/atlas/tui/action"
 	"github.com/sidekick-coder/atlas/tui/features/keymaps"
+	"github.com/sidekick-coder/atlas/tui/features/selection"
 )
+
+func (s *Screen) OnSelectionChange(event selection.ChangeEvent) {
+	s.LoadTrigger()
+}
 
 func (s *Screen) InitSelection() tea.Cmd {
 	s.selection.SetCursor(-1)
+	s.selection.Change.On(s.OnSelectionChange)
 	return nil
 }
 
-func (s *Screen) HandleSelection(msg tea.Msg) tea.Cmd {
-	if c, ok := msg.(table.ChangeMsg); ok {
-		action.RemoveContext("entry")
+func (s *Screen) LoadTrigger() {
+	keymaps.RemoveTriggerByContextID(s.ctx.GetID())
 
-		entry, err := s.loader.GetEntry(c.Index)
+	entry, ok := s.loader.GetEntry(s.selection.GetCursor())
 
-		if err != nil {
-			return toast.Error(fmt.Sprintf("Failed to get entry: %v", err))
-		}
-
-		e := s.CreateEntryContext(entry)
-
-		ctx := map[string]any{
-			"entry": e,
-		}
-
-		action.AddContext("entry", ctx)
-
-		groups := keymaps.MapToGroups(e)
-
-		keymaps.AddGroup("entry-table", groups)
+	if ok {
+		s.ctx.Set("entry", entry.ToMap())
+		trigger := keymaps.CreateEntryTrigger(entry)
+		trigger.ContextID = s.ctx.GetID()
+		keymaps.AddTrigger(trigger)
 	}
-
-	return nil
 }
 
 func (s *Screen) DisposeSelection() tea.Cmd {
-	action.RemoveContext("entry")
-	keymaps.RemoveGroup("entry-table")
-
+	keymaps.RemoveTriggerByContextID(s.ctx.GetID())
 	return nil
 }
