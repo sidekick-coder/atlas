@@ -77,6 +77,15 @@ func (c *Component) Right() {
 		c.offsetX++
 	}
 }
+
+func (c *Component) GetOffsetY() int {
+	return c.offsetY
+}
+
+func (c *Component) SetOffsetY(offsetY int) {
+	c.offsetY = clamp(offsetY, 0, c.maxY)
+}
+
 func clamp(v, minV, maxV int) int {
 	if v < minV {
 		return minV
@@ -98,10 +107,10 @@ func (c *Component) Render() string {
 	for y := c.offsetY; y < min(c.offsetY+c.height, len(lines)); y++ {
 		r := []rune(lines[y])
 
-		start := min(c.offsetX, len(r))
-		end := min(start+c.width, len(r))
+		// start := min(c.offsetX, len(r))
+		// end := min(start+c.width, len(r))
 
-		out = append(out, string(r[start:end]))
+		out = append(out, string(r))
 	}
 
 	return strings.Join(out, "\n")

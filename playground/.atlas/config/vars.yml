@@ -1,6 +1,7 @@
 status_colors:
     open: "primary"
-    in_progress: "warning"
+    todo: "warning"
+    in-progress: "primary"
     blocked: "error"
     cancelled: "error"
     done: "success"

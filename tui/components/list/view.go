@@ -24,10 +24,14 @@ func (c *Component) SetHeight(h int) *Component {
 
 func (c *Component) Render() string {
 	normal := theme.BaseStyle().
+	    Height(1).
+		MaxHeight(1).
 		Width(c.width)
 
 	focus := theme.BaseStyle().
 		Width(c.width).
+		Height(1).
+		MaxHeight(1).
 		Background(lipgloss.Color(theme.Current.Selection))
 
 	var items []string

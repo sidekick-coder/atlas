@@ -74,6 +74,7 @@ func (m Handler) Extract(payload handler.ExtractPayload) (map[string]string, err
 	result["basename"] = info.BaseName
 	result["type"] = info.Type
 	result["path"] = info.Path
+	result["absolute_path"] = info.AbsolutePath
 
 	if info.Type == "file" {
 		result["ext"] = strings.TrimPrefix(filepath.Ext(info.BaseName), ".")

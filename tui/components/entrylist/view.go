@@ -2,6 +2,7 @@ package entrylist
 
 import (
 	"fmt"
+	"strings"
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
@@ -34,6 +35,7 @@ func Color(payload any, color string) string {
 		"muted":     theme.Current.Muted,
 		"error":     theme.Current.Error,
 		"success":   theme.Current.Success,
+		"warning":   theme.Current.Warning,
 	}
 
 	if v, ok := pallete[color]; ok {
@@ -43,17 +45,76 @@ func Color(payload any, color string) string {
 	return lipgloss.NewStyle().Foreground(lipgloss.Color(c)).Render(value)
 }
 
-func ColorMap(payload any, colorMap map[string]any) string {
+func Concat(payload ...string) string {
+	return strings.Join(payload, "")
+}
+
+func Width(payload any, width int) string {
+	value := fmt.Sprintf("%v", payload)
+
+	return lipgloss.NewStyle().Width(width).Render(value)
+}
+
+func Align(payload any, alignment string) string {
+	value := fmt.Sprintf("%v", payload)
+
+	switch alignment {
+	case "left":
+		return lipgloss.NewStyle().Align(lipgloss.Left).Render(value)
+	case "right":
+		return lipgloss.NewStyle().Align(lipgloss.Right).Render(value)
+	case "center":
+		return lipgloss.NewStyle().Align(lipgloss.Center).Render(value)
+	default:
+		return value
+	}
+}
+
+func style(value any, payload string) string {
+	s := lipgloss.NewStyle()
+	options := maputil.FromString(payload)
+
+	// parse options...
+	if w, ok := maputil.GetInt(options, "width"); ok {
+		s = s.Width(w)
+	}
+
+	if a, ok := maputil.GetString(options, "align"); ok {
+		switch a {
+		case "left":
+			s = s.Align(lipgloss.Left)
+		case "right":
+			s = s.Align(lipgloss.Right)
+		case "center":
+			s = s.Align(lipgloss.Center)
+		}
+	}
+
+	return s.Render(fmt.Sprint(value))
+}
+
+func ColorMap(colorMap map[string]any, args ...string) string {
 	colors := maputil.String(colorMap)
 
-	value := fmt.Sprintf("%v", payload)
+	key := ""
+	value := ""
+
+	if len(args) > 0 {
+		key = args[0]
+		value = args[0]
+	}
+
+	if len(args) > 1 {
+		value = args[1]
+	}
+
 	color := theme.Current.Foreground
 
-	if c, ok := colors[value]; ok {
+	if c, ok := colors[key]; ok {
 		color = c
 	}
 
-	return Color(payload, color)
+	return Color(value, color)
 }
 
 func (c *Component) LoadItems() tea.Cmd {
@@ -99,6 +160,8 @@ func (c *Component) LoadItems() tea.Cmd {
 				FuncMap: map[string]any{
 					"color":     Color,
 					"color_map": ColorMap,
+					"concat":    Concat,
+					"style":     style,
 				},
 			})
 

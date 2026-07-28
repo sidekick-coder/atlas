@@ -3,9 +3,13 @@ title: "tasks"
 description: "List of tasks"
 query: "parent=tasks"
 # label_key: path
-label_template: '󰂔 #{{ color .task_id "primary" }} {{ .title }} ({{ color_map .status .vars.status_colors }})'
+label_template: >
+    {{ color "󰂔" "primary" }} 
+    {{ color (concat "#" .task_id) "primary" }} 
+    {{ style .title "width=86" }}
+    {{ style (color_map .vars.status_colors .status (concat "[" .status "]")) "width=13;align=right" }}
 component:
     type: "shell"
     command: |
-      script -q /dev/null -c "glow -s {{ .workspace.atlas_path }}/glow-style.json {{ .entry.absolute_path }}" |
-      sed '1{/^[[:space:]]*$/d}; ${/^[[:space:]]*$/d;}'
+        script -q /dev/null -c "glow -s {{ .workspace.atlas_path }}/glow-style.json {{ .entry.absolute_path }}" |
+        sed '1{/^[[:space:]]*$/d}; ${/^[[:space:]]*$/d;}'

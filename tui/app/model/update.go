@@ -15,6 +15,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		m.toaster.Update,
 		m.footer.Update,
+		m.cdialog.Update,
 		m.screen.Update,
 		m.toolbar.Update,
 		action.Update,

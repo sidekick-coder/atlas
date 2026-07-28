@@ -1,6 +1,9 @@
 package maputil
 
-import "strings"
+import (
+	"strconv"
+	"strings"
+)
 
 func Get(m map[string]any, path string) any {
 	parts := strings.Split(path, ".")
@@ -38,6 +41,30 @@ func GetString(m map[string]any, path string) (string, bool) {
 	}
 
 	return s, true
+}
+
+func GetInt(m map[string]any, path string) (int, bool) {
+	v := Get(m, path)
+
+	if v == nil {
+		return 0, false
+	}
+
+	if i, ok := v.(int); ok {
+		return i, true
+	}
+
+	s, ok := v.(string)
+
+	if !ok {
+		return 0, false
+	}
+
+	if i, err := strconv.Atoi(s); err == nil {
+		return i, true
+	}
+
+	return 0, false
 }
 
 func GetMap(m map[string]any, path string) (map[string]any, bool) {

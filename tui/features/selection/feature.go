@@ -13,7 +13,7 @@ func Create() *Feature {
 		cursor:  -1,
 		total:   0,
 		enabled: true,
-		loop:    true,
+		loop:    false,
 	}
 }
 
@@ -48,6 +48,10 @@ func (f *Feature) IsSelected(index int) bool {
 func (f *Feature) GetNextIndex() int {
 	isLast := f.cursor == f.total-1
 
+	if isLast && !f.loop {
+		return f.cursor
+	}
+
 	if f.cursor < 0 {
 		return 0
 	}
@@ -65,6 +69,10 @@ func (f *Feature) Next() {
 
 func (f *Feature) GetPrevIndex() int {
 	isFirst := f.cursor == 0
+
+	if isFirst && !f.loop {
+		return f.cursor
+	}
 
 	if f.cursor < 0 {
 		return 0

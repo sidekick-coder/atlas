@@ -8,6 +8,7 @@ import (
 	"github.com/sidekick-coder/atlas/internal/app"
 	"github.com/sidekick-coder/atlas/internal/config"
 	"github.com/sidekick-coder/atlas/tui/action"
+	"github.com/sidekick-coder/atlas/tui/app/contextdialog"
 	"github.com/sidekick-coder/atlas/tui/app/footer"
 	"github.com/sidekick-coder/atlas/tui/app/screen"
 	"github.com/sidekick-coder/atlas/tui/app/tabbar"
@@ -15,6 +16,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/app/toolbar"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
+	"github.com/sidekick-coder/atlas/tui/features/context"
 	"github.com/sidekick-coder/atlas/tui/features/entrycontroller"
 	"github.com/sidekick-coder/atlas/tui/features/keymaps"
 	"github.com/sidekick-coder/atlas/tui/models"
@@ -45,10 +47,10 @@ type model struct {
 	footer  *footer.Component
 	toolbar *toolbar.Component
 	toaster *toaster.Component
+	cdialog *contextdialog.Component
 
 	features []RootFeature
 }
-
 
 func Create(a *app.App) model {
 	m := model{
@@ -60,17 +62,25 @@ func Create(a *app.App) model {
 		toolbar: toolbar.Create(a),
 		footer:  footer.Create(a),
 		toaster: toaster.Create(),
+		cdialog: contextdialog.Create(),
 
-		screen: screen.Create(),
-		tabbar: tabbar.Create(),
+		screen:   screen.Create(),
+		tabbar:   tabbar.Create(),
 		features: []RootFeature{},
 	}
-
-	m.features = append(m.features, entrycontroller.Create(a))
 
 	action.Load(a)
 
 	keymaps.LoadConfigKeymaps(a.Config())
+
+	c := context.Create()
+	c.Activate()
+	c.SetLabel("global")
+	c.SetID("global")
+
+	c.Set("workspace", a.Config().GetMap("workspace"))
+
+	m.features = append(m.features, entrycontroller.Create(a), c)
 
 	return m
 }
@@ -164,10 +174,10 @@ func (m model) InitKeymaps() tea.Cmd {
 	return nil
 }
 
-
 func (m model) Init() tea.Cmd {
 	return chain.Init(
 		m.footer.Init,
+		m.cdialog.Init,
 		m.LoadBindings,
 		m.toaster.Init,
 		chain.OnError(m.screen.Init),

@@ -1,6 +1,10 @@
 package maputil
 
-import "fmt"
+import (
+	"fmt"
+	"slices"
+	"strings"
+)
 
 func Any[K comparable, V any](src map[K]V) map[K]any {
 	out := map[K]any{}
@@ -27,6 +31,25 @@ func String(src map[string]any) map[string]string {
 
 	for k, v := range src {
 		out[k] = fmt.Sprintf("%v", v)
+	}
+
+	return out
+}
+
+func FromString(source string) map[string]any {
+	out := map[string]any{}
+
+	// Split the source string into key-value pairs
+	pairs := slices.Collect(strings.SplitSeq(source, ";"))
+
+	for _, pair := range pairs {
+		// Split each pair into key and value
+		kv := strings.SplitN(pair, "=", 2)
+		if len(kv) == 2 {
+			key := strings.TrimSpace(kv[0])
+			value := strings.TrimSpace(kv[1])
+			out[key] = value
+		}
 	}
 
 	return out

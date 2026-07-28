@@ -84,6 +84,15 @@ func (c *Component) Close() {
 	}
 }
 
+func (c *Component) Toggle() {
+	if c.open {
+		c.Close()
+		return
+	}
+
+	c.Open()
+}
+
 func (c *Component) OnClose(f func()) *Component {
 	c.onClose = f
 	return c

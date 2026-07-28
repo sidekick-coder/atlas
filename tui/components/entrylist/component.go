@@ -7,6 +7,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/components/list"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
+	"github.com/sidekick-coder/atlas/tui/features/context"
 	"github.com/sidekick-coder/atlas/tui/features/entryloader"
 	"github.com/sidekick-coder/atlas/tui/features/selection"
 )
@@ -19,11 +20,16 @@ type Component struct {
 
 	list   *list.Component
 	dialog *inputdialog.Component
+	ctx    *context.Feature
 }
 
 func Create() *Component {
 	app := program.GetApp()
 	repo := app.EntryRepo()
+
+	ctx := context.Create()
+
+	ctx.SetLabel("entry_list")
 
 	return &Component{
 		props: map[string]any{},
@@ -33,12 +39,14 @@ func Create() *Component {
 
 		list:   list.Create(),
 		dialog: inputdialog.Create(),
+		ctx:    ctx,
 	}
 }
 
 func (c *Component) Init() tea.Cmd {
 	return chain.Init(
 		c.Load,
+		c.ctx.Init,
 		c.list.Init,
 		c.InitDialog,
 		c.InitSelection,
@@ -48,6 +56,7 @@ func (c *Component) Init() tea.Cmd {
 func (c *Component) Activate() tea.Cmd {
 	return chain.Init(
 		c.LoadBindings,
+		c.ctx.Activate,
 		c.list.Activate,
 	)
 }
@@ -55,6 +64,7 @@ func (c *Component) Activate() tea.Cmd {
 func (c *Component) Deactivate() tea.Cmd {
 	return chain.Init(
 		c.UnloadBindings,
+		c.ctx.Deactivate,
 		c.list.Deactive,
 	)
 }
@@ -62,9 +72,14 @@ func (c *Component) Deactivate() tea.Cmd {
 func (c *Component) Dispose() tea.Cmd {
 	return chain.Dispose(
 		c.list.Dispose,
+		c.ctx.Dispose,
 		c.dialog.Dispose,
 		c.UnloadBindings,
 	)
+}
+
+func (c *Component) Context() *context.Feature {
+	return c.ctx
 }
 
 func (c *Component) OnSubmit(value string) tea.Cmd {
@@ -97,8 +112,11 @@ func (c *Component) Load() tea.Cmd {
 
 	c.loader.Load()
 
+	c.ctx.Set("entries", c.loader.GetEntries())
+
 	return c.LoadItems()
 }
+
 
 func (c *Component) InitSelection() tea.Cmd {
 	c.list.SetSelection(c.selection)
@@ -106,15 +124,8 @@ func (c *Component) InitSelection() tea.Cmd {
 	return nil
 }
 
-func (c *Component) Focus() tea.Cmd {
-	return c.Activate()
-}
-
-func (c *Component) Blur() tea.Cmd {
-	return c.Deactivate()
-}
-
 func (c *Component) SetProps(props map[string]any) tea.Cmd {
 	c.props = props
+	c.ctx.SetAll(props)
 	return c.Load()
 }

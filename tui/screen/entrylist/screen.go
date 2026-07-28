@@ -5,13 +5,13 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
-	"github.com/sidekick-coder/atlas/internal/template"
 	"github.com/sidekick-coder/atlas/internal/utils/maputil"
 	"github.com/sidekick-coder/atlas/tui/components/borderlabel"
 	"github.com/sidekick-coder/atlas/tui/components/entrylist"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/component"
+	"github.com/sidekick-coder/atlas/tui/features/context"
 	"github.com/sidekick-coder/atlas/tui/features/focusmanager"
 	tuimodels "github.com/sidekick-coder/atlas/tui/models"
 )
@@ -25,6 +25,7 @@ type Screen struct {
 	height int
 
 	focus    *focusmanager.Feature
+	ctx      *context.Feature
 	registry *component.Registry
 
 	list      *entrylist.Component
@@ -41,6 +42,14 @@ func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 		viewComponent = vc
 	}
 
+	c := context.Create()
+
+	c.SetLabel("screen")
+
+	c.SetAll(p.Options)
+
+	c.Activate()
+
 	s := &Screen{
 		app:           p.App,
 		options:       p.Options,
@@ -50,6 +59,7 @@ func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 		height: 100,
 
 		focus:    focusmanager.Create(),
+		ctx:      c,
 		registry: component.CreateRegistry(),
 
 		list:      entrylist.Create(),
@@ -62,6 +72,7 @@ func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 func (s *Screen) Init() tea.Cmd {
 	return chain.Init(
 		s.LoadBindings,
+		s.ctx.Init,
 		s.InitList,
 		s.InitView,
 	)
@@ -70,6 +81,7 @@ func (s *Screen) Init() tea.Cmd {
 func (s *Screen) Dispose() tea.Cmd {
 	return chain.Dispose(
 		s.UnloadBindings,
+		s.ctx.Dispose,
 		s.list.Dispose,
 	)
 }
@@ -83,10 +95,16 @@ func (s *Screen) Title() string {
 }
 
 func (s *Screen) InitList() tea.Cmd {
+	lctx := s.list.Context()
+
+	lctx.SetParent(s.ctx)
+
 	s.list.SetProps(s.options)
 
 	s.focus.Add(s.list)
 	s.focus.Focus(s.list)
+
+	s.ctx.SetAll(s.options)
 
 	return s.list.Init()
 }
@@ -104,7 +122,12 @@ func (s *Screen) InitView() tea.Cmd {
 		return toast.Error("view with name " + name + " not found")
 	}
 
+	vctx := view.Context()
+
+	vctx.SetParent(s.ctx)
+
 	s.view = view
+	s.view.Init()
 	s.focus.Add(s.view)
 
 	return nil
@@ -118,12 +141,6 @@ func (s *Screen) SetViewProps(payload map[string]any) {
 	cp := maputil.Except(s.viewComponent, "type")
 
 	maps.Copy(props, cp)
-
-	computed, err := template.EvaluateMap(props, props)
-
-	if err == nil {
-		props = computed
-	}
 
 	s.view.SetProps(props)
 }

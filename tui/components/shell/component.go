@@ -2,46 +2,70 @@ package shell
 
 import (
 	"fmt"
-	"maps"
 	"os"
 	"os/exec"
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/template"
-	"github.com/sidekick-coder/atlas/tui/app/program"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/components/viewport"
+	"github.com/sidekick-coder/atlas/tui/features/chain"
+	"github.com/sidekick-coder/atlas/tui/features/context"
 )
 
 type Component struct {
 	props    map[string]any
+	ctx      *context.Feature
 	viewport *viewport.Component
 }
 
 func Create() *Component {
+	ctx := context.Create()
+
+	ctx.SetLabel("shell")
+
 	return &Component{
 		viewport: viewport.Create(),
+		ctx:      ctx,
 	}
 }
 
 func (c *Component) Init() tea.Cmd {
-	return c.Load()
+	return chain.Init(
+		c.Load,
+		c.ctx.Init,
+	)
 }
 
 func (c *Component) Dispose() tea.Cmd {
-	return nil
+	return chain.Dispose(
+		c.UnloadBindings,
+		c.ctx.Dispose,
+	)
 }
 
 func (c *Component) Activate() tea.Cmd {
-	return c.LoadBindings()
+	return chain.Cmd(
+		c.LoadBindings,
+		c.ctx.Activate,
+	)
 }
 
 func (c *Component) Deactivate() tea.Cmd {
-	return c.UnloadBindings()
+	return chain.Cmd(
+		c.UnloadBindings,
+		c.ctx.Deactivate,
+	)
+}
+
+func (c *Component) Context() *context.Feature {
+	return c.ctx
 }
 
 func (c *Component) SetProps(props map[string]any) {
 	c.props = props
+
+	c.ctx.SetAll(props)
 
 	c.Load()
 }
@@ -92,14 +116,7 @@ func Execute(options map[string]any) (string, error) {
 }
 
 func (c *Component) Load() tea.Cmd {
-	app := program.GetApp()
-	config := app.Config()
-
-	ctx :=  map[string]any{}
-
-	ctx["workspace"] = config.GetMap("workspace")
-
-	maps.Copy(ctx, c.props)
+	ctx := c.ctx.GetEntriesMap()
 
 	computed, err := template.EvaluateMap(c.props, ctx)
 
