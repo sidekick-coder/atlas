@@ -1,6 +1,10 @@
 package theme
 
-import "charm.land/lipgloss/v2"
+import (
+	"image/color"
+
+	"charm.land/lipgloss/v2"
+)
 
 type Theme struct {
 	Primary   string
@@ -55,4 +59,48 @@ func BaseStyle() lipgloss.Style {
 
 func SetTheme(theme Theme) {
 	Current = theme
+}
+
+func Primary() color.Color {
+	return lipgloss.Color(Current.Primary)
+}
+
+func Secondary() color.Color {
+	return lipgloss.Color(Current.Secondary)
+}
+
+func Accent() color.Color {
+	return lipgloss.Color(Current.Accent)
+}
+
+func Foreground() color.Color {
+	return lipgloss.Color(Current.Foreground)
+}
+
+func Muted() color.Color {
+	return lipgloss.Color(Current.Muted)
+}
+
+func Background() color.Color {
+	return lipgloss.Color(Current.Background)
+}
+
+func Success() color.Color {
+	return lipgloss.Color(Current.Success)
+}
+
+func Warning() color.Color {
+	return lipgloss.Color(Current.Warning)
+}
+
+func Error() color.Color {
+	return lipgloss.Color(Current.Error)
+}
+
+func Info() color.Color {
+	return lipgloss.Color(Current.Info)
+}
+
+func Border() color.Color {
+	return lipgloss.Color(Current.Border)
 }

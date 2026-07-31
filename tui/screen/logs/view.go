@@ -1,4 +1,4 @@
-package empty
+package logs
 
 import (
 	tea "charm.land/bubbletea/v2"
@@ -11,6 +11,7 @@ func (s *Screen) SetSize(width, height int) {
 	s.Height = height
 
 	s.list.SetSize(width, 1)
+	s.viewport.SetSize(width, height-2)
 
 	s.container.
 		SetSize(width-2, height).
@@ -28,6 +29,8 @@ func (s *Screen) HandleView(msg tea.Msg) tea.Cmd {
 
 func (s *Screen) Render() string {
 	list := s.list.Render()
+
+	list = s.viewport.SetContent(list).Render()
 
 	s.container.SetContent(list)
 

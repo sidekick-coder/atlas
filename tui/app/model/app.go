@@ -26,6 +26,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/screen/entrylist"
 	"github.com/sidekick-coder/atlas/tui/screen/entrysingle"
 	"github.com/sidekick-coder/atlas/tui/screen/entrytable"
+	"github.com/sidekick-coder/atlas/tui/screen/logs"
 )
 
 var Program *tea.Program
@@ -114,6 +115,11 @@ func (m model) EmptyScreenFactory(p models.ScreenPayload) (models.Screen, error)
 		Options: map[string]any{},
 	})
 
+	entries = append(entries, empty.Entry{
+		ID:      "logs",
+		Options: map[string]any{},
+	})
+
 	us, err := m.app.Config().GetScreens()
 
 	if err != nil {
@@ -141,6 +147,7 @@ func (m model) InitScreen() tea.Cmd {
 	m.screen.SetDefinition("entry_table", entrytable.Create)
 	m.screen.SetDefinition("entry_list", entrylist.Create)
 	m.screen.SetDefinition("entry_single", entrysingle.Create)
+	m.screen.SetDefinition("logs", logs.Create)
 	m.screen.SetDefinition("custom", custom.Create)
 
 	us, err := m.app.Config().GetScreens()

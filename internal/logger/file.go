@@ -1,13 +1,18 @@
 package logger
 
 import (
+	"bufio"
+	"encoding/json"
 	"fmt"
 	"log/slog"
 	"os"
+
+	"github.com/sidekick-coder/atlas/internal/utils/maputil"
 )
 
 type FileTransport struct {
-	logger *slog.Logger
+	filename string
+	logger   *slog.Logger
 }
 
 func CreateFileTransport(filename string) (*FileTransport, error) {
@@ -20,13 +25,14 @@ func CreateFileTransport(filename string) (*FileTransport, error) {
 	logger := slog.New(slog.NewJSONHandler(file, nil))
 
 	transport := &FileTransport{
-		logger: logger,
+		filename: filename,
+		logger:   logger,
 	}
 
 	return transport, nil
 }
 
-func (s *FileTransport) Log(level int, msg string, args ...any) {
+func (s *FileTransport) Log(level string, msg string, args ...any) {
 
 	if level == Levels.Info {
 		s.logger.Info(msg, args...)
@@ -51,4 +57,46 @@ func (s *FileTransport) Log(level int, msg string, args ...any) {
 
 func (s *FileTransport) GetLogger() *slog.Logger {
 	return s.logger
+}
+
+func (s *FileTransport) List(options ...ListOptions) ([]Log, error) {
+	file, err := os.Open(s.filename)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to open log file for reading: %w", err)
+	}
+
+	defer file.Close()
+
+	var logs []Log
+
+	scanner := bufio.NewScanner(file)
+
+	for scanner.Scan() {
+		line := scanner.Bytes()
+
+		data := map[string]any{}
+
+		err := json.Unmarshal(line, &data)
+
+		if err != nil {
+			return nil, fmt.Errorf("failed to unmarshal log entry: %w", err)
+		}
+
+		log := Log{
+			Time:  data["time"].(string),
+			Level: data["level"].(string),
+			Msg:   data["msg"].(string),
+			Options:  maputil.Except(data, "time", "level", "msg"),
+		}
+
+		logs = append(logs, log)
+	}
+
+	if err := scanner.Err(); err != nil {
+		return nil, fmt.Errorf("error reading log file: %w", err)
+	}
+
+	return logs, nil
+
 }

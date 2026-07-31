@@ -21,3 +21,13 @@ func Debug(msg string, args ...any) {
 func Warn(msg string, args ...any) {
 	logger.Log(Levels.Warn, msg, args...)
 }
+
+func List(options ...ListOptions) ([]Log, error) {
+	if len(logger.transports) == 0 {
+		return []Log{}, nil
+	}
+
+	t := logger.transports[0]
+
+	return t.List(options...)
+}

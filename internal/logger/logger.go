@@ -4,17 +4,17 @@ import "maps"
 
 // levels
 type LoggerLevel struct {
-	Info  int
-	Error int
-	Debug int
-	Warn  int
+	Info  string
+	Error string
+	Debug string
+	Warn  string
 }
 
 var Levels = LoggerLevel{
-	Info:  1,
-	Error: 2,
-	Debug: 3,
-	Warn:  4,
+	Info:  "INFO",
+	Error: "ERROR",
+	Debug: "DEBUG",
+	Warn:  "WARN",
 }
 
 type Logger struct {
@@ -42,8 +42,10 @@ func (l *Logger) Child() {
 	maps.Copy(c.metas, l.metas)
 }
 
-func (l *Logger) Log(level int, msg string, args ...any) {
+func (l *Logger) Log(level string, msg string, args ...any) {
 	for _, transport := range l.transports {
 		transport.Log(level, msg, args...)
 	}
 }
+
+
