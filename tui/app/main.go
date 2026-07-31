@@ -3,12 +3,13 @@ package app
 import (
 	"fmt"
 	"log/slog"
-	"os"
+	"path/filepath"
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/app"
-	"github.com/sidekick-coder/atlas/tui/app/program"
+	"github.com/sidekick-coder/atlas/internal/logger"
 	"github.com/sidekick-coder/atlas/tui/app/model"
+	"github.com/sidekick-coder/atlas/tui/app/program"
 )
 
 type App struct {
@@ -35,17 +36,29 @@ func (a *App) Init() error {
 }
 
 func (a *App) LoadLogger() error {
-	file, err := os.OpenFile("tui.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	atlasPath, exists := a.App.Config().Get("workspace.atlas_path")
 
-	if err != nil {
-		return fmt.Errorf("failed to open log file: %w", err)
+	if !exists {
+		return fmt.Errorf("atlas_path not found in config")
 	}
 
-	logger := slog.New(slog.NewJSONHandler(file, nil))
+	f, err := logger.CreateFileTransport(filepath.Join(atlasPath, "app.log"))
 
-	slog.SetDefault(logger)
+	if err != nil {
+		return fmt.Errorf("failed to create file transport: %w", err)
+	}
 
-	slog.Info("Logger initialized")
+	sl := f.GetLogger()
+
+	slog.SetDefault(sl)
+
+	l := logger.Create()
+
+	l.AddTransport(f)
+
+	logger.SetLogger(l)
+
+	logger.Info("Logger initialized")
 
 	return nil
 }
@@ -64,16 +77,17 @@ func (a *App) LoadProgram() error {
 }
 
 func (a *App) Run() error {
-	err := a.LoadLogger()
 
-	if err != nil {
-		return fmt.Errorf("failed to load logger: %w", err)
-	}
-
-	err = a.Init()
+	err := a.Init()
 
 	if err != nil {
 		return fmt.Errorf("failed to initialize app: %w", err)
+	}
+
+	err = a.LoadLogger()
+
+	if err != nil {
+		return fmt.Errorf("failed to load logger: %w", err)
 	}
 
 	err = a.LoadProgram()
