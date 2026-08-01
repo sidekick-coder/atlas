@@ -14,10 +14,14 @@ actions:
 
     - id: create
       type: shell
-      command: touch "{{ .workspace.path }}/{{ .filename.output }}"
+      command: |
+          cat > "{{ .workspace.path }}/{{ .filename.output }}" <<EOF
+          ---
+          title: {{ .title }}
+          status: {{ if .status }}{{ .status }}{{ else }}todo{{ end }}
+          ---
+          # {{ .title }}
+          EOF
 
-    - type: entry-update
+    - type: entry-sync
       path: "{{ .filename.output }}"
-      values:
-          title: "{{ .title }}"
-          status: "{{ .status }}"
