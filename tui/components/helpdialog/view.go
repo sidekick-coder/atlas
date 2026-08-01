@@ -19,7 +19,6 @@ func (c *Component) LoadSize() {
 	width := max(50, layer.ScreenWidth/2)
 	height := max(10, layer.ScreenHeight-10)
 
-	c.viewport.SetSize(width, height-2) // 2 padding
 	c.dialog.SetSize(width, height)
 }
 
@@ -39,16 +38,20 @@ func prefix(tag string) string {
 }
 
 func (c *Component) Render() string {
+	w, h := c.dialog.GetContentSize()
+
+	w = w-4
+	h = h-4
+
+	c.viewport.SetSize(w, h)
+
 	tagStyle := theme.BaseStyle().
-	    Width(c.dialog.GetWidth()).
 		Foreground(lipgloss.Color(theme.Current.Primary))
 
 	textStyle := theme.BaseStyle().
-	    Width(c.dialog.GetWidth()).
 		Foreground(lipgloss.Color(theme.Current.Foreground))
 
 	descStyle := theme.BaseStyle().
-	    Width(c.dialog.GetWidth()).
 		Foreground(lipgloss.Color(theme.Current.Muted))
 
 	var parts []string
@@ -121,5 +124,5 @@ func (c *Component) Render() string {
 
 	content = c.viewport.SetContent(content).Render()
 
-	return content
+	return theme.BaseStyle().Border(lipgloss.NormalBorder()).Width(c.dialog.GetWidth()).Render(content)
 }
