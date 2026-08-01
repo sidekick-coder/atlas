@@ -92,6 +92,7 @@ func (f *Component) Load() tea.Cmd {
 func (f *Component) Init() tea.Cmd {
 	f.dialog.OnRender(f.render)
 	f.dialog.SetTitle("Context")
+	f.dialog.SetZIndex(10)
 
 	return chain.Init(f.LoadBindings, f.kv.Init, f.dialog.Init)
 }

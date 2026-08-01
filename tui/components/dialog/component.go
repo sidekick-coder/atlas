@@ -9,14 +9,15 @@ import (
 )
 
 type Component struct {
-	open   bool
-	width  int
-	height int
-	title  string
+	open     bool
+	noBorder bool
+	width    int
+	height   int
+	title    string
 
-	onRender func() string
-	onClose  func()
-	onOpen   func()
+	Events Events
+
+	contentRender func() string
 
 	style  lipgloss.Style
 	layer  *layer.Layer
@@ -26,9 +27,16 @@ type Component struct {
 func Create() *Component {
 	return &Component{
 		open:   false,
+		noBorder: true,
 		width:  100,
 		height: 20,
 		title:  "",
+		contentRender: func() string {
+			return "No content"
+		},
+
+		Events: *CreateEvents(),
+
 		border: borderlabel.Create(),
 
 		layer: layer.Create(),
@@ -36,83 +44,12 @@ func Create() *Component {
 	}
 }
 
-func (c *Component) SetTitle(title string) *Component {
-	c.title = title
-	return c
-}
-
-func (c *Component) GetSize() (int, int) {
-	return c.width, c.height
-}
-
-func (c *Component) SetSize(width, height int) *Component {
-	c.width = width
-	c.height = height
-	return c
-}
-
-func (c *Component) SetWidth(width int) *Component {
-	c.width = width
-	return c
-}
-
-func (c *Component) SetPadding(args ...int) *Component {
-	c.style = c.style.Padding(args...)
-	return c
-}
-
-func (c *Component) OnRender(f func() string) *Component {
-	c.onRender = f
-	return c
-}
-
-func (c *Component) Open() {
-	c.open = true
-	c.LoadBindings()
-
-	if c.onOpen != nil {
-		c.onOpen()
-	}
-}
-
-func (c *Component) Close() {
-	c.open = false
-	c.UnloadBindings()
-
-	if c.onClose != nil {
-		c.onClose()
-	}
-}
-
-func (c *Component) Toggle() {
-	if c.open {
-		c.Close()
-		return
-	}
-
-	c.Open()
-}
-
-func (c *Component) OnClose(f func()) *Component {
-	c.onClose = f
-	return c
-}
-
-func (c *Component) OnOpen(f func()) *Component {
-	c.onOpen = f
-	return c
-}
-
-func (c *Component) IsOpen() bool {
-	return c.open
-}
-
 func (c *Component) Init() tea.Cmd {
 	x := (layer.ScreenWidth - c.width) / 2
 	y := (layer.ScreenHeight - c.height) / 2
 
 	c.layer.SetPosition(x, y)
-	c.layer.SetRender(c.render)
+	c.layer.SetRender(c.Render)
 
 	c.LoadDefaultStyle()
 
@@ -130,4 +67,51 @@ func (c *Component) Dispose() tea.Cmd {
 	layer.Remove(c.layer)
 
 	return nil
+}
+
+func (c *Component) SetTitle(title string) *Component {
+	c.title = title
+	return c
+}
+
+func (c *Component) SetPadding(args ...int) *Component {
+	c.style = c.style.Padding(args...)
+	return c
+}
+
+func (c *Component) SetContentRender(f func() string) *Component {
+	c.contentRender = f
+	return c
+}
+
+// @Deprecated: Use SetContentRender instead
+func (c *Component) OnRender(f func() string) *Component {
+	return c.SetContentRender(f)
+}
+
+func (c *Component) Open() {
+	c.open = true
+	c.LoadBindings()
+
+	c.Events.Open.Emit()
+}
+
+func (c *Component) Close() {
+	c.open = false
+	c.UnloadBindings()
+
+	c.Events.Close.Emit()
+}
+
+func (c *Component) Toggle() {
+	if c.open {
+		c.Close()
+		return
+	}
+
+	c.Open()
+}
+
+func (c *Component) IsOpen() bool {
+	return c.open
 }

@@ -96,6 +96,10 @@ func (f Feature) Current() (Focusable, bool) {
 	return f.items[f.index], true
 }
 
+func (f Feature) GetIndex() int {
+	return f.index
+}
+
 func (f Feature) IsFocused(item Focusable) bool {
 	if item == nil {
 		return false
@@ -118,4 +122,26 @@ func (f *Feature) Focus(item Focusable) {
 			return
 		}
 	}
+}
+
+func (f *Feature) Clear() {
+	for i := range f.items {
+		f.items[i].Deactivate()
+	}
+
+	f.items = []Focusable{}
+	f.index = -1
+}
+
+func (f *Feature) Length() int {
+	return len(f.items)
+}
+
+
+func (f *Feature) First() tea.Cmd {
+	if len(f.items) == 0 {
+		return nil
+	}
+
+	return f.SetIndex(0)
 }

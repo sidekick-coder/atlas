@@ -52,13 +52,7 @@ func (a *App) LoadLogger() error {
 
 	slog.SetDefault(sl)
 
-	l := logger.Create()
-
-	l.AddTransport(f)
-
-	logger.SetLogger(l)
-
-	logger.Info("Logger initialized")
+	logger.AddTransport(f)
 
 	return nil
 }

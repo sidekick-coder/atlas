@@ -1,7 +1,6 @@
 package toast
 
 import (
-	"log/slog"
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/app/program"
@@ -9,10 +8,8 @@ import (
 )
 
 func Error(msg string, timeout ...int) tea.Cmd {
-	slog.Error("toast error", "message", msg)
 	program.Send(messages.ToastErrorMessage(msg, timeout...))
 	return nil
-	// return messages.ToastErrorCmd(msg, timeout...)
 }
 
 func Success(msg string, timeout ...int) tea.Cmd {

@@ -1,18 +1,20 @@
 package input
 
 import (
+	"strings"
+
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
 
-func (i *Input) Render() string {
+func (i *Component) Render() string {
 	cursorStyle := theme.BaseStyle().
 		Foreground(lipgloss.Color(theme.Current.Foreground)).
 		Background(lipgloss.Color(theme.Current.Primary))
 
 	text := theme.BaseStyle().Foreground(lipgloss.Color(theme.Current.Foreground))
 
-	if !i.enabled {
+	if !i.active {
 		cursorStyle = text
 	}
 
@@ -20,6 +22,7 @@ func (i *Input) Render() string {
 	if i.cursor < i.offset {
 		i.offset = i.cursor
 	}
+
 	if i.cursor >= i.offset+i.width {
 		i.offset = i.cursor - i.width + 1
 	}
@@ -32,6 +35,7 @@ func (i *Input) Render() string {
 	cursor := i.cursor - start
 
 	before := ""
+
 	if cursor > 0 {
 		before = text.Render(string(visible[:cursor]))
 	}
@@ -54,9 +58,7 @@ func (i *Input) Render() string {
 
 	// Pad so the rendered width is always i.width.
 	if len(visible) < i.width {
-		for j := 0; j < i.width-len(visible); j++ {
-			rendered += text.Render(" ")
-		}
+		rendered += text.Render(strings.Repeat(" ", i.width-len(visible)))
 	}
 
 	return rendered

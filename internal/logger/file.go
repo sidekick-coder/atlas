@@ -22,7 +22,11 @@ func CreateFileTransport(filename string) (*FileTransport, error) {
 		return nil, fmt.Errorf("failed to open log file: %w", err)
 	}
 
-	logger := slog.New(slog.NewJSONHandler(file, nil))
+	opts := &slog.HandlerOptions{
+		Level: slog.LevelDebug,
+	}
+
+	logger := slog.New(slog.NewJSONHandler(file, opts))
 
 	transport := &FileTransport{
 		filename: filename,

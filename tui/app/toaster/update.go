@@ -1,7 +1,6 @@
 package toaster
 
 import (
-	"log/slog"
 	"time"
 
 	tea "charm.land/bubbletea/v2"
@@ -14,8 +13,6 @@ func (c *Component) Update(msg tea.Msg) tea.Cmd {
 	}
 
 	if tm, ok := msg.(messages.Toast); ok {
-		slog.Info("toaster messagele received", "title", tm.Title, "message", tm.Message, "color", tm.Color, "seconds", tm.Seconds)
-
 		c.LoadPosition()
 
 		c.toast.SetTitle(tm.Title)

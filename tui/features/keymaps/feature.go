@@ -2,7 +2,6 @@ package keymaps
 
 import (
 	"fmt"
-	"log/slog"
 	"maps"
 
 	tea "charm.land/bubbletea/v2"
@@ -102,7 +101,6 @@ func LoadBindings() {
 			SetTags("user").
 			SetHelp(km.Keys[0]).
 			SetMeta("action", km.Action).
-			SetMeta("options", km.ActionOptions).
 			SetMeta("trigger", t.ID).
 			SetID(km.ID)
 
@@ -121,7 +119,7 @@ func HandleBinding(msg tea.KeyMsg) tea.Cmd {
 
 	for _, b := range manager.bindings {
 		if key.Matches(b) {
-			actionId, ok := b.GetMeta("action").(string)
+			a, ok := b.GetMeta("action").(config.Action)
 
 			if !ok {
 				return toast.Error("No action defined for key binding: " + b.GetDescription())
@@ -141,13 +139,9 @@ func HandleBinding(msg tea.KeyMsg) tea.Cmd {
 
 			ctx := c.GetEntriesMap()
 
-			if opts, ok := b.GetMeta("options").(map[string]any); ok {
-				maps.Copy(ctx, opts)
-			}
+			maps.Copy(ctx, a.Options)
 
-			slog.Info("Executing action", "action", actionId, "context", t.ContextID)
-
-			return action.Execute(actionId, ctx)
+			return action.Execute(a.Type, ctx)
 		}
 	}
 

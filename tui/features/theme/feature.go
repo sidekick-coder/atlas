@@ -14,6 +14,7 @@ type Theme struct {
 	Foreground string
 	Muted      string
 	Background string
+	Background2 string
 
 	Success string
 	Warning string
@@ -27,6 +28,7 @@ type Theme struct {
 }
 
 var Current = CatppuccinMocha
+var CurrentBackground = CatppuccinMocha.Background
 
 // var Current = Theme{
 // 	Primary:   "#1E90FF",
@@ -50,7 +52,7 @@ var Current = CatppuccinMocha
 
 func BaseStyle() lipgloss.Style {
 	return lipgloss.NewStyle().
-		Background(lipgloss.Color(Current.Background)).
+		Background(lipgloss.Color(CurrentBackground)).
 		Foreground(lipgloss.Color(Current.Foreground)).
 		BorderBackground(lipgloss.Color(Current.Background)).
 		BorderForeground(lipgloss.Color(Current.Border)).
@@ -59,6 +61,10 @@ func BaseStyle() lipgloss.Style {
 
 func SetTheme(theme Theme) {
 	Current = theme
+}
+
+func SetCurrentBackground(color string) {
+	CurrentBackground = color
 }
 
 func Primary() color.Color {
@@ -83,6 +89,10 @@ func Muted() color.Color {
 
 func Background() color.Color {
 	return lipgloss.Color(Current.Background)
+}
+
+func Background2() color.Color {
+	return lipgloss.Color(Current.Background2)
 }
 
 func Success() color.Color {

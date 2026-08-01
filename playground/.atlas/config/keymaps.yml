@@ -1,7 +1,7 @@
 bindings:
     - keys: [a]
-      action: input
-      action_options:
+      action:
+          type: input
           label: "Task name"
           submit: create-task
       description: add
@@ -11,3 +11,21 @@ bindings:
       action: vi
       description: vim
       ext: md
+
+    - keys: [<leader>t]
+      global: true
+      action:
+          type: formdialog
+          title: "Create"
+          action:
+              type: create-task
+              title: "{{ .title }}"
+              status: "{{ .status }}"
+          fields:
+              - name: "title"
+                type: "textfield"
+                label: "Title"
+
+              - name: "status"
+                type: "textfield"
+                label: "Status"

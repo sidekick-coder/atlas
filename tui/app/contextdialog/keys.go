@@ -12,10 +12,10 @@ type Keymap struct {
 var tags = []string{"global"}
 
 var Binding = Keymap{
-	Open: key.CreateBinding("<leader>c").
+	Open: key.CreateBinding("<f2>").
 		SetDescription("context").
 		SetTags(tags...).
-		SetHelp("<leader>c"),
+		SetHelp("f2"),
 }
 
 func (c *Component) GetBindings() []key.Binding {

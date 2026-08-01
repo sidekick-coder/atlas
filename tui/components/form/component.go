@@ -1,85 +1,67 @@
 package form
 
 import (
-
 	tea "charm.land/bubbletea/v2"
-	"github.com/sidekick-coder/atlas/internal/utils/maputil"
-	"github.com/sidekick-coder/atlas/tui/components/borderlabel"
-	"github.com/sidekick-coder/atlas/tui/components/input"
-	"github.com/sidekick-coder/atlas/tui/features/chain"
+	"github.com/sidekick-coder/atlas/internal/config"
+	"github.com/sidekick-coder/atlas/tui/components/form/field"
+	"github.com/sidekick-coder/atlas/tui/features/focusmanager"
 	"github.com/sidekick-coder/atlas/tui/features/selection"
-	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
 
 type Component struct {
-	fields  []Field
 	values  map[string]string
-	focused bool
+	active bool
 	width   int
 	height  int
+	fields  []field.Field
+	action    config.Action
 
 	selection *selection.Feature
-	onSubmit  func(values map[string]any)
-	inputs    []*input.Input
+	focus     *focusmanager.Feature
+	registry  *Registry
 
-	fieldBorder         *borderlabel.Component
-	fieldBorderSelected *borderlabel.Component
+	Events *Events
 }
 
-func Create(args ...map[string]any) (*Component, error) {
-
+func Create() *Component {
 	c := &Component{
-		fields: []Field{},
+		fields: []field.Field{},
 		width:  40,
 		height: 20,
 		values: map[string]string{},
 
 		selection: selection.Create(),
+		focus:    focusmanager.Create(),
 
-		fieldBorder: borderlabel.
-			Create().
-			SetColor(theme.Current.Muted),
-		fieldBorderSelected: borderlabel.
-			Create().
-			SetColor(theme.Current.Primary),
+		registry: CreateRegistry(),
+
+		Events: CreateEvents(),
 	}
 
-	props := map[string]any{}
+	c.registry.Load()
 
-	if len(args) > 0 {
-		props = args[0]
-	}
+	return c
+}
 
-	if fp, ok := props["fields"]; ok {
-		pf, err := CreateFieldsFromArray(fp)
+func (c *Component) Init() tea.Cmd {
+	return nil
+}
 
-		if err != nil {
-			return nil, err
-		}
+func (c *Component) Dispose() tea.Cmd {
+	return nil
+}
 
-		c.SetFields(pf)
-	}
+func (c *Component) Activate() tea.Cmd {
+	c.LoadBindings()
+	c.active = true
+	c.focus.First()
+	return nil
+}
 
-	if w, ok := props["width"].(int); ok {
-		c.width = w
-	}
-
-	if h, ok := props["height"].(int); ok {
-		c.height = h
-	}
-
-	if v, ok := props["values"].(map[string]any); ok {
-		c.SetValues(maputil.String(v))
-	}
-
-	if os, ok := props["on_submit"].(func(map[string]any)); ok {
-		c.onSubmit = os
-	}
-
-	c.fieldBorder.SetWidth(c.width - 6)
-	c.fieldBorderSelected.SetWidth(c.width - 6) // 4 padding
-
-	return c, nil
+func (c *Component) Deactivate() tea.Cmd {
+	c.UnloadBindings()
+	c.active = false
+	return nil
 }
 
 func (c *Component) GetValues() map[string]string {
@@ -87,31 +69,15 @@ func (c *Component) GetValues() map[string]string {
 }
 
 func (c *Component) SetValues(values map[string]string) {
-	c.values = values
-
-	for index, field := range c.fields {
-		if value, ok := values[field.Name]; ok {
-			c.inputs[index].SetInitialValue(value)
-		}
-	}
+	// c.values = values
+	//
+	// for index, field := range c.fields {
+	// 	if value, ok := values[field.Name]; ok {
+	// 		c.inputs[index].SetInitialValue(value)
+	// 	}
+	// }
 }
 
-func (c *Component) Init() tea.Cmd {
-	return chain.Init(c.InitRender)
-}
-
-func (c *Component) Dispose() tea.Cmd {
-	return nil
-}
-
-func (c *Component) OnFocus() {
-	c.LoadBindings()
-	c.Refresh()
-	c.focused = true
-}
-
-func (c *Component) OnBlur() {
-	c.UnloadBindings()
-	c.DisableInputs()
-	c.focused = false
+func (c *Component) SetAction(action config.Action) {
+	c.action = action
 }

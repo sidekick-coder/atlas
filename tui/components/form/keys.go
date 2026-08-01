@@ -3,14 +3,13 @@ package form
 import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/tui/features/key"
-	"github.com/sidekick-coder/atlas/tui/messages"
 )
 
 type Keymap struct {
 	Up    key.Binding
 	Down  key.Binding
 	Enter key.Binding
-	Blur key.Binding
+	Cancel  key.Binding
 }
 
 var tags = []string{"component:form"}
@@ -28,7 +27,7 @@ var Binding = Keymap{
 		SetHelp("enter").
 		SetTags(tags...).
 		SetDescription("Submit"),
-	Blur: key.CreateBinding("<esc>").
+	Cancel: key.CreateBinding("<esc>").
 		SetHelp("esc").
 		SetTags(tags...).
 		SetDescription("Close form"),
@@ -39,7 +38,7 @@ func (c *Component) GetBindings() []key.Binding {
 		Binding.Up,
 		Binding.Down,
 		Binding.Enter,
-		Binding.Blur,
+		Binding.Cancel,
 	}
 }
 
@@ -56,31 +55,34 @@ func (c *Component) UnloadBindings() tea.Cmd {
 }
 
 func (c *Component) HandleBindings(msg tea.KeyMsg) tea.Cmd {
-	if !c.focused {
+	if !c.active {
 		return nil
 	}
 
 	if key.Matches(Binding.Up) {
-		c.selection.Prev()
-		c.Refresh()
-		return messages.SkipCmd()
+		c.focus.Prev()
 	}
 
 	if key.Matches(Binding.Down) {
-		c.selection.Next()
-		c.Refresh()
-		return messages.SkipCmd()
+		c.focus.Next()
 	}
 
-	if key.Matches(Binding.Blur) {
-		c.selection.SetCursor(-1)
-		c.Refresh()
-		return messages.SkipCmd()
+	if key.Matches(Binding.Cancel) {
+		c.Events.Cancel.Emit()
+		return nil
 	}
 
 	if key.Matches(Binding.Enter) {
 		return c.submit()
 	}
 
-	return nil
+	index := c.focus.GetIndex()
+
+	if index < 0 || index >= len(c.fields) {
+		return nil
+	}
+
+	field := c.fields[index]
+
+	return field.Update(msg)
 }

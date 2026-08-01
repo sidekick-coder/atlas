@@ -48,8 +48,8 @@ func (c *Component) UnloadBindings() tea.Cmd {
 	return nil
 }
 
-func (i *Input) HandleKeypress(msg tea.Msg) tea.Cmd {
-	if !i.enabled {
+func (i *Component) HandleKeypress(msg tea.Msg) tea.Cmd {
+	if !i.active {
 		return nil
 	}
 

@@ -1,9 +1,16 @@
 package logger
 
-var logger *Logger 
+import "slices"
 
-func SetLogger(l *Logger) {
-	logger = l
+var logger *Logger = Create()
+var transports []Transport
+
+func AddTransport(t ...Transport) {
+	transports = slices.Concat(transports, t)
+}
+
+func Child(args ...any) *Logger {
+	return logger.Child(args...)
 }
 
 func Info(msg string, args ...any) {
@@ -23,11 +30,11 @@ func Warn(msg string, args ...any) {
 }
 
 func List(options ...ListOptions) ([]Log, error) {
-	if len(logger.transports) == 0 {
+	if len(transports) == 0 {
 		return []Log{}, nil
 	}
 
-	t := logger.transports[0]
+	t := transports[0]
 
 	return t.List(options...)
 }

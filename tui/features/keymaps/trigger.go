@@ -4,16 +4,21 @@ import (
 	"slices"
 
 	"github.com/sidekick-coder/atlas/internal/config"
+	"github.com/sidekick-coder/atlas/internal/logger"
 	"github.com/sidekick-coder/atlas/tui/features/keymaps/trigger"
 )
 
 type Trigger = trigger.Trigger
+
+var log = logger.Child("package", "keymaps")
 
 func CreateTrigger() Trigger {
 	return trigger.Create()
 }
 
 func AddTrigger(t trigger.Trigger) {
+	log.Debug("Adding trigger", "id", t.ID, "context_id", t.ContextID)
+
 	manager.triggers = append(manager.triggers, t)
 
 	LoadBindings()
@@ -33,7 +38,12 @@ func RemoveTriggerByID(id string) {
 	UnloadBindings()
 
 	manager.triggers = slices.DeleteFunc(manager.triggers, func(t trigger.Trigger) bool {
-		return t.ID == id
+		if t.ID == id {
+			log.Debug("Removing trigger", "id", t.ID, "context_id", t.ContextID)
+			return true
+		}
+
+		return false
 	})
 
 	LoadBindings()
@@ -43,7 +53,12 @@ func RemoveTriggerByContextID(contextID string) {
 	UnloadBindings()
 
 	manager.triggers = slices.DeleteFunc(manager.triggers, func(t trigger.Trigger) bool {
-		return t.ContextID == contextID
+		if t.ContextID == contextID {
+			log.Debug("Removing trigger", "id", t.ID, "context_id", t.ContextID)
+			return true
+		}
+
+		return false
 	})
 
 	LoadBindings()

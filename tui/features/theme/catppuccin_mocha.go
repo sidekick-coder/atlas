@@ -8,6 +8,7 @@ var CatppuccinMocha = Theme{
 	Foreground: "#CDD6F4", // Text
 	Muted:      "#7F849C", // Overlay1
 	Background: "#1E1E2E", // Base
+	Background2: "#313244", // Surface0
 
 	Success: "#A6E3A1", // Green
 	Warning: "#F9E2AF", // Yellow

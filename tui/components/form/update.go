@@ -1,47 +1,50 @@
 package form
 
 import (
+	"maps"
+
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/internal/template"
+	"github.com/sidekick-coder/atlas/tui/action"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 )
 
-func (c *Component) DisableInputs() {
-	for _, input := range c.inputs {
-		input.Disable()
-	}
+func (c *Component) Update(msg tea.Msg) tea.Cmd {
+	return chain.Update(msg, chain.OnKey(c.HandleBindings), c.UpdateField)
 }
 
-func (c *Component) Refresh() {
-	cursor := c.selection.GetCursor()
+func (c *Component) UpdateField(msg tea.Msg) tea.Cmd {
+	index := c.focus.GetIndex()
 
-	c.DisableInputs()
-
-	for index, input := range c.inputs {
-		if cursor == index {
-			input.Enable()
-		}
+	if index < 0 || index >= len(c.fields) {
+		return nil
 	}
+
+	field := c.fields[index]
+
+	return field.Update(msg)
 }
 
 func (c *Component) submit() tea.Cmd {
-	if c.onSubmit == nil {
-		return toast.Error("No submit handler defined")
-	}
-
 	values := map[string]any{}
 
-	for index, field := range c.fields {
-		input := c.inputs[index]
-
-		values[field.Name] = input.GetValue()
+	for _, field := range c.fields {
+		values[field.GetName()] = field.GetValue()
 	}
 
-	c.onSubmit(values)
+	c.Events.Submit.Emit()
 
-	return nil
-}
+	id := c.action.Type
+	opts := map[string]any{}
 
-func (c *Component) Update(msg tea.Msg) tea.Cmd {
-	return chain.Update(msg, chain.OnKey(c.HandleBindings), chain.OnEntity(c.inputs))
+	maps.Copy(opts, c.action.Options)
+
+	computed, err := template.EvaluateMap(opts, values)
+
+	if err != nil {
+		return toast.Error(err.Error())
+	}
+
+	return action.Execute(id, computed)
 }

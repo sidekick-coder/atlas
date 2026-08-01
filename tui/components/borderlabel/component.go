@@ -12,11 +12,11 @@ type Component struct {
 
 func Create() *Component {
 	return &Component{
-		label: "",
+		label: "Label",
 		content: "",
 		height: 10,
 		width: 10,
-		color: theme.Current.Muted,
+		color: theme.Current.Border,
 	}
 }
 

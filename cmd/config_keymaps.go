@@ -32,14 +32,11 @@ var configKeymaps = &cobra.Command{
 			fmt.Printf("- Description: %s\n", k.Description)
 			fmt.Printf("- Keys: %s\n", strings.Join(k.Keys, ", "))
 
-			for _, g := range k.Groups {
-				fmt.Printf("- Group: %v\n", g)
-			}
+			fmt.Printf("- ActionID: %v\n", k.Action.ID)
+			fmt.Printf("- ActionType: %v\n", k.Action.Type)
 
-			fmt.Printf("- Action: %v\n", k.Action)
-
-			if len(k.ActionOptions) > 0 {
-				fmt.Printf("- ActionOptions: %v\n", k.ActionOptions)
+			if len(k.Action.Options) > 0 {
+				fmt.Printf("- ActionOptions: %v\n", k.Action.Options)
 			}
 
 			fmt.Printf("\n")

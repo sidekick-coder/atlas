@@ -7,8 +7,8 @@ import (
 	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
 
-func (c *Component) HandleView() tea.Cmd {
-	c.layer.SetRender(c.render)
+func (c *Component) InitView() tea.Cmd {
+	c.layer.SetRender(c.Render)
 
 	c.LoadDefaultStyle()
 
@@ -28,7 +28,31 @@ func (c *Component) GetWidth() int {
 	return c.width
 }
 
-func (c *Component) render() string {
+func (c *Component) GetSize() (int, int) {
+	return c.width, c.height
+}
+
+func (c *Component) SetSize(width, height int) *Component {
+	c.width = width
+	c.height = height
+	return c
+}
+
+func (c *Component) SetWidth(width int) *Component {
+	c.width = width
+	return c
+}
+
+func (c *Component) SetZIndex(z int) *Component {
+	c.layer.SetZIndex(z)
+	return c
+}
+
+func (c *Component) GetContentSize() (int, int) {
+	return c.width - 4, c.height - 2
+}
+
+func (c *Component) Render() string {
 	x := (layer.ScreenWidth - c.width) / 2
 	y := (layer.ScreenHeight - c.height) / 2
 
@@ -38,13 +62,9 @@ func (c *Component) render() string {
 		return ""
 	}
 
-	if c.onRender != nil {
-		content := c.onRender()
-		rendered := c.border.SetContent(content).SetLabel(c.title).SetSize(c.width, c.height).Render()
-		return lipgloss.PlaceHorizontal(c.width, lipgloss.Center, rendered)
-	}
+	content := c.contentRender() 
 
-	return c.style.
-		Align(lipgloss.Center, lipgloss.Center).
-		Render("No render function provided")
+	return theme.BaseStyle().
+		Width(c.width).
+		Render(content)
 }

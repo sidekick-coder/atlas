@@ -7,7 +7,6 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/sidekick-coder/atlas/internal/template"
 	"github.com/sidekick-coder/atlas/tui/components/container"
-	"github.com/sidekick-coder/atlas/tui/components/form"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/selection"
@@ -65,7 +64,6 @@ func (s *Screen) Title() string {
 }
 func (s *Screen) LoadDefinitions() tea.Cmd {
 	component.RegisterDefinition("text", text.Create)
-	component.RegisterDefinition("form", form.Create)
 	return nil
 }
 

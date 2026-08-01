@@ -13,7 +13,7 @@ import (
 type Component struct {
 	fields []Field
 	values map[string]string
-	width  int 
+	width  int
 	height int
 
 	onClose  func()
@@ -22,7 +22,7 @@ type Component struct {
 
 	dialog    *dialog.Component
 	selection *selection.Feature
-	inputs    []*input.Input
+	inputs    []*input.Component
 
 	fieldBorder         *borderlabel.Component
 	fieldBorderSelected *borderlabel.Component
@@ -32,7 +32,7 @@ func Create(args ...map[string]any) (*Component, error) {
 
 	c := &Component{
 		fields: []Field{},
-		width: 40,
+		width:  40,
 		height: 20,
 		values: map[string]string{},
 
@@ -116,7 +116,7 @@ func (c *Component) SetFields(fields []Field) {
 	c.selection.SetTotal(len(fields))
 	c.selection.SetCursor(0)
 
-	inputs := []*input.Input{}
+	inputs := []*input.Component{}
 
 	for range fields {
 		input := input.New()
@@ -143,7 +143,7 @@ func (c *Component) SetValues(values map[string]string) {
 }
 
 func (c *Component) Init() tea.Cmd {
-	c.dialog.OnClose(func() {
+	c.dialog.Events.Close.On(func() {
 		c.DisableInputs()
 	})
 

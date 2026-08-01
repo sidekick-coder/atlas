@@ -5,7 +5,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 )
 
-func (i *Input) Update(msg tea.Msg) tea.Cmd {
+func (i *Component) Update(msg tea.Msg) tea.Cmd {
 	return chain.Update(msg, i.HandleKeypress)
 }
 

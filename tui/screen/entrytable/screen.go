@@ -56,7 +56,7 @@ func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
 
 		loader:    entryloader.Create(*p.App.EntryRepo()),
 		selection: selection.Create(),
-		ctx:      ctx,
+		ctx:       ctx,
 
 		table:     table.Create(),
 		container: container.Create(),

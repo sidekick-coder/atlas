@@ -1,93 +1,35 @@
 package form
 
 import (
-	"fmt"
-	"github.com/sidekick-coder/atlas/tui/components/input"
+	"github.com/sidekick-coder/atlas/tui/components/form/field"
 )
 
-type Field struct {
-	Label    string
-	Name string
+type FieldData = field.Data
+type FieldDefinition = field.Definition
+type Field = field.Field
+
+func (c *Component) AddField(data field.Data) {
+	field := field.Field{}
+
+	field.Data = data
+
+	if defFn, ok := c.registry.Get(data.Type); ok {
+		def := defFn()
+		def.Resize(c.width, c.height)
+		def.SetProps(data.Options)
+		c.focus.Add(def)
+
+		field.Definition = def
+	}
+
+	c.fields = append(c.fields, field)
 }
 
-func CreateFieldFromMap(payload any) (Field, error) {
-	f := Field{}
+func (c *Component) SetFields(payload []field.Data) {
+	c.focus.Clear()
+	c.fields = []field.Field{}
 
-	m, ok := payload.(map[string]any)
-
-	if !ok {
-		return f, fmt.Errorf("invalid field type: %T", payload)
+	for _, data := range payload {
+		c.AddField(data)
 	}
-
-	if label, ok := m["label"].(string); ok {
-		f.Label = label
-	}
-
-	if name, ok := m["name"].(string); ok {
-		f.Name = name
-	}
-
-	return f, nil
 }
-
-func CreateFieldsFromArray(payload any) ([]Field, error) {
-	fields := []Field{}
-
-	array, ok := payload.([]any)
-
-	if !ok {
-		return fields, fmt.Errorf("invalid fields type: %T", payload)
-	}
-
-	for _, item := range array {
-		field, err := CreateFieldFromMap(item)
-
-		if err != nil {
-			return fields, err
-		}
-
-		fields = append(fields, field)
-	}
-
-	return fields, nil
-}
-
-func (c *Component) GetFields() []Field {
-	return c.fields
-}
-
-func (c *Component) GetField(index int) (Field, bool) {
-	if index < 0 || index >= len(c.fields) {
-		return Field{}, false
-	}
-
-	return c.fields[index], true
-}
-
-func (c *Component) GetFieldSelected() (Field, bool) {
-	index := c.selection.GetCursor()
-
-	if index < 0 || index >= len(c.fields) {
-		return Field{}, false
-	}
-
-	return c.fields[index], true
-}
-
-func (c *Component) SetFields(fields []Field) {
-	c.fields = fields
-	c.selection.SetTotal(len(fields))
-	c.selection.SetCursor(-1)
-
-	inputs := []*input.Input{}
-
-	for range fields {
-		input := input.Create()
-		input.SetWidth(c.width + 2) // 4 padding
-
-		inputs = append(inputs, input)
-	}
-
-	c.inputs = inputs
-}
-

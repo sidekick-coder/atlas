@@ -86,6 +86,23 @@ func Create(a *app.App) model {
 	return m
 }
 
+func (m model) Init() tea.Cmd {
+	return chain.Init(
+		m.LoadDefaultActions,
+		m.footer.Init,
+		m.cdialog.Init,
+		m.LoadBindings,
+		m.toaster.Init,
+		chain.OnError(m.screen.Init),
+		m.InitTabbar,
+		m.InitScreen,
+		m.InitKeymaps,
+		action.Init,
+		chain.OnInitList(m.features),
+	)
+}
+
+
 func (m *model) LoadUserScreen(screen config.Screen) (models.ScreenFactory, error) {
 	original, ok := m.screen.GetDefinition(screen.Type)
 
@@ -176,22 +193,23 @@ func (m model) InitTabbar() tea.Cmd {
 }
 
 func (m model) InitKeymaps() tea.Cmd {
-	keymaps.AddGroup("global", []string{"global"})
+	trigger := keymaps.CreateTrigger()
+	trigger.ContextID = "global"
+
+	trigger.Test = func(km config.Keymap) bool {
+		if km.Options["global"] == true {
+			return true
+		}
+
+		if km.Options["global"] == "true" {
+			return true
+		}
+
+		return false
+	}
+
+	keymaps.AddTrigger(trigger)
 
 	return nil
 }
 
-func (m model) Init() tea.Cmd {
-	return chain.Init(
-		m.footer.Init,
-		m.cdialog.Init,
-		m.LoadBindings,
-		m.toaster.Init,
-		chain.OnError(m.screen.Init),
-		m.InitTabbar,
-		m.InitScreen,
-		m.InitKeymaps,
-		action.Init,
-		chain.OnInitList(m.features),
-	)
-}

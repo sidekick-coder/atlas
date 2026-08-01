@@ -2,7 +2,6 @@ package model
 
 import (
 	tea "charm.land/bubbletea/v2"
-	"github.com/sidekick-coder/atlas/tui/action"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/key"
@@ -16,9 +15,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.toaster.Update,
 		m.footer.Update,
 		m.cdialog.Update,
+		m.UpdateActions,
 		m.screen.Update,
 		m.toolbar.Update,
-		action.Update,
 		m.LoadHome,
 
 		m.HandleMessages,

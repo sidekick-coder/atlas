@@ -1,64 +1,77 @@
 package input
 
+import (
+	tea "charm.land/bubbletea/v2"
+)
+
 type Component struct {
 	buf     []rune
 	cursor  int
 	width   int
 	height  int
 	offset  int
-	enabled bool
+	active bool
 }
 
-type Input = Component
-
-
-
-func Create() *Input {
-	return &Input{
+func Create() *Component {
+	return &Component{
 		width:   80,
 		height:  3,
-		enabled: false,
+		active: false,
 	}
 }
 
-func New() *Input {
+func New() *Component {
 	return Create()
 }
 
-func (i *Input) SetSize(width, height int) *Input {
+func (i *Component) SetSize(width, height int) *Component {
 	i.width = width
 	i.height = height
 
 	return i
 }
 
-func (i *Input) SetWidth(width int) *Input {
+func (i *Component) SetWidth(width int) *Component {
 	i.width = width
 	return i
 }
 
-func (i *Input) Enable() *Input {
-	i.enabled = true
+func (i *Component) Activate() tea.Cmd {
+	i.active = true
 	i.LoadBindings()
+	return nil
+}
+
+func (i *Component) Deactivate() tea.Cmd {
+	i.active = false
+	i.UnloadBindings()
+	return nil
+}
+
+// Deprecated: Use Enable() instead.
+func (i *Component) Enable() *Component {
+	i.Activate()
 	return i
 }
 
-func (i *Input) Disable() *Input {
-	i.enabled = false
+// Deprecated: Use Deactivate() instead.
+func (i *Component) Disable() *Component {
+	// i.active = false
 	i.UnloadBindings()
 	return i
 }
 
-func (i *Input) SetValue(v string) {
+func (i *Component) SetValue(v string) {
 	i.buf = []rune(v)
 	i.cursor = len(i.buf)
 }
 
-func (i *Input) SetInitialValue(initialValue string) {
+func (i *Component) SetInitialValue(initialValue string) {
 	i.buf = []rune(initialValue)
 	i.cursor = len(i.buf)
 }
 
-func (i *Input) GetValue() string {
+func (i *Component) GetValue() string {
 	return string(i.buf)
 }

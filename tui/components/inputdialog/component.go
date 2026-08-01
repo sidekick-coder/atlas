@@ -67,12 +67,12 @@ func (c *Component) submit() tea.Cmd {
 func (c *Component) Init() tea.Cmd {
 	c.dialog.OnRender(c.input.Render)
 
-	c.dialog.OnOpen(func() {
+	c.dialog.Events.Open.On(func() {
 		c.input.Enable()
 		c.LoadBindings()
 	})
 
-	c.dialog.OnClose(func() {
+	c.dialog.Events.Close.On(func() {
 		c.input.Disable()
 		c.UnloadBindings()
 	})
