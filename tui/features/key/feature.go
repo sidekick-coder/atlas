@@ -4,6 +4,18 @@ import tea "charm.land/bubbletea/v2"
 
 var manager = NewManager()
 
+func Set(name string, value any) {
+	manager.Set(name, value)
+}
+
+func Get(name string) any {
+	return manager.Get(name)
+}
+
+func Unset(name string) {
+	manager.Unset(name)
+}
+
 func Register(bindings ...Binding) {
 	manager.Register(bindings...)
 }
@@ -31,3 +43,15 @@ func GetBindingsByTags(tags ...string) []Binding {
 func ClearBindings() {
 	manager.ClearBindings()
 }
+
+
+func normalize(km tea.KeyMsg) string {
+	switch km.String() {
+	case manager.leader:
+		return "<leader>"
+	default:
+		return km.String()
+	}
+}
+
+

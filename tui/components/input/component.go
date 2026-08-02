@@ -2,6 +2,7 @@ package input
 
 import (
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/tui/features/key"
 )
 
 type Component struct {
@@ -44,12 +45,14 @@ func (i *Component) SetWidth(width int) *Component {
 func (i *Component) Activate() tea.Cmd {
 	i.active = true
 	i.LoadBindings()
+	key.Set("ignore_text", true)
 	return nil
 }
 
 func (i *Component) Deactivate() tea.Cmd {
 	i.active = false
 	i.UnloadBindings()
+	key.Unset("ignore_text")
 	return nil
 }
 

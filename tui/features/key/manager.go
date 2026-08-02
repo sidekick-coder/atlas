@@ -11,6 +11,7 @@ import (
 type Manager struct {
 	debug      bool
 	leader     string
+	options    map[string]any
 	pending    []string
 	registered []Binding
 }
@@ -20,8 +21,21 @@ func NewManager() Manager {
 		debug:      os.Getenv("DEBUG") == "true",
 		leader:     "space", // default leader key is space
 		pending:    []string{},
+		options:    map[string]any{},
 		registered: []Binding{},
 	}
+}
+
+func (m *Manager) Set(name string, value any) {
+	m.options[name] = value
+}
+
+func (m *Manager) Unset(name string) {
+	delete(m.options, name)
+}
+
+func (m *Manager) Get(name string) any {
+	return m.options[name]
 }
 
 func (m *Manager) GetBindingByID(id string) (Binding, bool) {
@@ -71,15 +85,6 @@ func (m *Manager) Unregister(bindings ...Binding) {
 				break
 			}
 		}
-	}
-}
-
-func normalize(km tea.KeyMsg) string {
-	switch km.String() {
-	case manager.leader:
-		return "<leader>"
-	default:
-		return km.String()
 	}
 }
 
@@ -150,6 +155,12 @@ func (m *Manager) HandleKeypress(msg tea.Msg) tea.Cmd {
 	// forse quit
 	if km.String() == "ctrl+c" {
 		return tea.Quit
+	}
+
+	ignoreText:= m.Get("ignore_text") == true
+
+	if tm, ok := msg.(tea.KeyPressMsg); ok && tm.Text != "" && ignoreText{
+		return nil
 	}
 
 	normalized := normalize(km)

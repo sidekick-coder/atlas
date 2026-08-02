@@ -69,7 +69,7 @@ func (i *Component) HandleKeypress(msg tea.Msg) tea.Cmd {
 			i.cursor++
 		}
 
-		return messages.SkipCmd()
+		// return messages.SkipCmd()
 	}
 
 	code := textMsg.Code
@@ -79,35 +79,25 @@ func (i *Component) HandleKeypress(msg tea.Msg) tea.Cmd {
 			i.SetBuff(append(i.buf[:i.cursor-1], i.buf[i.cursor:]...))
 			i.cursor--
 		}
-
-		return messages.SkipCmd()
 	}
 
 	if code == tea.KeyDelete {
 		if i.cursor < len(i.buf) {
 			i.SetBuff(append(i.buf[:i.cursor], i.buf[i.cursor+1:]...))
 		}
-
-		return messages.SkipCmd()
 	}
 
 	if code == tea.KeyHome {
 		i.cursor = 0
-
-		return messages.SkipCmd()
 	}
 
 	if code == tea.KeyEnd {
 		i.cursor = len(i.buf)
-
-		return messages.SkipCmd()
 	}
 
 	if textMsg.Text != "" {
 		i.SetBuff(append(i.buf[:i.cursor], append([]rune(textMsg.Text), i.buf[i.cursor:]...)...))
 		i.cursor += len([]rune(textMsg.Text))
-
-		return messages.SkipCmd()
 	}
 
 	return nil
