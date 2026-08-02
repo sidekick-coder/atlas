@@ -31,7 +31,7 @@ func (f *Feature) HandleMessages(msg tea.Msg) tea.Cmd {
 			index = f.GetCurrentIndex()
 		}
 
-		err := f.Remove(rs.Index)
+		err := f.Remove(index)
 
 		if err != nil {
 			return toast.Error(err.Error())
