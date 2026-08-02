@@ -4,7 +4,6 @@ import (
 	"log/slog"
 
 	tea "charm.land/bubbletea/v2"
-	// "github.com/sidekick-coder/atlas/tui/app/program"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 )
@@ -13,8 +12,6 @@ func (f *Feature) HandleMessages(msg tea.Msg) tea.Cmd {
 	if wm, ok := msg.(tea.WindowSizeMsg); ok {
 		f.windowWidth = wm.Width
 		f.windowHeight = wm.Height
-
-		// program.Send(f.Size())
 	}
 
 	if as, ok := msg.(AddMsg); ok {
@@ -28,6 +25,12 @@ func (f *Feature) HandleMessages(msg tea.Msg) tea.Cmd {
 	}
 
 	if rs, ok := msg.(RemoveMsg); ok {
+		index := rs.Index 
+
+		if index == -1 {
+			index = f.GetCurrentIndex()
+		}
+
 		err := f.Remove(rs.Index)
 
 		if err != nil {

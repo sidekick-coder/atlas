@@ -18,6 +18,11 @@ func (c *Component) Render() string {
 
 	// Top border with title.
 	labelPart := "─ " + c.label + " "
+
+	if c.label == "" {
+		labelPart = ""
+	}
+
 	empty := text.Render(" ")
 
 	topLen := boxWidth - lipgloss.Width(labelPart) - 2 // 2 for the corners

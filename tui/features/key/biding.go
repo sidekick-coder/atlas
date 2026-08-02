@@ -217,3 +217,27 @@ func (b *Binding) HasPossibleMatchWith(payload []string) bool {
 
 	return true
 }
+
+func (b *Binding) RemoveKey(keys ...string) {
+	for _, k := range keys {
+		for i, bk := range b.keys {
+			if bk.original == k {
+				b.keys = append(b.keys[:i], b.keys[i+1:]...)
+				break
+			}
+		}
+	}
+}
+
+func (b *Binding) AddKey(keys ...string) {
+	for _, k := range keys {
+		tokens := parse(k)
+
+		bk := BindingKey{
+			original: k,
+			tokens:   tokens,
+		}
+
+		b.keys = append(b.keys, bk)
+	}
+}

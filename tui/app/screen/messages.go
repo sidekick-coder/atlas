@@ -53,6 +53,14 @@ func Remove(index int) tea.Cmd {
 	}
 }
 
+func RemoveCurrent() tea.Cmd {
+	return func() tea.Msg {
+		return RemoveMsg{
+			Index: -1,
+		}
+	}
+}
+
 type ReplaceMsg struct {
 	Index   int
 	Name    string

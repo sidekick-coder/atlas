@@ -15,6 +15,8 @@ type Component struct {
 
 	input     *input.Component
 	container *borderlabel.Component
+
+	Events Events
 }
 
 func Create() *Component {
@@ -24,10 +26,15 @@ func Create() *Component {
 
 		input:     input.Create(),
 		container: borderlabel.Create(),
+
+		Events:   *CreateEvents(),
 	}
 }
 
 func (c *Component) Init() tea.Cmd {
+	c.input.Events.Change.On(func() {
+		c.Events.Change.Emit()
+	})
 	return nil
 }
 

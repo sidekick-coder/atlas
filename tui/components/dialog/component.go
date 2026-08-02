@@ -15,13 +15,15 @@ type Component struct {
 	height   int
 	title    string
 
-	Events Events
 
 	contentRender func() string
 
 	style  lipgloss.Style
 	layer  *layer.Layer
 	border *borderlabel.Component
+
+	Events Events
+	Bindings Keymap
 }
 
 func Create() *Component {
@@ -34,13 +36,13 @@ func Create() *Component {
 		contentRender: func() string {
 			return "No content"
 		},
-
-		Events: *CreateEvents(),
-
 		border: borderlabel.Create(),
 
 		layer: layer.Create(),
 		style: lipgloss.NewStyle().Border(lipgloss.NormalBorder()).Padding(1, 2),
+
+		Events: *CreateEvents(),
+		Bindings: CreateBindings(),
 	}
 }
 

@@ -9,19 +9,17 @@ import (
 type Keymap struct {
 	Left  key.Binding
 	Right key.Binding
-	Enter key.Binding
-	Close key.Binding
 }
 
 var tags = []string{"component:input"}
 
 var Binding = Keymap{
-	Left: key.CreateBinding("<Left>", "<c-h>", "<c-p").
+	Left: key.CreateBinding("<Left>", "<c-h>").
 		SetHelp("/c-h/c-p").
 		SetTags(tags...).
 		SetHidden(true).
 		SetDescription("Move cursor left"),
-	Right: key.CreateBinding("<Right>", "<c-l>", "<c-n>").
+	Right: key.CreateBinding("<Right>", "<c-l>").
 		SetHelp("/c-l/c-n").
 		SetHidden(true).
 		SetDescription("Move cursor right").
@@ -32,7 +30,6 @@ func (c *Component) GetBindings() []key.Binding {
 	return []key.Binding{
 		Binding.Left,
 		Binding.Right,
-		Binding.Close,
 	}
 }
 
@@ -79,7 +76,7 @@ func (i *Component) HandleKeypress(msg tea.Msg) tea.Cmd {
 
 	if code == tea.KeyBackspace {
 		if i.cursor > 0 {
-			i.buf = append(i.buf[:i.cursor-1], i.buf[i.cursor:]...)
+			i.SetBuff(append(i.buf[:i.cursor-1], i.buf[i.cursor:]...))
 			i.cursor--
 		}
 
@@ -88,7 +85,7 @@ func (i *Component) HandleKeypress(msg tea.Msg) tea.Cmd {
 
 	if code == tea.KeyDelete {
 		if i.cursor < len(i.buf) {
-			i.buf = append(i.buf[:i.cursor], i.buf[i.cursor+1:]...)
+			i.SetBuff(append(i.buf[:i.cursor], i.buf[i.cursor+1:]...))
 		}
 
 		return messages.SkipCmd()
@@ -107,7 +104,7 @@ func (i *Component) HandleKeypress(msg tea.Msg) tea.Cmd {
 	}
 
 	if textMsg.Text != "" {
-		i.buf = append(i.buf[:i.cursor], append([]rune(textMsg.Text), i.buf[i.cursor:]...)...)
+		i.SetBuff(append(i.buf[:i.cursor], append([]rune(textMsg.Text), i.buf[i.cursor:]...)...))
 		i.cursor += len([]rune(textMsg.Text))
 
 		return messages.SkipCmd()

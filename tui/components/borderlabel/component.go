@@ -12,7 +12,7 @@ type Component struct {
 
 func Create() *Component {
 	return &Component{
-		label: "Label",
+		label: "",
 		content: "",
 		height: 10,
 		width: 10,
@@ -32,6 +32,10 @@ func (c *Component) SetSize(width, height int) *Component {
 
 func (c *Component) SetWidth(width int) *Component {
 	return c.SetSize(width, c.height)
+}
+
+func (c *Component) SetHeight(height int) *Component {
+	return c.SetSize(c.width, height)
 }
 
 func (c *Component) GetLabel() string {

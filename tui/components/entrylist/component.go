@@ -2,7 +2,6 @@ package entrylist
 
 import (
 	tea "charm.land/bubbletea/v2"
-	"github.com/sidekick-coder/atlas/internal/logger"
 	"github.com/sidekick-coder/atlas/tui/app/program"
 	"github.com/sidekick-coder/atlas/tui/components/inputdialog"
 	"github.com/sidekick-coder/atlas/tui/components/list"
@@ -88,7 +87,6 @@ func (c *Component) Context() *context.Feature {
 }
 
 func (c *Component) Load() tea.Cmd {
-	logger.Debug("Loading entries...")
 	q := c.props["query"]
 
 	if q != nil {

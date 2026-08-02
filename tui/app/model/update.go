@@ -16,6 +16,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.footer.Update,
 		m.cdialog.Update,
 		m.UpdateActions,
+		chain.OnUpdateList(m.features),
 		m.screen.Update,
 		m.toolbar.Update,
 		m.LoadHome,
@@ -23,7 +24,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.HandleMessages,
 		chain.OnKey(m.HandleBinding),
 		keymaps.Update,
-		chain.OnUpdateList(m.features),
 	)
 
 	return m, cmd

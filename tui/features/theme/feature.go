@@ -83,6 +83,10 @@ func Foreground() color.Color {
 	return lipgloss.Color(Current.Foreground)
 }
 
+func Selection() color.Color {
+	return lipgloss.Color(Current.Selection)
+}
+
 func Muted() color.Color {
 	return lipgloss.Color(Current.Muted)
 }

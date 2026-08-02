@@ -14,6 +14,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/app/tabbar"
 	"github.com/sidekick-coder/atlas/tui/app/toaster"
 	"github.com/sidekick-coder/atlas/tui/app/toolbar"
+	"github.com/sidekick-coder/atlas/tui/components/command"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
 	"github.com/sidekick-coder/atlas/tui/features/context"
@@ -81,7 +82,7 @@ func Create(a *app.App) model {
 
 	c.Set("workspace", a.Config().GetMap("workspace"))
 
-	m.features = append(m.features, entrycontroller.Create(a), c)
+	m.features = append(m.features, entrycontroller.Create(a), c, command.Create())
 
 	return m
 }

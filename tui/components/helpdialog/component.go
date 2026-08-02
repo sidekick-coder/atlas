@@ -18,6 +18,8 @@ func Create() *Component {
 		viewport: viewport.Create(),
 	}
 
+	c.dialog.SetZIndex(10)
+
 	return c
 }
 

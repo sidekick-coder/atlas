@@ -1,4 +1,3 @@
-
 package dialog
 
 import (
@@ -13,16 +12,18 @@ type Keymap struct {
 
 var tags = []string{"component:dialog"}
 
-var Bindings = Keymap{
-	Close: key.CreateBinding("<esc>", "q").
-		SetTags(tags...).
-		SetDescription("close").
-		SetHelp("esc"),
-}
+func CreateBindings() Keymap {
+	return Keymap{
+		Close: key.CreateBinding("<esc>", "q").
+			SetTags(tags...).
+			SetDescription("close").
+			SetHelp("esc"),
+	}
 
+}
 func (c *Component) GetBindings() []key.Binding {
 	return []key.Binding{
-		Bindings.Close,
+		c.Bindings.Close,
 	}
 }
 
@@ -41,11 +42,9 @@ func (c *Component) HadleBinding(msg tea.KeyMsg) tea.Cmd {
 		return nil
 	}
 
-	if (key.Matches(Bindings.Close)) {
+	if key.Matches(c.Bindings.Close) {
 		c.Close()
 	}
 
 	return nil
 }
-
-

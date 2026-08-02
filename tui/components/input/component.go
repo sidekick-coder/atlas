@@ -11,6 +11,8 @@ type Component struct {
 	height  int
 	offset  int
 	active bool
+
+	Events Events
 }
 
 func Create() *Component {
@@ -18,6 +20,8 @@ func Create() *Component {
 		width:   80,
 		height:  3,
 		active: false,
+
+		Events:  *CreateEvents(),
 	}
 }
 
@@ -57,14 +61,19 @@ func (i *Component) Enable() *Component {
 
 // Deprecated: Use Deactivate() instead.
 func (i *Component) Disable() *Component {
-	// i.active = false
+	i.active = false
 	i.UnloadBindings()
 	return i
 }
 
-func (i *Component) SetValue(v string) {
-	i.buf = []rune(v)
-	i.cursor = len(i.buf)
+func (c *Component) SetBuff(buf []rune) {
+	c.buf = buf
+	c.Events.Change.Emit()
+}
+
+func (c *Component) SetValue(v string) {
+	c.SetBuff([]rune(v))
+	c.cursor = len(c.buf)
 }
 
 func (i *Component) SetInitialValue(initialValue string) {
