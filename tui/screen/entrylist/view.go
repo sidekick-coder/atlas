@@ -50,7 +50,7 @@ func (s *Screen) RenderView() string {
 	}
 
 	return s.container.
-		SetLabel("Details").
+		SetLabel("view").
 		SetSize(rightWidth, s.height).
 		SetContent(content).
 		SetColor(rightColor).
@@ -69,7 +69,7 @@ func (s *Screen) RenderList() string {
 	}
 
 	return s.container.
-		SetLabel("Entries").
+		SetLabel(s.Title()).
 		SetColor(letColor).
 		SetSize(leftWidth, s.height).
 		SetContent(s.list.Render()).

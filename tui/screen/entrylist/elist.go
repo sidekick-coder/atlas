@@ -20,15 +20,7 @@ func (s *Screen) InitList() tea.Cmd {
 	lselection := s.list.GetSelection()
 
 	lselection.Change.On(func(event selection.ChangeEvent) {
-		e, ok := s.list.GetCurrent()
-
-		if !ok {
-			return
-		}
-
-		s.SetViewProps(map[string]any{
-			"entry": e.ToMap(),
-		})
+		s.LoadView()
 	})
 
 	return s.list.Init()
