@@ -17,9 +17,9 @@ type ActionContext struct {
 }
 
 type Manager struct {
-	app      *app.App
-	action   *action.Manager
-	context  map[string]ActionContext
+	app     *app.App
+	action  *action.Manager
+	context map[string]ActionContext
 }
 
 var manager *Manager = &Manager{

@@ -1,0 +1,14 @@
+keys: [a]
+ext: md
+description: archive
+action:
+    type: group
+    actions:
+        - type: shell
+          command: mv "{{ .entry.absolute_path }}" "{{ .workspace.path }}/archive/{{ .entry.path }}"
+
+        - type: entry-sync
+          path: "{{ .entry.path }}"
+
+        - type: toast
+          message: entry updated

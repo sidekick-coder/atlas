@@ -82,7 +82,7 @@ func (m *Manager) Execute(id string, context map[string]any) (map[string]any, er
 
 	maps.Copy(ctx, context)
 
-	if handlerId == "group" {
+	if handlerId == "group"  && options["actions"] != nil {
 		ctx["actions"] = options["actions"]
 	}
 

@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"maps"
-
 	"github.com/sidekick-coder/atlas/internal/template"
 	"github.com/sidekick-coder/atlas/internal/utils/maputil"
 )
@@ -84,7 +83,6 @@ func (h Handler) Execute(ctx map[string]any) (map[string]any, error) {
 		if ga.Type == "group" {
 			return result, errors.New("nested group actions are not allowed")
 		}
-
 
 		maps.Copy(currentCtx, result)
 
