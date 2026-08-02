@@ -25,6 +25,10 @@ func Debug(msg string, args ...any) {
 	logger.Log(Levels.Debug, msg, args...)
 }
 
+func  Debugf(format string, args ...any) {
+	logger.Debugf(format, args...)
+}
+
 func Warn(msg string, args ...any) {
 	logger.Log(Levels.Warn, msg, args...)
 }

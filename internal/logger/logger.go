@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"fmt"
 	"maps"
 )
 
@@ -69,6 +70,10 @@ func (l *Logger) Error(msg string, args ...any) {
 
 func (l *Logger) Debug(msg string, args ...any) {
 	l.Log(Levels.Debug, msg, args...)
+}
+
+func (l *Logger) Debugf(format string, args ...any) {
+	l.Log(Levels.Debug, fmt.Sprintf(format, args...))
 }
 
 func (l *Logger) Warn(msg string, args ...any) {

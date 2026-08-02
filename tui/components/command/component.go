@@ -6,6 +6,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/components/borderlabel"
 	"github.com/sidekick-coder/atlas/tui/components/command/item"
 	"github.com/sidekick-coder/atlas/tui/components/command/provider"
+	"github.com/sidekick-coder/atlas/tui/components/command/providers/action"
 	"github.com/sidekick-coder/atlas/tui/components/command/providers/screen"
 	"github.com/sidekick-coder/atlas/tui/components/dialog"
 	"github.com/sidekick-coder/atlas/tui/components/textfield"
@@ -22,7 +23,7 @@ type Component struct {
 
 	providers []provider.Provider
 
-	commands  []*item.Component
+	commands []*item.Component
 }
 
 func Create() *Component {
@@ -85,7 +86,11 @@ func (c *Component) Update(msg tea.Msg) tea.Cmd {
 }
 
 func (c *Component) InitDefaultProviders() tea.Cmd {
-	c.providers = append(c.providers, screen.Create())
+	c.providers = append(
+		c.providers,
+		screen.Create(),
+		action.Create(),
+	)
 	return nil
 }
 
@@ -106,7 +111,7 @@ func (c *Component) Load() tea.Cmd {
 
 	w, _ := c.dialog.GetContentSize()
 
-	width := w-1
+	width := w - 1
 
 	for _, cmd := range commands {
 		item := item.Create(cmd)

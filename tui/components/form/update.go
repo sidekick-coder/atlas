@@ -47,7 +47,10 @@ func (c *Component) submit() tea.Cmd {
 	ctx := ac.GetEntriesMap()
 	maps.Copy(ctx, values)
 
-	computed, err := template.EvaluateMap(c.action.Options, ctx)
+	eo := template.NewEvaluateMapOptions()
+	eo.Phase = "submit"
+
+	computed, err := template.EvaluateMap(c.action.Options, ctx, eo)
 
 	if err != nil {
 		return toast.Error(err.Error())

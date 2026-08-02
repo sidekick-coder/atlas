@@ -4,7 +4,6 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
-	"github.com/sidekick-coder/atlas/internal/logger"
 	"github.com/sidekick-coder/atlas/tui/components/command/provider"
 	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
@@ -29,13 +28,11 @@ func (c *Component) GetCommand() provider.Command {
 
 func (c *Component) Activate() tea.Cmd {
 	c.active = true
-	logger.Debug("Activated command", "command", c.cmd.Name)
 	return nil
 }
 
 func (c *Component) Deactivate() tea.Cmd {
 	c.active = false
-	logger.Debug("Deactivated command", "command", c.cmd.Name)
 	return nil
 }
 

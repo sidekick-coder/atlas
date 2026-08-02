@@ -1,0 +1,18 @@
+type: formdialog
+title: "Create"
+command: true
+action:
+    _evaluate:
+        title: "submit"
+        status: "submit"
+    type: create-task
+    title: "{{ .title }}"
+    status: "{{ .status }}"
+fields:
+    - name: "title"
+      type: "textfield"
+      label: "Title"
+
+    - name: "status"
+      type: "textfield"
+      label: "Status"

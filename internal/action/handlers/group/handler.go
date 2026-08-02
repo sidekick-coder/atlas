@@ -15,10 +15,10 @@ type GroupAction struct {
 }
 
 type Handler struct {
-	ExecuteAction func(id string, ctx map[string]any) (map[string]any, error)
+	ExecuteAction func(id string, ctx map[string]any, args ...template.EvaluateMapOptions) (map[string]any, error)
 }
 
-func Create(executeAction func(id string, ctx map[string]any) (map[string]any, error)) Handler {
+func Create(executeAction func(string, map[string]any, ...template.EvaluateMapOptions) (map[string]any, error)) Handler {
 	return Handler{
 		ExecuteAction: executeAction,
 	}
