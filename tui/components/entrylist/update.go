@@ -18,7 +18,7 @@ func (c *Component) Update(msg tea.Msg) tea.Cmd {
 
 func (c *Component) HandleMessage(msg tea.Msg) tea.Cmd {
 	if _, ok := msg.(entrycontroller.UpdatedMsg); ok {
-		c.loader.Load()
+		c.Load()
 	}
 
 	return nil

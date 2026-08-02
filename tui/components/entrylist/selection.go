@@ -32,6 +32,7 @@ func (c *Component) LoadTrigger() {
 	keymaps.RemoveTriggerByContextID(c.ctx.GetID())
 
 	current, exists := c.GetCurrent()
+	c.ctx.Set("entry", nil)
 
 	if exists {
 		c.ctx.Set("entry", current.ToMap())

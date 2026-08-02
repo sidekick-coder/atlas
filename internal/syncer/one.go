@@ -13,6 +13,7 @@ func (s *Syncer) One(path string) error {
 	s.writter.SetDatabase(s.database)
 
 	// if path not exists assume it was deleted and remove it from the database 
+	entryRepo := entry.New(s.database)
 
 	exists, err := s.drive.Exists(path)
 
@@ -21,8 +22,6 @@ func (s *Syncer) One(path string) error {
 	}
 
 	if !exists {
-		entryRepo := entry.New(s.database)
-
 		err = entryRepo.DeleteByPath(path)
 
 		if err != nil {
@@ -50,7 +49,6 @@ func (s *Syncer) One(path string) error {
 		return err
 	}
 
-	entryRepo := entry.New(s.database)
 
 	em, err := entryRepo.Upsert(e.Path)
 

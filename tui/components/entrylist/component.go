@@ -2,6 +2,7 @@ package entrylist
 
 import (
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/internal/logger"
 	"github.com/sidekick-coder/atlas/tui/app/program"
 	"github.com/sidekick-coder/atlas/tui/components/inputdialog"
 	"github.com/sidekick-coder/atlas/tui/components/list"
@@ -20,6 +21,8 @@ type Component struct {
 	list    *list.Component
 	dialog  *inputdialog.Component
 	ctx     *context.Feature
+
+	Events *Events
 }
 
 func Create() *Component {
@@ -39,6 +42,8 @@ func Create() *Component {
 		list:   list.Create(),
 		dialog: inputdialog.Create(),
 		ctx:    ctx,
+
+		Events: CreateEvents(),
 	}
 }
 
@@ -83,6 +88,7 @@ func (c *Component) Context() *context.Feature {
 }
 
 func (c *Component) Load() tea.Cmd {
+	logger.Debug("Loading entries...")
 	q := c.props["query"]
 
 	if q != nil {
@@ -90,8 +96,8 @@ func (c *Component) Load() tea.Cmd {
 	}
 
 	c.loader.Load()
-
-	c.ctx.Set("entries", c.loader.GetEntries())
+	c.selection.SetTotal(len(c.loader.GetEntries()))
+	c.LoadTrigger()
 
 	return c.LoadItems()
 }

@@ -34,8 +34,25 @@ func (f *Feature) HandleSync(msg tea.Msg) tea.Cmd {
 
 		return tea.Batch(
 			syned(m.Path),
+			updated(m.Path),
 		)
 	}
 
 	return nil
 }
+
+
+func SyncAction(ctx map[string]any) (map[string]any, error) {
+	result := make(map[string]any)
+
+	msg := SyncMsg{}
+
+	if path, ok := ctx["path"].(string); ok {
+		msg.Path = path
+	}
+
+	result["tea_message"] = msg
+
+	return result, nil
+}
+

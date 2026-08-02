@@ -35,11 +35,11 @@ func (f *Feature) SetTotal(total int) {
 	f.total = total
 
 	if f.cursor >= total {
-		f.cursor = total - 1
+		f.SetCursor(total - 1)
 	}
 
 	if f.cursor < 0 && total > 0 {
-		f.cursor = -1
+		f.SetCursor(-1)
 	}
 }
 
