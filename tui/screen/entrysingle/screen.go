@@ -12,6 +12,8 @@ import (
 	tuimodels "github.com/sidekick-coder/atlas/tui/models"
 )
 
+var ID = "entry-single"
+
 type Screen struct {
 	App    *app.App
 	Width  int

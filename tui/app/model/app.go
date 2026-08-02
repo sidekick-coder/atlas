@@ -164,7 +164,7 @@ func (m model) InitScreen() tea.Cmd {
 	m.screen.SetDefinition("empty", m.EmptyScreenFactory)
 	m.screen.SetDefinition("entry_table", entrytable.Create)
 	m.screen.SetDefinition("entry_list", entrylist.Create)
-	m.screen.SetDefinition("entry_single", entrysingle.Create)
+	m.screen.SetDefinition(entrysingle.ID, entrysingle.Create)
 	m.screen.SetDefinition("logs", logs.Create)
 	m.screen.SetDefinition("custom", custom.Create)
 

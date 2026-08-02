@@ -8,6 +8,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/action"
 	"github.com/sidekick-coder/atlas/tui/app/program"
 	"github.com/sidekick-coder/atlas/tui/components/command/provider"
+	"github.com/sidekick-coder/atlas/tui/features/theme"
 )
 
 type Provider struct {
@@ -33,6 +34,8 @@ func (p *Provider) AddCommand(name string, description string, execute func() te
 }
 
 func (p *Provider) Load() {
+	color := theme.BaseStyle().Foreground(theme.Error())
+
 	manager := program.GetApp().Action
 
 	actions, err := manager.List()
@@ -46,7 +49,7 @@ func (p *Provider) Load() {
 			continue
 		}
 
-		p.AddCommand("[action] "+a.ID, a.Type, func() tea.Cmd {
+		p.AddCommand(color.Render("[action] ")+a.ID, a.Type, func() tea.Cmd {
 			ctx := make(map[string]any)
 
 			return action.Execute(a.ID, ctx)

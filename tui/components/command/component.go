@@ -7,6 +7,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/components/command/item"
 	"github.com/sidekick-coder/atlas/tui/components/command/provider"
 	"github.com/sidekick-coder/atlas/tui/components/command/providers/action"
+	"github.com/sidekick-coder/atlas/tui/components/command/providers/entry"
 	"github.com/sidekick-coder/atlas/tui/components/command/providers/screen"
 	"github.com/sidekick-coder/atlas/tui/components/dialog"
 	"github.com/sidekick-coder/atlas/tui/components/textfield"
@@ -49,9 +50,10 @@ func Create() *Component {
 	})
 
 	c.dialog.Events.Close.On(func() {
-		c.textfield.Deactivate()
 		c.textfield.SetValue("")
+		c.textfield.Deactivate()
 		c.UnloadControlBindings()
+		c.Load()
 	})
 
 	debouncer := utils.NewDebouncer(500)
@@ -90,6 +92,7 @@ func (c *Component) InitDefaultProviders() tea.Cmd {
 		c.providers,
 		screen.Create(),
 		action.Create(),
+		entry.Create(),
 	)
 	return nil
 }
