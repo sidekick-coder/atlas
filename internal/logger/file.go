@@ -88,9 +88,9 @@ func (s *FileTransport) List(options ...ListOptions) ([]Log, error) {
 		}
 
 		log := Log{
-			Time:  data["time"].(string),
-			Level: data["level"].(string),
-			Msg:   data["msg"].(string),
+			Time:  fmt.Sprintf("%v", data["time"]),
+			Level: fmt.Sprintf("%v", data["level"]),
+			Msg:   fmt.Sprintf("%v", data["msg"]),
 			Options:  maputil.Except(data, "time", "level", "msg"),
 		}
 
