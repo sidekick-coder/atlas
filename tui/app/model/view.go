@@ -20,7 +20,13 @@ func (m *model) SetSize(width int, height int) {
 }
 
 func (m model) View() tea.View {
-	body := container.Create().SetSize(m.width-4, m.height-6).SetContent("No screen loaded").SetBorder(theme.Current.Primary).SetMargin(0, 2).Render()
+	body := container.Create().
+		SetSize(m.width-2, m.height-2).
+		SetContent("No screen loaded").
+		SetBorder(theme.Current.Primary).
+		SetMargin(0, 1).
+		SetPadding(0, 1).
+		Render()
 
 	if s, ok := m.screen.GetCurrent(); ok {
 		body = s.Screen.Render()

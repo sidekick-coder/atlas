@@ -72,7 +72,7 @@ func (p *Provider) List(payload provider.ListPayload) []provider.Command {
 	}
 
 	for _, entry := range p.commands {
-		if strings.Contains(strings.ToLower(entry.Name), strings.ToLower(q)) {
+		if entry.MatchQuery(q) {
 			commands = append(commands, entry)
 		}
 	}

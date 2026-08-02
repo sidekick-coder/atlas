@@ -13,6 +13,7 @@ import (
 	"github.com/sidekick-coder/atlas/tui/features/entryloader"
 	"github.com/sidekick-coder/atlas/tui/features/selection"
 	tuimodels "github.com/sidekick-coder/atlas/tui/models"
+	"github.com/sidekick-coder/atlas/tui/screen/entrysingle"
 )
 
 type Screen struct {
@@ -34,7 +35,7 @@ type Screen struct {
 }
 
 func Create(p tuimodels.ScreenPayload) (tuimodels.Screen, error) {
-	openScreen := "entry_single"
+	openScreen := entrysingle.ID
 
 	if os, ok := p.Options["open_screen"].(string); ok {
 		openScreen = os
