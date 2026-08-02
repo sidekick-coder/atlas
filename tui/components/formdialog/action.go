@@ -41,11 +41,14 @@ func Action(ctx map[string]any) (map[string]any, error) {
 		return result, fmt.Errorf("form action is required")
 	}
 
-
 	action, err := config.ParseAction(ctx["action"])
 
 	if err != nil {
 		return result, err
+	}
+
+	if s, ok := ctx["context_id"].(string); ok {
+		action.ContextID = s
 	}
 
 	msg.Action = action
@@ -66,18 +69,6 @@ func HandleAction(exec func(string, ...map[string]any) tea.Cmd, msg tea.Msg) tea
 		adialog.SetFields(m.Fields)
 		adialog.SetAction(m.Action)
 		adialog.Open()
-		// adialog.OnSubmit(func(value string) tea.Cmd {
-		// 	if m.Submit == "" {
-		// 		return nil
-		// 	}
-		//
-		// 	actionCtx := map[string]any{
-		// 		"value": value,
-		// 	}
-		//
-		// 	return exec(m.Submit, actionCtx)
-		// })
-
 		return nil
 	}
 

@@ -4,7 +4,6 @@ import (
 	"maps"
 
 	tea "charm.land/bubbletea/v2"
-	"github.com/sidekick-coder/atlas/internal/logger"
 	"github.com/sidekick-coder/atlas/internal/utils/maputil"
 	"github.com/sidekick-coder/atlas/tui/components/toast"
 )
@@ -52,7 +51,6 @@ func (s *Screen) UpdateView(msg tea.Msg) tea.Cmd {
 
 func (s *Screen) LoadView()  {
 	e, ok := s.list.GetCurrent()
-	logger.Debug("LoadView", "entry", e, "ok", ok)
 
 	if !ok {
 		return

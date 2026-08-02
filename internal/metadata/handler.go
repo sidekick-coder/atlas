@@ -30,6 +30,7 @@ func (m *Meta) SetHandlersFromConfig(config *config.Config) error {
 
 		matched, err := fs.MatchAny(m.info.Path, hc.Patterns)
 
+
 		if err != nil {
 			return err
 		}

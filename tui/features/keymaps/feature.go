@@ -139,6 +139,8 @@ func HandleBinding(msg tea.KeyMsg) tea.Cmd {
 
 			ctx := c.GetEntriesMap()
 
+			ctx["context_id"] = t.ContextID
+
 			maps.Copy(ctx, a.Options)
 
 			return action.Execute(a.Type, ctx)

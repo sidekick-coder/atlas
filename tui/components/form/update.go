@@ -37,22 +37,21 @@ func (c *Component) submit() tea.Cmd {
 	c.Events.Submit.Emit()
 
 	id := c.action.Type
-	opts := map[string]any{}
 
-	ctx, ok := context.GetById("global")
+	ac, ok := context.GetById(c.action.ContextID)
 
 	if !ok {
-		return  toast.Error("Global context is not available")
+		ac = context.GetGlobal()
 	}
 
-	maps.Copy(opts, ctx.GetEntriesMap())
-	maps.Copy(opts, c.action.Options)
+	ctx := ac.GetEntriesMap()
+	maps.Copy(ctx, values)
 
-	opts, err := template.EvaluateMap(opts, values)
+	computed, err := template.EvaluateMap(c.action.Options, ctx)
 
 	if err != nil {
 		return toast.Error(err.Error())
 	}
 
-	return action.Execute(id, opts)
+	return action.Execute(id, computed)
 }

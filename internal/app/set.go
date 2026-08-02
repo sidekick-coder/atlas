@@ -19,7 +19,7 @@ func (a *App) SetEntryMeta(path string, name string, value string) error {
 		return err
 	}
 
-	m, err := metadata.Create(info)
+	m, err := metadata.Handler(info)
 
 	if err != nil {
 		return err

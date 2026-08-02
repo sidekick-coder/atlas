@@ -1,0 +1,17 @@
+keys: [ct]
+global: true
+action:
+    type: formdialog
+    title: "Create"
+    action:
+        type: create-task
+        title: "{{ .title }}"
+        status: "{{ .status }}"
+    fields:
+        - name: "title"
+          type: "textfield"
+          label: "Title"
+
+        - name: "status"
+          type: "textfield"
+          label: "Status"

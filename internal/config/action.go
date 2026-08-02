@@ -7,13 +7,18 @@ import (
 )
 
 type Action struct {
-	ID      string         `json:"id"`
-	Type    string         `json:"type"`
-	Options map[string]any `json:"options"`
+	ID        string         `json:"id"`
+	ContextID string         `json:"context_id"`
+	Type      string         `json:"type"`
+	Options   map[string]any `json:"options"`
 }
 
 func ParseAction(payload any) (Action, error) {
-	a := Action{}
+	a := Action{
+		ContextID: "",
+		Type:      "",
+		Options:   map[string]any{},
+	}
 
 	if as, ok := payload.(string); ok {
 		a.Type = as
@@ -35,7 +40,11 @@ func ParseAction(payload any) (Action, error) {
 		a.Type = typ
 	}
 
-	a.Options = maputil.Except(entry, "id", "type")
+	if ctx, ok := entry["context_id"].(string); ok {
+		a.ContextID = ctx
+	}
+
+	a.Options = maputil.Except(entry, "id", "context_id", "type")
 
 	return a, nil
 }

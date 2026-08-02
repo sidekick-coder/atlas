@@ -1,0 +1,18 @@
+keys: [us]
+ext: md
+description: vim
+action:
+    type: formdialog
+    title: "Update Task Status"
+    path: "{{ .entry.path }}"
+    values:
+        status: "{{ .entry.status }}"
+    action:
+        type: entry-set
+        path: "{{ .entry.path }}"
+        name: "status"
+        value: "{{ .status }}"
+    fields:
+        - name: "status"
+          type: "textfield"
+          label: "Status"

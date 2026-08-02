@@ -1,0 +1,4 @@
+keys: [v]
+action: vi
+description: vim
+ext: md

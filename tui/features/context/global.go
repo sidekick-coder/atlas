@@ -16,3 +16,12 @@ func GetById(id string) (*Feature, bool) {
 	return nil, false
 }
 
+func GetGlobal() *Feature {
+	f, ok := GetById("global")
+	
+	if !ok {
+		panic("global context not found")
+	}
+
+	return f
+}

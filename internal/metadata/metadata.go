@@ -27,20 +27,21 @@ func Create(info *models.EntryInfo) (*Meta, error) {
 func (m *Meta) Set(name string, value string) (bool, error) {
 	handlers := m.handlers
 	info := m.info
+	success := false
 
 	for _, handler := range handlers {
 		updated, err := handler.Set(info, name, value)
 
 		if err != nil {
-			return false, err
+			return success, err
 		}
 
 		if updated {
-			return true, nil
+			success = true
 		}
 	}
 
-	return false, nil
+	return success, nil
 }
 
 func (m *Meta) Unset(name string) (bool, error) {

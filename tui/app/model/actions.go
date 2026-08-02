@@ -6,11 +6,15 @@ import (
 	"github.com/sidekick-coder/atlas/tui/action/actions"
 	"github.com/sidekick-coder/atlas/tui/components/formdialog"
 	"github.com/sidekick-coder/atlas/tui/features/chain"
+	"github.com/sidekick-coder/atlas/tui/features/entrycontroller"
 )
 
 func (m *model) LoadDefaultActions() tea.Cmd {
 	action.AddDefinition("entry-sync", actions.EntrySyncAction)
 	action.AddDefinition("entry-update", actions.EntryUpdateAction)
+
+	action.AddDefinition("entry-set", entrycontroller.SetAction)
+
 	action.AddDefinition("input", actions.InputAction)
 	action.AddDefinition("formdialog", formdialog.Action)
 
