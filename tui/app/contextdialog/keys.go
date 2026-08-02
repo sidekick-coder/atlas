@@ -6,13 +6,13 @@ import (
 )
 
 type Keymap struct {
-	Open key.Binding
+	Toggle key.Binding
 }
 
 var tags = []string{"global"}
 
 var Binding = Keymap{
-	Open: key.CreateBinding("<f2>").
+	Toggle: key.CreateBinding("<f2>").
 		SetDescription("context").
 		SetTags(tags...).
 		SetHelp("f2"),
@@ -20,7 +20,7 @@ var Binding = Keymap{
 
 func (c *Component) GetBindings() []key.Binding {
 	return []key.Binding{
-		Binding.Open,
+		Binding.Toggle,
 	}
 }
 
@@ -37,21 +37,13 @@ func (c *Component) UnloadBindings() tea.Cmd {
 }
 
 func (c *Component) HandleBindings(msg tea.KeyMsg) tea.Cmd {
+	if key.Matches(Binding.Toggle) {
+		c.dialog.Toggle()
+		return nil
+	}
+
 	if c.dialog.IsOpen() {
 		return c.kv.Update(msg)
-	}
-
-	if !c.dialog.IsOpen() && key.Matches(Binding.Open) {
-		c.dialog.Open()
-		c.Load()
-		c.kv.Activate()
-		return nil
-	}
-
-	if c.dialog.IsOpen() && key.Matches(Binding.Open) {
-		c.dialog.Close()
-		c.kv.Deactivate()
-		return nil
 	}
 
 	return nil

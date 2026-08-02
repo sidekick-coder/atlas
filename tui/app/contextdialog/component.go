@@ -26,7 +26,6 @@ func Create() *Component {
 }
 
 func (f *Component) Load() tea.Cmd {
-
 	allItems := []keyvalue.Item{}
 	all := context.GetRegistry()
 
@@ -93,6 +92,15 @@ func (f *Component) Init() tea.Cmd {
 	f.dialog.OnRender(f.render)
 	f.dialog.SetTitle("Context")
 	f.dialog.SetZIndex(10)
+
+	f.dialog.Events.Open.On(func() {
+		f.Load()
+		f.kv.Activate()
+	})
+
+	f.dialog.Events.Close.On(func() {
+		f.kv.Deactivate()
+	})
 
 	return chain.Init(f.LoadBindings, f.kv.Init, f.dialog.Init)
 }
