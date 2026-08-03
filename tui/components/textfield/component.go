@@ -46,7 +46,9 @@ func (c *Component) Update(msg tea.Msg) tea.Cmd {
 }
 
 func (c *Component) Dispose() tea.Cmd {
-	return nil
+	return chain.Dispose(
+		c.input.Deactivate,
+	)
 }
 
 func (c *Component) Activate() tea.Cmd {

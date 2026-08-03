@@ -82,7 +82,5 @@ func (c *Component) HandleBindings(msg tea.KeyMsg) tea.Cmd {
 		return nil
 	}
 
-	field := c.fields[index]
-
-	return field.Update(msg)
+	return nil
 }

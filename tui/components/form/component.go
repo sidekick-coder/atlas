@@ -59,6 +59,7 @@ func (c *Component) Activate() tea.Cmd {
 }
 
 func (c *Component) Deactivate() tea.Cmd {
+	c.focus.Clear()
 	c.UnloadBindings()
 	c.active = false
 	return nil

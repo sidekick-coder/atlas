@@ -2,6 +2,7 @@ package input
 
 import (
 	tea "charm.land/bubbletea/v2"
+	"github.com/sidekick-coder/atlas/internal/logger"
 	"github.com/sidekick-coder/atlas/tui/features/key"
 	"github.com/sidekick-coder/atlas/tui/messages"
 )
@@ -68,8 +69,6 @@ func (i *Component) HandleKeypress(msg tea.Msg) tea.Cmd {
 		if i.cursor < len(i.buf) {
 			i.cursor++
 		}
-
-		// return messages.SkipCmd()
 	}
 
 	code := textMsg.Code
@@ -79,6 +78,8 @@ func (i *Component) HandleKeypress(msg tea.Msg) tea.Cmd {
 			i.SetBuff(append(i.buf[:i.cursor-1], i.buf[i.cursor:]...))
 			i.cursor--
 		}
+
+		return nil
 	}
 
 	if code == tea.KeyDelete {
@@ -96,6 +97,7 @@ func (i *Component) HandleKeypress(msg tea.Msg) tea.Cmd {
 	}
 
 	if textMsg.Text != "" {
+		logger.Debugf("Inserting text: %s", textMsg.Text)
 		i.SetBuff(append(i.buf[:i.cursor], append([]rune(textMsg.Text), i.buf[i.cursor:]...)...))
 		i.cursor += len([]rune(textMsg.Text))
 	}
