@@ -50,6 +50,7 @@ func Create() *Syncer {
 		extractor: e,
 		batcher: b,
 		writter: w,
+		concurrency: 1,
 	}
 }
 

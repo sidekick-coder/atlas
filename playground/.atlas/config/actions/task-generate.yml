@@ -1,0 +1,15 @@
+type: formdialog
+title: "Generate tasks"
+command: true
+fields:
+    - name: "length"
+      type: "textfield"
+      label: "Length"
+action:
+    type: group
+    actions:
+        - type: shell
+          _evaluate:
+              command: "submit"
+          command: "{{ .workspace.path }}/bin/tasks.js {{ .length }}"
+        - type: entry-sync-all

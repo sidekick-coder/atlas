@@ -22,6 +22,7 @@ func (f *Feature) Update(msg tea.Msg) tea.Cmd {
 		f.HandleSet,
 		f.HandleUnset,
 		f.HandleSync,
+		f.HandleAllSync,
 	)
 }
 

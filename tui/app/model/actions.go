@@ -13,6 +13,7 @@ func (m *model) LoadDefaultActions() tea.Cmd {
 	action.AddDefinition("entry-update", actions.EntryUpdateAction)
 
 	action.AddDefinition("entry-sync", entrycontroller.SyncAction)
+	action.AddDefinition("entry-sync-all", entrycontroller.SyncAllAction)
 	action.AddDefinition("entry-set", entrycontroller.SetAction)
 
 	action.AddDefinition("input", actions.InputAction)
