@@ -36,6 +36,12 @@ func (p *Provider) AddCommand(name string, description string, execute func() te
 func (p *Provider) Load() {
 	color := theme.BaseStyle().Foreground(theme.Error())
 
+	p.AddCommand(color.Render("[action] ")+"sync all", "sync all entries", func() tea.Cmd {
+		ctx := make(map[string]any)
+
+		return action.Execute("entry-sync-all", ctx)
+	})
+
 	manager := program.GetApp().Action
 
 	actions, err := manager.List()
@@ -59,7 +65,7 @@ func (p *Provider) Load() {
 	slices.SortFunc(p.commands, func(a, b provider.Command) int {
 		return strings.Compare(a.Name, b.Name)
 	})
-	
+
 }
 
 func (p *Provider) List(payload provider.ListPayload) []provider.Command {

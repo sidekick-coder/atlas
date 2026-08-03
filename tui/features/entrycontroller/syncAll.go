@@ -5,6 +5,7 @@ import (
 	"github.com/sidekick-coder/atlas/internal/logger"
 	"github.com/sidekick-coder/atlas/internal/syncer"
 	"github.com/sidekick-coder/atlas/tui/app/program"
+	"github.com/sidekick-coder/atlas/tui/components/toast"
 )
 
 type SyncAllMsg struct {
@@ -21,7 +22,6 @@ func (f *Feature) HandleAllSync(msg tea.Msg) tea.Cmd {
 	s := f.app.Syncer()
 
 	if _, ok := msg.(SyncAllMsg); ok {
-
 		return func() tea.Msg {
 			logger.Debug("SyncAllMsg received, starting sync all operation")
 
@@ -37,6 +37,10 @@ func (f *Feature) HandleAllSync(msg tea.Msg) tea.Cmd {
 
 			return SyncedAllMsg{}
 		}
+	}
+
+	if _, ok := msg.(SyncedAllMsg); ok {
+		return toast.Success("Sync all operation completed successfully.")
 	}
 
 	return nil
