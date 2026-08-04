@@ -1,5 +1,6 @@
 node_modules
-tasks/*.md
+tasks
+projects
 archive/tasks/*.md
 .atlas/database.sqlite*
 tmp/*

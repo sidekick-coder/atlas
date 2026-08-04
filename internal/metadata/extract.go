@@ -3,8 +3,6 @@ package metadata
 import (
 	"fmt"
 	"maps"
-
-	// "strings"
 	"github.com/sidekick-coder/atlas/internal/metadata/handler"
 	"github.com/sidekick-coder/atlas/internal/models"
 )

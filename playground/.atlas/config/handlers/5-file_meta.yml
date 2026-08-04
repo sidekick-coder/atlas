@@ -1,0 +1,3 @@
+type: file-meta
+filename: "{{ .absolute_path }}/index.yml"
+patterns: ["projects/*/"]

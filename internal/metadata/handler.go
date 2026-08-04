@@ -2,11 +2,14 @@ package metadata
 
 import (
 	"fmt"
+	"slices"
+	"strings"
 
 	"github.com/sidekick-coder/atlas/internal/config"
 	"github.com/sidekick-coder/atlas/internal/fs"
 	"github.com/sidekick-coder/atlas/internal/metadata/handler"
 	"github.com/sidekick-coder/atlas/internal/metadata/handlers/content"
+	"github.com/sidekick-coder/atlas/internal/metadata/handlers/filemeta"
 	"github.com/sidekick-coder/atlas/internal/metadata/handlers/frontmatter"
 	"github.com/sidekick-coder/atlas/internal/metadata/handlers/json"
 	"github.com/sidekick-coder/atlas/internal/metadata/handlers/setter"
@@ -75,10 +78,20 @@ func (m *Meta) SetHandlersFromConfig(config *config.Config) error {
 			continue
 		}
 
+		if hc.Type == "file-meta" {
+			handlers = append(handlers, filemeta.Create(payload))
+			continue
+		}
+
 		return fmt.Errorf("unknown handler type: %s", hc.Type)
 	}
 
 	m.handlers = handlers
+
+	// sort by id
+	slices.SortFunc(m.handlers, func(a, b handler.Handler) int {
+		return strings.Compare(a.GetID(), b.GetID())
+	})
 
 	return nil
 }
