@@ -2,6 +2,7 @@ package filemeta
 
 import (
 	"fmt"
+	"maps"
 
 	"github.com/goccy/go-yaml"
 	"github.com/sidekick-coder/atlas/internal/fs"
@@ -91,6 +92,8 @@ func (m Handler) Unmarshal(content string) (map[string]any, error) {
 
 func (m Handler) Extract(payload handler.ExtractPayload) (map[string]string, error) {
 	ctx := maputil.Any(payload.Metas)
+	result := map[string]string{}
+
 
 	filename, err := template.Render(m.filename, ctx)
 
@@ -98,27 +101,29 @@ func (m Handler) Extract(payload handler.ExtractPayload) (map[string]string, err
 		return nil, err
 	}
 
+	result["filemeta.filename"] = filename
+
 	if !fs.Exists(filename) {
-		return map[string]string{}, nil
+		return result, nil
 	}
 
 	content, err := fs.ReadText(filename)
 
 	if err != nil {
-		return nil, err
+		return result, err
 	}
 
 	metas, err := m.Unmarshal(content)
 
 	if err != nil {
-		return nil, err
+		return result, err
 	}
 
 	flat := utils.FlattenMap(metas, "")
 
-	flatStr := maputil.String(flat)
+	maps.Copy(result, maputil.String(flat))
 
-	return flatStr, nil
+	return result, nil
 }
 
 func (m Handler) Set(info *models.EntryInfo, name string, value string) (bool, error) {
